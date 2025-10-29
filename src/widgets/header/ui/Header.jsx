@@ -15,7 +15,7 @@ import { Button } from 'shared/ui/Button'
 import { APP_CONFIG } from 'shared/configs/app.config'
 import { Link } from 'shared/ui/Link'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
-import { Stack } from '@mui/material'
+import { Container, Stack } from '@mui/material'
 
 import GamepadIcon from '@mui/icons-material/Gamepad'
 
@@ -81,52 +81,57 @@ export function Header(props) {
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<AppBar component='nav'>
-				<Toolbar>
-					<IconButton
-						color='inherit'
-						aria-label='open drawer'
-						edge='start'
-						onClick={handleDrawerToggle}
-						sx={{ mr: 2, display: { sm: 'none' } }}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography
-						variant='h6'
-						component='div'
-						sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-					>
-						<Link to={PAGE_CONFIG.home}>
-							<Stack
-								direction='row'
-								spacing={1}
-								alignItems='center'
-							>
-								{/* <Box
+				<Container
+					maxWidth='xl'
+					disableGutters
+				>
+					<Toolbar>
+						<IconButton
+							color='inherit'
+							aria-label='open drawer'
+							edge='start'
+							onClick={handleDrawerToggle}
+							sx={{ mr: 2, display: { sm: 'none' } }}
+						>
+							<MenuIcon />
+						</IconButton>
+						<Typography
+							variant='h6'
+							component='div'
+							sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+						>
+							<Link to={PAGE_CONFIG.home}>
+								<Stack
+									direction='row'
+									spacing={1}
+									alignItems='center'
+								>
+									{/* <Box
 									component='img'
 									src={APP_CONFIG.logo}
 								/> */}
-								<GamepadIcon></GamepadIcon>
-								<Typography variant='h6'>{APP_CONFIG.name}</Typography>
-							</Stack>
-						</Link>
-					</Typography>
-					<Stack
-						direction='row'
-						gap={1}
-						sx={{ display: { xs: 'none', sm: 'flex' } }}
-					>
-						{navItems.map((item, index) => (
-							<Button
-								key={index}
-								variant='text'
-								sx={{ color: '#fff' }}
-							>
-								<Link to={item[1]}>{item[0]}</Link>
-							</Button>
-						))}
-					</Stack>
-				</Toolbar>
+									<GamepadIcon></GamepadIcon>
+									<Typography variant='h6'>{APP_CONFIG.name}</Typography>
+								</Stack>
+							</Link>
+						</Typography>
+						<Stack
+							direction='row'
+							gap={1}
+							sx={{ display: { xs: 'none', sm: 'flex' } }}
+						>
+							{navItems.map((item, index) => (
+								<Button
+									key={index}
+									variant='text'
+									sx={{ color: '#fff' }}
+								>
+									<Link to={item[1]}>{item[0]}</Link>
+								</Button>
+							))}
+						</Stack>
+					</Toolbar>
+				</Container>
 			</AppBar>
 			<nav>
 				<Drawer

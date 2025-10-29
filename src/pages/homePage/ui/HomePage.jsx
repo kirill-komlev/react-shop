@@ -10,7 +10,7 @@ export function HomePage() {
 			mt={10}
 		>
 			<Container
-				maxWidth
+				maxWidth='xl'
 				sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}
 			>
 				<Typography variant='h4'>Популярные товары</Typography>
