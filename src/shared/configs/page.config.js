@@ -4,4 +4,5 @@ export const PAGE_CONFIG = {
 	sales: '/sales',
 	about: '/about',
 	cart: '/cart',
+	favorite: '/favorite',
 }

@@ -11,13 +11,16 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuIcon from '@mui/icons-material/Menu'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import { Container, Stack } from '@mui/material'
+
+import GamepadIcon from '@mui/icons-material/Gamepad'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+
 import { Button } from 'shared/ui/Button'
 import { APP_CONFIG } from 'shared/configs/app.config'
 import { Link } from 'shared/ui/Link'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
-import { Container, Stack } from '@mui/material'
-
-import GamepadIcon from '@mui/icons-material/Gamepad'
 
 const drawerWidth = 240
 const navItems = [
@@ -43,7 +46,10 @@ export function Header(props) {
 				variant='h6'
 				sx={{ my: 2 }}
 			>
-				<Link to={PAGE_CONFIG.home}>
+				<Link
+					to={PAGE_CONFIG.home}
+					hover={false}
+				>
 					<Stack
 						direction='row'
 						spacing={1}
@@ -66,7 +72,10 @@ export function Header(props) {
 						disablePadding
 					>
 						<ListItemButton sx={{ px: 0 }}>
-							<Link to={item[1]}>
+							<Link
+								to={item[1]}
+								hover={false}
+							>
 								<ListItemText primary={item[0]} />
 							</Link>
 						</ListItemButton>
@@ -85,7 +94,7 @@ export function Header(props) {
 					maxWidth='xl'
 					disableGutters
 				>
-					<Toolbar>
+					<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
 						<IconButton
 							color='inherit'
 							aria-label='open drawer'
@@ -98,9 +107,12 @@ export function Header(props) {
 						<Typography
 							variant='h6'
 							component='div'
-							sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+							sx={{ display: { xs: 'none', sm: 'block' } }}
 						>
-							<Link to={PAGE_CONFIG.home}>
+							<Link
+								to={PAGE_CONFIG.home}
+								hover={false}
+							>
 								<Stack
 									direction='row'
 									spacing={1}
@@ -110,7 +122,7 @@ export function Header(props) {
 									component='img'
 									src={APP_CONFIG.logo}
 								/> */}
-									<GamepadIcon></GamepadIcon>
+									<GamepadIcon />
 									<Typography variant='h6'>{APP_CONFIG.name}</Typography>
 								</Stack>
 							</Link>
@@ -126,9 +138,29 @@ export function Header(props) {
 									variant='text'
 									sx={{ color: '#fff' }}
 								>
-									<Link to={item[1]}>{item[0]}</Link>
+									<Link
+										to={item[1]}
+										hover={false}
+									>
+										{item[0]}
+									</Link>
 								</Button>
 							))}
+						</Stack>
+						<Stack
+							direction='row'
+							gap={1}
+						>
+							<Link to={PAGE_CONFIG.favorite}>
+								<IconButton>
+									<FavoriteIcon sx={{ color: '#fff' }} />
+								</IconButton>
+							</Link>
+							<Link to={PAGE_CONFIG.cart}>
+								<IconButton>
+									<ShoppingCartIcon sx={{ color: '#fff' }} />
+								</IconButton>
+							</Link>
 						</Stack>
 					</Toolbar>
 				</Container>
