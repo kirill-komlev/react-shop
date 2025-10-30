@@ -32,7 +32,7 @@ export function HomePage() {
 				>
 					{DATA.slice(0, 4).map((item, index) => (
 						<Grid
-							size={3}
+							size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
 							key={index}
 						>
 							<ProductCard data={item} />
