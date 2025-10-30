@@ -27,6 +27,10 @@ export function Router() {
 					path={PAGE_CONFIG.cart}
 					element={<>lorem</>}
 				/>
+				<Route
+					path={PAGE_CONFIG.favorite}
+					element={<>lorem</>}
+				/>
 			</Route>
 		</Routes>
 	)
