@@ -18,9 +18,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 
 import { Button } from 'shared/ui/Button'
-import { APP_CONFIG } from 'shared/configs/app.config'
 import { Link } from 'shared/ui/Link'
+
 import { PAGE_CONFIG } from 'shared/configs/page.config'
+import { APP_CONFIG } from 'shared/configs/app.config'
 
 const drawerWidth = 240
 const navItems = [
@@ -136,7 +137,12 @@ export function Header(props) {
 								<Button
 									key={index}
 									variant='text'
-									sx={{ color: '#fff' }}
+									sx={{
+										color: '#fff',
+										'&:hover': {
+											backgroundColor: 'primary.dark',
+										},
+									}}
 								>
 									<Link
 										to={item[1]}
