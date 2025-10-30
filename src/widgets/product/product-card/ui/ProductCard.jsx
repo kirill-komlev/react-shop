@@ -7,55 +7,71 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import { useEffect, useState } from 'react'
+import { useAddInCart } from 'shared/hooks/useAddInCart'
 
-export function ProductCard({ data }) {
-	const [favorite, setFavorite] = useState(false)
+export function ProductCard({ data, onClick }) {
+	// const [cart, setCart] = useState([])
 
-	const addInFavorites = id => {
-		let lSValue = []
-		if (localStorage.getItem('favorite') === null) {
-			localStorage.setItem('favorite', id)
-		} else {
-			let oldResult
-			if (typeof localStorage.getItem('favorite') == 'string') {
-				oldResult = localStorage.getItem('favorite').split(',')
-			} else {
-				oldResult = Array.from(String(parseInt(localStorage.getItem('favorite'))), Number)
-			}
-			let result = lSValue.concat(oldResult).concat(id)
-			localStorage.setItem('favorite', result)
-		}
-		setFavorite(true)
-	}
+	// () => {
+	// if (localStorage.getItem('cart') == null) {
+	// 	return [0]
+	// }
+	// const localData = localStorage.getItem('cart').split(',')
+	// return localData
+	// }
 
-	const removeFromFavorites = id => {
-		if (localStorage.getItem('favorite').split(',').length == 1) {
-			localStorage.removeItem('favorite')
-		} else {
-			localStorage.setItem(
-				'favorite',
-				localStorage
-					.getItem('favorite')
-					.split(',')
-					.filter(item => !(item == id))
-			)
-		}
+	// useEffect(() => {
+	// 	localStorage.setItem('cart', cart)
+	// }, [cart])
 
-		setFavorite(false)
-	}
+	// console.log(typeof cart)
 
-	useEffect(() => {
-		console.log('useEffect')
-		if (localStorage.getItem('favorite') == null) {
-			return setFavorite(false)
-		}
-		let array = localStorage.getItem('favorite').split(',')
-		if (array.indexOf(data.id.toString()) == -1) {
-			setFavorite(false)
-		} else {
-			setFavorite(true)
-		}
-	})
+	// const [favorite, setFavorite] = useState(false)
+
+	// const addInFavorites = id => {
+	// 	let lSValue = []
+	// 	if (localStorage.getItem('favorite') === null) {
+	// 		localStorage.setItem('favorite', id)
+	// 	} else {
+	// 		let oldResult
+	// 		if (typeof localStorage.getItem('favorite') == 'string') {
+	// 			oldResult = localStorage.getItem('favorite').split(',')
+	// 		} else {
+	// 			oldResult = Array.from(String(parseInt(localStorage.getItem('favorite'))), Number)
+	// 		}
+	// 		let result = lSValue.concat(oldResult).concat(id)
+	// 		localStorage.setItem('favorite', result)
+	// 	}
+	// 	setFavorite(true)
+	// }
+
+	// const removeFromFavorites = id => {
+	// 	if (localStorage.getItem('favorite').split(',').length == 1) {
+	// 		localStorage.removeItem('favorite')
+	// 	} else {
+	// 		localStorage.setItem(
+	// 			'favorite',
+	// 			localStorage
+	// 				.getItem('favorite')
+	// 				.split(',')
+	// 				.filter(item => !(item == id))
+	// 		)
+	// 	}
+
+	// 	setFavorite(false)
+	// }
+
+	// useEffect(() => {
+	// 	if (localStorage.getItem('favorite') == null) {
+	// 		return setFavorite(false)
+	// 	}
+	// 	let array = localStorage.getItem('favorite').split(',')
+	// 	if (array.indexOf(data.id.toString()) == -1) {
+	// 		setFavorite(false)
+	// 	} else {
+	// 		setFavorite(true)
+	// 	}
+	// })
 
 	return (
 		<Card sx={{ height: '100%' }}>
@@ -133,7 +149,8 @@ export function ProductCard({ data }) {
 						size='auto'
 						gap={2}
 					>
-						{favorite ? (
+						
+						{/* {favorite ? (
 							<Tooltip title='Убрать из избранного'>
 								<IconButton onClick={() => removeFromFavorites(data.id)}>
 									<FavoriteIcon color='error' />
@@ -145,12 +162,20 @@ export function ProductCard({ data }) {
 									<FavoriteBorderIcon />
 								</IconButton>
 							</Tooltip>
-						)}
-						<Tooltip title='Добавить в корзину'>
+						)} */}
+						{/* <Tooltip title='Добавить в корзину'>
 							<IconButton>
 								<ShoppingCartIcon />
 							</IconButton>
-						</Tooltip>
+						</Tooltip> */}
+						{/* {cart.indexOf(data.id) == -1 ? <Button onClick={() => addInCart(data.id)}>Купить</Button> : <Button variant='outlined'>В корзине</Button>} */}
+						<Button
+							onClick={() => {
+								setCart(data.id)
+							}}
+						>
+							Купить
+						</Button>
 					</Grid>
 				</Grid>
 			</CardActions>

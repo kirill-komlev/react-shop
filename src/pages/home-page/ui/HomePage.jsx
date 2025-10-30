@@ -1,9 +1,20 @@
 import { Box, Container, Grid, Typography } from '@mui/material'
+import { useState } from 'react'
 import { DATA } from 'shared/configs/data'
 import { Button } from 'shared/ui/Button'
-import { ProductCard } from 'widgets/product/productCard/ui/ProductCard'
+import { ProductCard } from 'widgets/product/product-card/ui/ProductCard'
 
 export function HomePage() {
+	// const [cart, setCart] = useState([])
+
+	// const addInCart = id => {
+	// 	// let copy = Object.assign([], cart)
+	// 	// copy.push(id)
+	// 	// setCart(copy)
+	// 	// localStorage.setItem('cart', copy)
+	// 	setCart([...cart, id])
+	// }
+
 	return (
 		<Box
 			component='section'

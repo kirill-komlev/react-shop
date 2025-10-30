@@ -1,5 +1,5 @@
 import { Layout } from 'app/layouts/Layout'
-import { HomePage } from 'pages/homePage/ui/HomePage'
+import { HomePage } from 'pages/home-page/ui/HomePage'
 import { Route, Routes } from 'react-router'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 
