@@ -30,6 +30,27 @@ const navItems = [
 	['О нас', PAGE_CONFIG.about],
 ]
 
+const IconButtonStyle = {
+	flexDirection: 'column',
+	height: '62px',
+	my: 1,
+	px: 2,
+	borderRadius: 1,
+	color: '#fff',
+	'&:hover': {
+		backgroundColor: 'primary.dark',
+	},
+}
+
+const LinkButtonStyle = {
+	height: '62px',
+	px: 2,
+	color: '#fff',
+	'&:hover': {
+		backgroundColor: 'primary.dark',
+	},
+}
+
 export function Header(props) {
 	const { window } = props
 	const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -137,12 +158,7 @@ export function Header(props) {
 								<Button
 									key={index}
 									variant='text'
-									sx={{
-										color: '#fff',
-										'&:hover': {
-											backgroundColor: 'primary.dark',
-										},
-									}}
+									sx={LinkButtonStyle}
 								>
 									<Link
 										to={item[1]}
@@ -158,13 +174,15 @@ export function Header(props) {
 							gap={1}
 						>
 							<Link to={PAGE_CONFIG.favorite}>
-								<IconButton>
-									<FavoriteIcon sx={{ color: '#fff' }} />
+								<IconButton sx={IconButtonStyle}>
+									<FavoriteIcon />
+									<Typography variant='subtitle2'>Избранное</Typography>
 								</IconButton>
 							</Link>
 							<Link to={PAGE_CONFIG.cart}>
-								<IconButton>
-									<ShoppingCartIcon sx={{ color: '#fff' }} />
+								<IconButton sx={IconButtonStyle}>
+									<ShoppingCartIcon />
+									<Typography variant='subtitle2'>Корзина</Typography>
 								</IconButton>
 							</Link>
 						</Stack>
