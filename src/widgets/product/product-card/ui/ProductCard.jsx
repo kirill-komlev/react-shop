@@ -1,15 +1,18 @@
-import { Card, CardActions, CardContent, CardMedia, formLabelClasses, Grid, IconButton, Rating, Stack, Tooltip, Typography } from '@mui/material'
+import { useState } from 'react'
+
+import { Card, CardActions, CardContent, CardMedia, Stack, Typography, Rating, Grid } from '@mui/material'
+
+import { AddCart } from 'features/product/add-cart/ui/AddCart'
+import { DeleteCart } from 'features/product/delete-cart/ui/DeleteCart'
+
 import { PAGE_CONFIG } from 'shared/configs/page.config'
-import { Button } from 'shared/ui/Button'
 import { Link } from 'shared/ui/Link'
+import { AddFavorite } from 'features/product/add-favorite/ui/AddFavorite'
+import { DeleteFavorite } from 'features/product/delete-favorite/ui/DeleteFavorite'
 
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import { useEffect, useState } from 'react'
-import { useAddInCart } from 'shared/hooks/useAddInCart'
-
-export function ProductCard({ data, onClick }) {
+export function ProductCard({ data }) {
+	const [cart, setCart] = useState(false)
+	const [favorite, setFavorite] = useState(false)
 	// const [cart, setCart] = useState([])
 
 	// () => {
@@ -96,14 +99,14 @@ export function ProductCard({ data, onClick }) {
 					<Rating
 						name='read-only'
 						value={data.rating}
-						precision={0.1}
+						precision={0.5}
 						readOnly
 					/>
 					<Typography
 						variant='body1'
 						sx={{ mt: '2px' }}
 					>
-						{data.rating}
+						{/* {data.rating} */}
 					</Typography>
 				</Stack>
 			</CardContent>
@@ -126,21 +129,20 @@ export function ProductCard({ data, onClick }) {
 						) : (
 							<Stack
 								direction='row'
-								gap={1}
-								alignItems='center'
+								gap={0.5}
 							>
-								<Typography
-									variant='body1'
-									sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
-								>
-									{data.price} ₽
-								</Typography>
 								<Typography
 									variant='h6'
 									// sx={{ color: 'text.secondary' }}
 									sx={{ fontWeight: 'bold' }}
 								>
 									{(data.price / 100) * (100 - data.discount)} ₽
+								</Typography>
+								<Typography
+									variant='caption'
+									sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
+								>
+									{data.price} ₽
 								</Typography>
 							</Stack>
 						)}
@@ -149,7 +151,6 @@ export function ProductCard({ data, onClick }) {
 						size='auto'
 						gap={2}
 					>
-						
 						{/* {favorite ? (
 							<Tooltip title='Убрать из избранного'>
 								<IconButton onClick={() => removeFromFavorites(data.id)}>
@@ -169,13 +170,8 @@ export function ProductCard({ data, onClick }) {
 							</IconButton>
 						</Tooltip> */}
 						{/* {cart.indexOf(data.id) == -1 ? <Button onClick={() => addInCart(data.id)}>Купить</Button> : <Button variant='outlined'>В корзине</Button>} */}
-						<Button
-							onClick={() => {
-								setCart(data.id)
-							}}
-						>
-							Купить
-						</Button>
+						{favorite ? <DeleteFavorite onClick={() => setFavorite(false)} /> : <AddFavorite onClick={() => setFavorite(true)} />}
+						{cart ? <DeleteCart onClick={() => setCart(false)} /> : <AddCart onClick={() => setCart(true)} />}
 					</Grid>
 				</Grid>
 			</CardActions>
