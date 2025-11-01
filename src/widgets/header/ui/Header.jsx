@@ -11,7 +11,7 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuIcon from '@mui/icons-material/Menu'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Container, Stack } from '@mui/material'
+import { Badge, Container, Menu, MenuItem, Stack } from '@mui/material'
 
 import GamepadIcon from '@mui/icons-material/Gamepad'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
@@ -23,9 +23,15 @@ import { Link } from 'shared/ui/Link'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { APP_CONFIG } from 'shared/configs/app.config'
 
+import { CATEGORIES } from 'shared/configs/categories'
+
+import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
+import { useFavoriteStore } from 'shared/libs/favorites-store'
+import { useCartStore } from 'shared/libs/cart-store'
+
 const drawerWidth = 240
 const navItems = [
-	['Товары', PAGE_CONFIG.products],
+	// ['Товары', PAGE_CONFIG.product],
 	['Акции', PAGE_CONFIG.sales],
 	['О нас', PAGE_CONFIG.about],
 ]
@@ -55,8 +61,20 @@ export function Header(props) {
 	const { window } = props
 	const [mobileOpen, setMobileOpen] = React.useState(false)
 
+	const favorite = useFavoriteStore(state => state.favorite)
+	const cart = useCartStore(state => state.cart)
+
 	const handleDrawerToggle = () => {
 		setMobileOpen(prevState => !prevState)
+	}
+
+	const [anchorEl, setAnchorEl] = React.useState(null)
+	const open = Boolean(anchorEl)
+	const handleClick = event => {
+		setAnchorEl(event.currentTarget)
+	}
+	const handleClose = () => {
+		setAnchorEl(null)
 	}
 
 	const drawer = (
@@ -154,34 +172,81 @@ export function Header(props) {
 							gap={1}
 							sx={{ display: { xs: 'none', sm: 'flex' } }}
 						>
-							{navItems.map((item, index) => (
-								<Button
-									key={index}
-									variant='text'
-									sx={LinkButtonStyle}
-								>
+							<Button
+								variant='text'
+								sx={LinkButtonStyle}
+								id='basic-button'
+								aria-controls={open ? 'basic-menu' : undefined}
+								aria-haspopup='true'
+								aria-expanded={open ? 'true' : undefined}
+								onClick={handleClick}
+							>
+								Каталог
+							</Button>
+							<Menu
+								id='basic-menu'
+								anchorEl={anchorEl}
+								open={open}
+								onClose={handleClose}
+								slotProps={{
+									list: {
+										'aria-labelledby': 'basic-button',
+									},
+								}}
+							>
+								{CATEGORIES.map((item, index) => (
 									<Link
-										to={item[1]}
+										to={`${PAGE_CONFIG.catalog}/${item.en[1]}`}
 										hover={false}
 									>
-										{item[0]}
+										<MenuItem
+											onClick={handleClose}
+											key={index}
+										>
+											{capitalizeFirstLetter(item.ru[1])}
+										</MenuItem>
 									</Link>
-								</Button>
+								))}
+							</Menu>
+							{navItems.map((item, index) => (
+								<Link
+									key={index}
+									to={item[1]}
+									hover={false}
+								>
+									<Button
+										variant='text'
+										sx={LinkButtonStyle}
+									>
+										{item[0]}
+									</Button>
+								</Link>
 							))}
 						</Stack>
 						<Stack
 							direction='row'
 							gap={1}
+							sx={{ display: { xs: 'none', sm: 'flex' } }}
 						>
 							<Link to={PAGE_CONFIG.favorite}>
 								<IconButton sx={IconButtonStyle}>
-									<FavoriteIcon />
+									<Badge
+										max={9}
+										badgeContent={favorite.length}
+									>
+										<FavoriteIcon />
+									</Badge>
 									<Typography variant='subtitle2'>Избранное</Typography>
 								</IconButton>
 							</Link>
 							<Link to={PAGE_CONFIG.cart}>
 								<IconButton sx={IconButtonStyle}>
-									<ShoppingCartIcon />
+									<Badge
+										max={9}
+										badgeContent={cart.length}
+									>
+										<ShoppingCartIcon />
+									</Badge>
 									<Typography variant='subtitle2'>Корзина</Typography>
 								</IconButton>
 							</Link>
