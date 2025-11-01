@@ -411,7 +411,7 @@ export const DATA = [
 		rating: 4.8,
 		features: {
 			type: 'Полноразмерные',
-			connection: 'USB/3.5mm',
+			connection: 'Проводные',
 			microphone: true,
 			frequency: '15-25000 Hz',
 			impedance: '60 Ohm',
