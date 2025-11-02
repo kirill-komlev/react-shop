@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router'
 import { Layout } from 'app/layouts/Layout'
 
 import { HomePage } from 'pages/home-page/ui/HomePage'
-import { CatalogPage } from 'pages/catalog-page/ui/CatalogPage'
+import { CatalogCategoryPage } from 'pages/catalog-category-page/ui/CatalogCategoryPage'
 
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 
@@ -21,7 +21,7 @@ export function Router() {
 				/>
 				<Route
 					path={`${PAGE_CONFIG.catalog}/:category`}
-					element={<CatalogPage />}
+					element={<CatalogCategoryPage />}
 				/>
 				<Route
 					path={`${PAGE_CONFIG.product}/:id`}
