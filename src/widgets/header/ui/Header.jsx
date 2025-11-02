@@ -198,13 +198,9 @@ export function Header(props) {
 									<Link
 										to={`${PAGE_CONFIG.catalog}/${item.en[1]}`}
 										hover={false}
+										key={index}
 									>
-										<MenuItem
-											onClick={handleClose}
-											key={index}
-										>
-											{capitalizeFirstLetter(item.ru[1])}
-										</MenuItem>
+										<MenuItem onClick={handleClose}>{capitalizeFirstLetter(item.ru[1])}</MenuItem>
 									</Link>
 								))}
 							</Menu>
