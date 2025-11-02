@@ -1,12 +1,33 @@
 export const DATA = [
 	// МЫШИ (10 товаров)
 	{
+		id: 0,
+		name: 'Razer Viper Ultimate',
+		category: 'Мыши',
+		price: 9990,
+		brand: 'Razer',
+		rating: 2.4,
+		features: {
+			type: 'Беспроводная',
+			sensor: 'Оптический',
+			dpi: 20000,
+			buttons: 8,
+			weight: 74,
+			connection: 'USB Dongle',
+			rgb: true,
+		},
+		image: '/images/razer-viper-ultimate.jpg',
+		inStock: true,
+		discount: 10,
+		isNew: false,
+	},
+	{
 		id: 1,
 		name: 'Razer Viper Ultimate',
 		category: 'Мыши',
 		price: 9990,
 		brand: 'Razer',
-		rating: 4.8,
+		rating: 3.8,
 		features: {
 			type: 'Беспроводная',
 			sensor: 'Оптический',
