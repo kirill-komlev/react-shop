@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 
-import { Box, Container, FormControl, Grid, MenuItem, Paper, Select, Stack, Typography } from '@mui/material'
+import { Box, Container, FormControl, Grid, IconButton, MenuItem, Paper, Select, Stack, Typography } from '@mui/material'
 
-import { ProductCardHorizontal } from 'widgets/product-card/ui/ProductCard'
+import { ProductCard, ProductCardHorizontal } from 'widgets/product-card/ui/ProductCard'
 
 import { DATA } from 'shared/configs/data'
 
@@ -14,7 +14,11 @@ import { Button } from 'shared/ui/Button'
 import { initialFilter } from 'shared/configs/filter'
 import { sortBy } from 'shared/libs/sortBy'
 
+import AppsIcon from '@mui/icons-material/Apps'
+import ReorderIcon from '@mui/icons-material/Reorder'
+
 export function CatalogCategoryPage() {
+	const [productDirection, setProductDirection] = useState('horizontal')
 	const [productCount, setProductCount] = useState(10)
 	const [filter, setFilter] = useState(initialFilter)
 	const [sort, setSort] = useState('id, asc')
@@ -106,27 +110,42 @@ export function CatalogCategoryPage() {
 						<Paper sx={{ p: 2 }}>
 							<Stack
 								direction='row'
-								spacing={1}
 								alignItems='center'
+								justifyContent='space-between'
 							>
-								<Typography variant='body1'>Сортировка:</Typography>
-								<FormControl
-									variant='standard'
-									sx={{ minWidth: 120 }}
+								<Stack
+									direction='row'
+									spacing={1}
+									alignItems='center'
 								>
-									<Select
-										labelId='select-standard-label'
-										id='select-standard'
-										value={sort}
-										onChange={handleChange}
+									<Typography variant='body1'>Сортировка:</Typography>
+									<FormControl
+										variant='standard'
+										sx={{ minWidth: 120 }}
 									>
-										<MenuItem value='id, asc'>по новизне</MenuItem>
-										<MenuItem value='name, asc'>по имени</MenuItem>
-										<MenuItem value='price, asc'>сначала недорогие</MenuItem>
-										<MenuItem value='price, desc'>сначала дорогие</MenuItem>
-										<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
-									</Select>
-								</FormControl>
+										<Select
+											labelId='select-standard-label'
+											id='select-standard'
+											value={sort}
+											onChange={handleChange}
+										>
+											<MenuItem value='id, asc'>по новизне</MenuItem>
+											<MenuItem value='name, asc'>по имени</MenuItem>
+											<MenuItem value='price, asc'>сначала недорогие</MenuItem>
+											<MenuItem value='price, desc'>сначала дорогие</MenuItem>
+											<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
+										</Select>
+									</FormControl>
+								</Stack>
+								<Stack direction='row'>
+									<IconButton onClick={() => setProductDirection('vertical')}>
+										<AppsIcon color={productDirection == 'vertical' ? 'primary' : 'disabled'} />
+									</IconButton>
+
+									<IconButton onClick={() => setProductDirection('horizontal')}>
+										<ReorderIcon color={productDirection == 'horizontal' ? 'primary' : 'disabled'} />
+									</IconButton>
+								</Stack>
 							</Stack>
 						</Paper>
 						<Grid
@@ -134,14 +153,27 @@ export function CatalogCategoryPage() {
 							spacing={2}
 							width='100%'
 						>
-							{sortedData.slice(0, productCount).map((item, index) => (
-								<Grid
-									size={12}
-									key={index}
-								>
-									<ProductCardHorizontal data={item} />
-								</Grid>
-							))}
+							{sortedData.slice(0, productCount).map((item, index) => {
+								if (productDirection == 'vertical') {
+									return (
+										<Grid
+											size={4}
+											key={index}
+										>
+											<ProductCard data={item} />
+										</Grid>
+									)
+								} else {
+									return (
+										<Grid
+											size={12}
+											key={index}
+										>
+											<ProductCardHorizontal data={item} />
+										</Grid>
+									)
+								}
+							})}
 						</Grid>
 					</Stack>
 				</Box>
