@@ -19,8 +19,8 @@ export function ProductCard({ data }) {
 		<Card sx={{ height: '100%' }}>
 			<CardMedia
 				component='img'
-				sx={{ height: 250, backgroundColor: 'lightgrey' }}
-				image='/static/images/cards/contemplative-reptile.jpg'
+				sx={{ height: 250, objectFit: 'contain', py: 1 }}
+				image={data.image}
 				title={data.name}
 			/>
 			<CardContent sx={{ pb: 0 }}>
@@ -122,8 +122,8 @@ export function ProductCardHorizontal({ data }) {
 			<Box position='relative'>
 				<CardMedia
 					component='img'
-					sx={{ height: 200, width: 200, backgroundColor: 'lightgrey' }}
-					image='/static/images/cards/contemplative-reptile.jpg'
+					sx={{ height: 200, width: 200, objectFit: 'contain', m: 2 }}
+					image={data.image}
 					title={data.name}
 				/>
 				{data.discount == 0 ? (
