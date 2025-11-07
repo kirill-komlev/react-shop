@@ -255,135 +255,16 @@ export function ProductCardHorizontal({ data }) {
 						</Typography>
 					</Stack>
 				)}
-				<Grid
-					size='auto'
-					gap={2}
-				>
-					{favorite.indexOf(data.id) == -1 ? <AddFavorite id={data.id} /> : <DeleteFavorite id={data.id} />}
-					{cart.indexOf(data.id) == -1 ? <AddCartFull id={data.id} /> : <DeleteCartFull id={data.id} />}
+				<Grid size='auto'>
+					<Stack
+						direction='row'
+						spacing={1}
+					>
+						{favorite.indexOf(data.id) == -1 ? <AddFavorite id={data.id} /> : <DeleteFavorite id={data.id} />}
+						{cart.indexOf(data.id) == -1 ? <AddCartFull id={data.id} /> : <DeleteCartFull id={data.id} />}
+					</Stack>
 				</Grid>
 			</Box>
 		</Card>
 	)
 }
-
-// export function ProductCardHorizontal({ data }) {
-// 	const favorite = useFavoriteStore(state => state.favorite)
-// 	const cart = useCartStore(state => state.cart)
-
-// 	return (
-// 		<Card sx={{ display: 'flex' }}>
-// 			<CardMedia
-// 				component='img'
-// 				sx={{ height: 200, width: 200, backgroundColor: 'lightgrey' }}
-// 				image='/static/images/cards/contemplative-reptile.jpg'
-// 				title={data.name}
-// 			/>
-// 			<Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-// 				<CardContent sx={{ flex: '1 0 auto' }}>
-// 					<Box
-// 						display='flex'
-// 						flexDirection='column'
-// 						justifyContent='space-between'
-// 						height='100%'
-// 					>
-// 						<Stack gap={1}>
-// 							<Typography
-// 								gutterBottom
-// 								variant='h5'
-// 								component='div'
-// 							>
-// 								{data.category == 'Мыши' ? (
-// 									<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-// 										{data.features.type} мышь {data.name}
-// 									</Link>
-// 								) : data.category == 'Клавиатуры' ? (
-// 									<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-// 										{data.features.type} клавиатура {data.name}
-// 									</Link>
-// 								) : (
-// 									<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-// 										{data.features.connection} наушники {data.name}
-// 									</Link>
-// 								)}
-// 								{/* <Link to={`${PAGE_CONFIG.product}/${data.id}`}>{data.name}</Link> */}
-// 							</Typography>
-// 							<Typography
-// 								variant='body1'
-// 								color='textSecondary'
-// 							>
-// 								{data.category == 'Мыши' ? (
-// 									<>
-// 										{data.features.dpi} dpi, {data.features.connection}, {data.features.buttons} кнопок
-// 									</>
-// 								) : data.category == 'Клавиатуры' ? (
-// 									<>
-// 										{data.features.switch}, {data.features.connection}, {data.features.size}
-// 									</>
-// 								) : (
-// 									<>
-// 										{data.features.type}, {data.features.frequency}
-// 									</>
-// 								)}
-// 							</Typography>
-// 						</Stack>
-// 						<Stack
-// 							direction='row'
-// 							alignItems='center'
-// 							gap={1}
-// 						>
-// 							<Rating
-// 								name='read-only'
-// 								value={data.rating}
-// 								precision={0.5}
-// 								readOnly
-// 							/>
-// 							<Typography
-// 								variant='body1'
-// 								sx={{ mt: '2px' }}
-// 							>
-// 								{data.rating}
-// 							</Typography>
-// 						</Stack>
-// 					</Box>
-// 				</CardContent>
-// 			</Box>
-// 			<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 1, p: 2 }}>
-// 				{data.discount == 0 ? (
-// 					<Typography
-// 						variant='h6'
-// 						sx={{ fontWeight: 'bold' }}
-// 					>
-// 						{data.price} ₽
-// 					</Typography>
-// 				) : (
-// 					<Stack
-// 						direction='column'
-// 						alignItems='end'
-// 					>
-// 						<Typography
-// 							variant='caption'
-// 							sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
-// 						>
-// 							{data.price} ₽
-// 						</Typography>
-// 						<Typography
-// 							variant='h6'
-// 							color='primary'
-// 							sx={{ fontWeight: 'bold', mt: '-8px' }}
-// 						>
-// 							{Math.round((data.price / 100) * (100 - data.discount))} ₽
-// 						</Typography>
-// 					</Stack>
-// 				)}
-// 				<Grid
-// 					size='auto'
-// 					gap={2}
-// 				>
-// 					{favorite.indexOf(data.id) == -1 ? <AddFavorite id={data.id} /> : <DeleteFavorite id={data.id} />}
-// 					{cart.indexOf(data.id) == -1 ? <AddCartFull id={data.id} /> : <DeleteCartFull id={data.id} />}
-// 				</Grid>
-// 			</Box>
-// 		</Card>
-// 	)
-// }
