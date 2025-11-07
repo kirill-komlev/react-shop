@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 
-import { Box, Container, Grid, Typography } from '@mui/material'
+import { Box, Container, FormControl, Grid, MenuItem, Paper, Select, Stack, Typography } from '@mui/material'
 
 import { ProductCardHorizontal } from 'widgets/product-card/ui/ProductCard'
 
@@ -12,14 +12,17 @@ import { CATEGORIES_FULL } from 'shared/configs/categories'
 import { ProductFilter } from 'widgets/product-filter/ui/ProductFilter'
 import { Button } from 'shared/ui/Button'
 import { initialFilter } from 'shared/configs/filter'
+import { sortBy } from 'shared/libs/sortBy'
 
 export function CatalogCategoryPage() {
 	const [productCount, setProductCount] = useState(10)
 	const [filter, setFilter] = useState(initialFilter)
+	const [sort, setSort] = useState('id, asc')
 
 	// Сброс значения при переходе между страницами
 	useEffect(() => {
 		setFilter(initialFilter)
+		setSort('id, asc')
 	}, [location.pathname])
 
 	// Фильтр по категории
@@ -62,6 +65,12 @@ export function CatalogCategoryPage() {
 		})
 	}, [filter, data])
 
+	const handleChange = event => {
+		setSort(event.target.value)
+	}
+
+	const sortedData = sortBy(filteredData, sort)
+
 	return (
 		<Box
 			component='section'
@@ -77,7 +86,7 @@ export function CatalogCategoryPage() {
 					variant='h4'
 					width='100%'
 				>
-					Все {CATEGORIES_FULL[category].ru[1]}
+					{capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}: {filteredData.length}
 				</Typography>
 				<Box
 					display='flex'
@@ -90,22 +99,53 @@ export function CatalogCategoryPage() {
 						setFilter={setFilter}
 						category={capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}
 					/>
-					<Grid
-						container
-						spacing={2}
-						width='100%'
+					<Stack
+						gap={2}
+						sx={{ width: '100%' }}
 					>
-						{filteredData.slice(0, productCount).map((item, index) => (
-							<Grid
-								size={12}
-								key={index}
+						<Paper sx={{ p: 2 }}>
+							<Stack
+								direction='row'
+								spacing={1}
+								alignItems='center'
 							>
-								<ProductCardHorizontal data={item} />
-							</Grid>
-						))}
-					</Grid>
+								<Typography variant='body1'>Сортировка:</Typography>
+								<FormControl
+									variant='standard'
+									sx={{ minWidth: 120 }}
+								>
+									<Select
+										labelId='select-standard-label'
+										id='select-standard'
+										value={sort}
+										onChange={handleChange}
+									>
+										<MenuItem value='id, asc'>по новизне</MenuItem>
+										<MenuItem value='name, asc'>по имени</MenuItem>
+										<MenuItem value='price, asc'>сначала недорогие</MenuItem>
+										<MenuItem value='price, desc'>сначала дорогие</MenuItem>
+										<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
+									</Select>
+								</FormControl>
+							</Stack>
+						</Paper>
+						<Grid
+							container
+							spacing={2}
+							width='100%'
+						>
+							{sortedData.slice(0, productCount).map((item, index) => (
+								<Grid
+									size={12}
+									key={index}
+								>
+									<ProductCardHorizontal data={item} />
+								</Grid>
+							))}
+						</Grid>
+					</Stack>
 				</Box>
-				{filteredData.length > productCount ? <Button onClick={() => setProductCount(productCount + 4)}>Показать еще</Button> : ''}
+				{sortedData.length > productCount ? <Button onClick={() => setProductCount(productCount + 4)}>Показать еще</Button> : ''}
 			</Container>
 		</Box>
 	)
