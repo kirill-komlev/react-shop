@@ -14,7 +14,7 @@ export const AddCart = id => {
 	return (
 		<Tooltip title='Добавить в корзину'>
 			<IconButton onClick={() => addCart(productId)}>
-				<ShoppingCartIcon color='inherit' />
+				<AddShoppingCartIcon color='inherit' />
 			</IconButton>
 		</Tooltip>
 	)
@@ -34,12 +34,17 @@ export const AddCartFull = id => {
 }
 
 export const DeleteCart = id => {
+	const [isHover, setIsHover] = useState(false)
 	const deleteCart = useCartStore(state => state.deleteCart)
 	let productId = id.id
 	return (
 		<Tooltip title='Убрать из корзины'>
-			<IconButton onClick={() => deleteCart(productId)}>
-				<RemoveShoppingCartIcon color='error' />
+			<IconButton
+				onClick={() => deleteCart(productId)}
+				onMouseOver={() => setIsHover(true)}
+				onMouseOut={() => setIsHover(false)}
+			>
+				{isHover ? <RemoveShoppingCartIcon color='error' /> : <ShoppingCartIcon color='primary' />}
 			</IconButton>
 		</Tooltip>
 	)

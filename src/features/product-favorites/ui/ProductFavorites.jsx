@@ -2,8 +2,10 @@ import { IconButton, Tooltip } from '@mui/material'
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import HeartBrokenIcon from '@mui/icons-material/HeartBroken'
 
 import { useFavoriteStore } from 'shared/libs/favorites-store'
+import { useState } from 'react'
 
 export const AddFavorite = id => {
 	const addFavorite = useFavoriteStore(state => state.addFavorite)
@@ -18,12 +20,17 @@ export const AddFavorite = id => {
 }
 
 export const DeleteFavorite = id => {
+	const [isHover, setIsHover] = useState(false)
 	const deleteFavorite = useFavoriteStore(state => state.deleteFavorite)
 	let productId = id.id
 	return (
 		<Tooltip title='Убрать из избранного'>
-			<IconButton onClick={() => deleteFavorite(productId)}>
-				<FavoriteIcon color='error' />
+			<IconButton
+				onClick={() => deleteFavorite(productId)}
+				onMouseOver={() => setIsHover(true)}
+				onMouseOut={() => setIsHover(false)}
+			>
+				{isHover ? <HeartBrokenIcon color='error' /> : <FavoriteIcon color='error' />}
 			</IconButton>
 		</Tooltip>
 	)
