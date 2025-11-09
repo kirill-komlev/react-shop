@@ -33,6 +33,9 @@ export function CatalogCategoryPage() {
 	let { category } = useParams()
 	let data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
+	// Считает скидку
+	data.map(item => (item.discountValue = Math.round((item.price / 100) * (100 - item.discount))))
+
 	const filteredData = useMemo(() => {
 		return data.filter(product => {
 			// Фильтр по бренду
@@ -131,8 +134,8 @@ export function CatalogCategoryPage() {
 										>
 											<MenuItem value='id, asc'>по новизне</MenuItem>
 											<MenuItem value='name, asc'>по имени</MenuItem>
-											<MenuItem value='price, asc'>сначала недорогие</MenuItem>
-											<MenuItem value='price, desc'>сначала дорогие</MenuItem>
+											<MenuItem value='discountValue, asc'>сначала недорогие</MenuItem>
+											<MenuItem value='discountValue, desc'>сначала дорогие</MenuItem>
 											<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
 										</Select>
 									</FormControl>

@@ -87,7 +87,7 @@ export function ProductCard({ data }) {
 									color='primary'
 									sx={{ fontWeight: 'bold' }}
 								>
-									{Math.round((data.price / 100) * (100 - data.discount))} ₽
+									{data.discountValue} ₽
 								</Typography>
 								<Typography
 									variant='caption'
@@ -251,7 +251,7 @@ export function ProductCardHorizontal({ data }) {
 							color='primary'
 							sx={{ fontWeight: 'bold', mt: '-8px' }}
 						>
-							{Math.round((data.price / 100) * (100 - data.discount))} ₽
+							{data.discountValue} ₽
 						</Typography>
 					</Stack>
 				)}
