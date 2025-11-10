@@ -33,9 +33,6 @@ export function CatalogCategoryPage() {
 	let { category } = useParams()
 	let data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
-	// Считает скидку
-	data.map(item => (item.discountValue = Math.round((item.price / 100) * (100 - item.discount))))
-
 	const filteredData = useMemo(() => {
 		return data.filter(product => {
 			// Фильтр по бренду

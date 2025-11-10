@@ -15,6 +15,9 @@ export function ProductCard({ data }) {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 
+	// Считает скидку
+	data.discountValue = Math.round((data.price / 100) * (100 - data.discount))
+
 	return (
 		<Card sx={{ height: '100%' }}>
 			<CardMedia
@@ -114,6 +117,9 @@ export function ProductCard({ data }) {
 export function ProductCardHorizontal({ data }) {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
+
+	// Считает скидку
+	data.discountValue = Math.round((data.price / 100) * (100 - data.discount))
 
 	let { category } = useParams()
 
