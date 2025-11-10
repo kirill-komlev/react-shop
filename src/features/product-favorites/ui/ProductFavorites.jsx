@@ -13,7 +13,13 @@ export const AddFavorite = id => {
 	return (
 		<Tooltip title='Добавить в избранное'>
 			<IconButton onClick={() => addFavorite(productId)}>
-				<FavoriteBorderIcon />
+				<FavoriteBorderIcon
+					sx={{
+						'&:hover': {
+							color: 'primary.dark',
+						},
+					}}
+				/>
 			</IconButton>
 		</Tooltip>
 	)
@@ -30,7 +36,7 @@ export const DeleteFavorite = id => {
 				onMouseOver={() => setIsHover(true)}
 				onMouseOut={() => setIsHover(false)}
 			>
-				{isHover ? <HeartBrokenIcon color='error' /> : <FavoriteIcon color='error' />}
+				{isHover ? <HeartBrokenIcon color='error' /> : <FavoriteIcon color='primary' />}
 			</IconButton>
 		</Tooltip>
 	)

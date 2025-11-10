@@ -17,7 +17,7 @@ export const AddCart = id => {
 				onClick={() => addCart(productId)}
 				sx={{
 					'&:hover': {
-						color: 'primary.main',
+						color: 'primary.dark',
 					},
 				}}
 			>

@@ -41,9 +41,10 @@ const navItems = [
 
 const LinkButtonStyle = {
 	px: 2,
+	color: '#fff',
+	backgroundColor: 'primary.main',
 	'&:hover': {
-		color: '#fff',
-		backgroundColor: 'primary.main',
+		backgroundColor: 'primary.dark',
 	},
 	'.MuiButton-endIcon': {
 		marginLeft: '0',
@@ -92,7 +93,7 @@ export function Header(props) {
 									component='img'
 									src={APP_CONFIG.logo}
 								/> */}
-						<GamepadIcon></GamepadIcon>
+						<GamepadIcon />
 						<Typography variant='h6'>{APP_CONFIG.name}</Typography>
 					</Stack>
 				</Link>
@@ -124,8 +125,7 @@ export function Header(props) {
 		<Box sx={{ display: 'flex' }}>
 			<AppBar
 				component='nav'
-				color='default'
-				// sx={{ boxShadow: '0' }}
+				sx={{ backgroundImage: 'none' }}
 			>
 				<Container
 					maxWidth='xl'
@@ -154,7 +154,7 @@ export function Header(props) {
 									direction='row'
 									spacing={1}
 									alignItems='center'
-									sx={{ color: 'primary.main' }}
+									sx={{ color: 'primary.dark' }}
 								>
 									{/* <Box
 									component='img'
@@ -228,8 +228,8 @@ export function Header(props) {
 									<IconButton>
 										<Badge
 											max={9}
-											badgeContent={favorite.length}
 											color='primary'
+											badgeContent={favorite.length}
 										>
 											<FavoriteIcon />
 										</Badge>
@@ -241,8 +241,8 @@ export function Header(props) {
 									<IconButton>
 										<Badge
 											max={9}
-											badgeContent={cart.length}
 											color='primary'
+											badgeContent={cart.length}
 										>
 											<ShoppingCartIcon />
 										</Badge>

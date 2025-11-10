@@ -22,7 +22,7 @@ export function ProductCard({ data }) {
 		<Card sx={{ height: '100%' }}>
 			<CardMedia
 				component='img'
-				sx={{ height: 250, objectFit: 'contain', py: 1 }}
+				sx={{ height: 250, objectFit: 'contain', py: 1, background: '#fff' }}
 				image={data.image}
 				title={data.name}
 			/>
@@ -87,7 +87,7 @@ export function ProductCard({ data }) {
 							>
 								<Typography
 									variant='h6'
-									color='primary'
+									color='secondary'
 									sx={{ fontWeight: 'bold' }}
 								>
 									{data.discountValue} ₽
@@ -128,7 +128,7 @@ export function ProductCardHorizontal({ data }) {
 			<Box position='relative'>
 				<CardMedia
 					component='img'
-					sx={{ height: 200, width: 200, objectFit: 'contain', m: 2 }}
+					sx={{ height: 200, width: 200, objectFit: 'contain', p: 2, background: '#fff' }}
 					image={data.image}
 					title={data.name}
 				/>
@@ -254,7 +254,7 @@ export function ProductCardHorizontal({ data }) {
 						</Typography>
 						<Typography
 							variant='h6'
-							color='primary'
+							color='secondary'
 							sx={{ fontWeight: 'bold', mt: '-8px' }}
 						>
 							{data.discountValue} ₽

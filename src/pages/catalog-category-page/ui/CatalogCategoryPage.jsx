@@ -79,7 +79,6 @@ export function CatalogCategoryPage() {
 		<Box
 			component='section'
 			py={4}
-			bgcolor='#f6f6f6'
 			minHeight='100vh'
 		>
 			<Container
