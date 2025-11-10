@@ -11,8 +11,11 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuIcon from '@mui/icons-material/Menu'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Badge, Container, Menu, MenuItem, Stack } from '@mui/material'
+import { Badge, Container, Menu, MenuItem, Stack, Tooltip } from '@mui/material'
 
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
 import GamepadIcon from '@mui/icons-material/Gamepad'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteIcon from '@mui/icons-material/Favorite'
@@ -36,24 +39,14 @@ const navItems = [
 	['О нас', PAGE_CONFIG.about],
 ]
 
-const IconButtonStyle = {
-	flexDirection: 'column',
-	height: '62px',
-	my: 1,
-	px: 2,
-	borderRadius: 1,
-	color: '#fff',
-	'&:hover': {
-		backgroundColor: 'primary.dark',
-	},
-}
-
 const LinkButtonStyle = {
-	height: '62px',
 	px: 2,
-	color: '#fff',
 	'&:hover': {
-		backgroundColor: 'primary.dark',
+		color: '#fff',
+		backgroundColor: 'primary.main',
+	},
+	'.MuiButton-endIcon': {
+		marginLeft: '0',
 	},
 }
 
@@ -129,14 +122,18 @@ export function Header(props) {
 
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<AppBar component='nav'>
+			<AppBar
+				component='nav'
+				color='default'
+				// sx={{ boxShadow: '0' }}
+			>
 				<Container
 					maxWidth='xl'
 					disableGutters
 				>
 					<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
 						<IconButton
-							color='inherit'
+							color='primary'
 							aria-label='open drawer'
 							edge='start'
 							onClick={handleDrawerToggle}
@@ -157,12 +154,13 @@ export function Header(props) {
 									direction='row'
 									spacing={1}
 									alignItems='center'
+									sx={{ color: 'primary.main' }}
 								>
 									{/* <Box
 									component='img'
 									src={APP_CONFIG.logo}
 								/> */}
-									<GamepadIcon />
+									<SportsEsportsIcon />
 									<Typography variant='h6'>{APP_CONFIG.name}</Typography>
 								</Stack>
 							</Link>
@@ -180,6 +178,7 @@ export function Header(props) {
 								aria-haspopup='true'
 								aria-expanded={open ? 'true' : undefined}
 								onClick={handleClick}
+								endIcon={open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
 							>
 								Каталог
 							</Button>
@@ -225,26 +224,30 @@ export function Header(props) {
 							sx={{ display: { xs: 'none', sm: 'flex' } }}
 						>
 							<Link to={PAGE_CONFIG.favorite}>
-								<IconButton sx={IconButtonStyle}>
-									<Badge
-										max={9}
-										badgeContent={favorite.length}
-									>
-										<FavoriteIcon />
-									</Badge>
-									<Typography variant='subtitle2'>Избранное</Typography>
-								</IconButton>
+								<Tooltip title='Избранное'>
+									<IconButton>
+										<Badge
+											max={9}
+											badgeContent={favorite.length}
+											color='primary'
+										>
+											<FavoriteIcon />
+										</Badge>
+									</IconButton>
+								</Tooltip>
 							</Link>
 							<Link to={PAGE_CONFIG.cart}>
-								<IconButton sx={IconButtonStyle}>
-									<Badge
-										max={9}
-										badgeContent={cart.length}
-									>
-										<ShoppingCartIcon />
-									</Badge>
-									<Typography variant='subtitle2'>Корзина</Typography>
-								</IconButton>
+								<Tooltip title='Корзина'>
+									<IconButton>
+										<Badge
+											max={9}
+											badgeContent={cart.length}
+											color='primary'
+										>
+											<ShoppingCartIcon />
+										</Badge>
+									</IconButton>
+								</Tooltip>
 							</Link>
 						</Stack>
 					</Toolbar>
