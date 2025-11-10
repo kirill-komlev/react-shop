@@ -13,7 +13,14 @@ export const AddCart = id => {
 	let productId = id.id
 	return (
 		<Tooltip title='Добавить в корзину'>
-			<IconButton onClick={() => addCart(productId)}>
+			<IconButton
+				onClick={() => addCart(productId)}
+				sx={{
+					'&:hover': {
+						color: 'primary.main',
+					},
+				}}
+			>
 				<AddShoppingCartIcon color='inherit' />
 			</IconButton>
 		</Tooltip>
