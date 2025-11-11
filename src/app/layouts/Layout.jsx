@@ -7,7 +7,12 @@ export function Layout() {
 	return (
 		<>
 			<Header />
-			<Box mt={8}>
+			<Box
+				component='section'
+				mt={8}
+				py={4}
+				minHeight='100vh'
+			>
 				<Outlet />
 			</Box>
 			<CartSidebar />
