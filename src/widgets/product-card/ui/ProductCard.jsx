@@ -6,17 +6,17 @@ import { AddCart, AddCartFull, DeleteCart, DeleteCartFull } from 'features/produ
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
 
-import { useFavoriteStore } from 'shared/libs/favorites-store'
-import { useCartStore } from 'shared/libs/cart-store'
+import { useFavoriteStore, useCartStore } from 'app/providers/store-provider/StoreProvider'
 import { CATEGORIES_FULL } from 'shared/configs/categories'
 import { useParams } from 'react-router'
+import { calculateDiscount } from 'shared/libs/calculateDiscount'
 
 export function ProductCard({ data }) {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 
 	// Считает скидку
-	data.discountValue = Math.round((data.price / 100) * (100 - data.discount))
+	data.discountValue = calculateDiscount(data.price, data.discount)
 
 	return (
 		<Card sx={{ height: '100%' }}>
