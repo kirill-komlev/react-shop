@@ -1,7 +1,5 @@
-import { createTheme, ThemeProvider as MuiThemeProvider, alpha, getContrastRatio } from '@mui/material'
-
-const primaryBase = '#6366f1'
-const secondaryBase = '#10b981'
+import { createTheme, ThemeProvider as MuiThemeProvider, alpha } from '@mui/material'
+import { COLORS } from 'shared/configs/color.config'
 
 const theme = createTheme({
 	cssVariables: {
@@ -10,18 +8,18 @@ const theme = createTheme({
 	palette: {
 		mode: 'dark',
 		primary: {
-			main: alpha(primaryBase, 0.7),
-			light: alpha(primaryBase, 0.5),
-			dark: alpha(primaryBase, 0.9),
+			main: alpha(COLORS.primary, 0.7),
+			light: alpha(COLORS.primary, 0.5),
+			dark: alpha(COLORS.primary, 0.9),
 		},
 		secondary: {
-			main: alpha(secondaryBase, 0.7),
-			light: alpha(secondaryBase, 0.5),
-			dark: alpha(secondaryBase, 0.9),
+			main: alpha(COLORS.secondary, 0.7),
+			light: alpha(COLORS.secondary, 0.5),
+			dark: alpha(COLORS.secondary, 0.9),
 		},
 		text: {
-			primary: '#f1f5f9',
-			secondary: '#94a3b8',
+			// primary: '#f1f5f9',
+			// secondary: '#94a3b8',
 		},
 
 		// background: {
