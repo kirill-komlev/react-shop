@@ -14,7 +14,19 @@ export function CartSidebar() {
 	const closeCartDrawer = useCartDrawerStore(state => state.closeCartDrawer)
 
 	// Нахождения товаров, которые должны быть в корзине
-	const productsInCart = DATA.filter(item => cart.indexOf(item.id) != -1)
+	let productsWithDiscount = 0
+	let productsWithoutDiscount = 0
+	let discount = 0
+
+	const productsInCart = DATA.filter(item => {
+		if (cart.indexOf(item.id) != -1) {
+			discount += item.discount
+			productsWithoutDiscount += item.price
+			productsWithDiscount += Math.round((item.price / 100) * (100 - item.discount))
+			return true
+		}
+		return false
+	})
 
 	return (
 		<Drawer
@@ -42,7 +54,7 @@ export function CartSidebar() {
 					</IconButton>
 				</Stack>
 				<Box>
-					<Stack gap={2}>
+					<Stack gap={3}>
 						{productsInCart.map((item, index) => (
 							<CartItem
 								key={index}
@@ -51,9 +63,41 @@ export function CartSidebar() {
 						))}
 					</Stack>
 				</Box>
-				<Box mt='auto'>
+				<Stack
+					mt='auto'
+					gap={1}
+				>
+					<Stack
+						direction='row'
+						alignItems='center'
+						justifyContent='space-between'
+					>
+						<Typography variant='h6'>Итог: </Typography>
+						{discount == 0 ? (
+							<Typography variant='body1'>{productsWithDiscount} ₽</Typography>
+						) : (
+							<Stack
+								direction='row'
+								gap={0.5}
+							>
+								<Typography
+									variant='h6'
+									color='secondary'
+									sx={{ fontWeight: 700 }}
+								>
+									{productsWithDiscount} ₽
+								</Typography>
+								<Typography
+									variant='caption'
+									sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
+								>
+									{productsWithoutDiscount} ₽
+								</Typography>
+							</Stack>
+						)}
+					</Stack>
 					<Button fullWidth>Перейти в корзину</Button>
-				</Box>
+				</Stack>
 			</Box>
 		</Drawer>
 	)
