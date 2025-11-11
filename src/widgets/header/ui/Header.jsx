@@ -49,16 +49,10 @@ const LinkButtonStyle = {
 	},
 }
 
-export function Header(props) {
-	const [mobileOpen, setMobileOpen] = useState(false)
-
+export function Header() {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 	const openCartDrawer = useCartDrawerStore(state => state.openCartDrawer)
-
-	const handleDrawerToggle = () => {
-		setMobileOpen(prevState => !prevState)
-	}
 
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
@@ -70,7 +64,7 @@ export function Header(props) {
 	}
 
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<Box sx={{ display: { sm: 'flex' } }}>
 			<AppBar
 				component='nav'
 				sx={{ backgroundImage: 'none' }}
@@ -80,15 +74,6 @@ export function Header(props) {
 					disableGutters
 				>
 					<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-						<IconButton
-							color='primary'
-							aria-label='open drawer'
-							edge='start'
-							onClick={handleDrawerToggle}
-							sx={{ mr: 2, display: { sm: 'none' } }}
-						>
-							<MenuIcon />
-						</IconButton>
 						<Typography
 							variant='h6'
 							component='div'
