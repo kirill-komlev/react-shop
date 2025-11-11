@@ -4,7 +4,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken'
 
-import { useFavoriteStore } from 'shared/libs/favorites-store'
+import { useFavoriteStore } from 'app/providers/store-provider/StoreProvider'
 import { useState } from 'react'
 
 export const AddFavorite = id => {

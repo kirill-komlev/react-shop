@@ -5,7 +5,7 @@ import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 
 import { Button } from 'shared/ui/Button'
-import { useCartStore } from 'shared/libs/cart-store'
+import { useCartStore } from 'app/providers/store-provider/StoreProvider'
 import { useState } from 'react'
 
 export const AddCart = id => {
