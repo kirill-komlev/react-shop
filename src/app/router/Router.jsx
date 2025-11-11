@@ -6,6 +6,7 @@ import { HomePage } from 'pages/home-page/ui/HomePage'
 import { CatalogCategoryPage } from 'pages/catalog-category-page/ui/CatalogCategoryPage'
 
 import { PAGE_CONFIG } from 'shared/configs/page.config'
+import { FavoritePage } from 'pages/favorite-page/ui/FavoritePage'
 
 export function Router() {
 	return (
@@ -55,7 +56,7 @@ export function Router() {
 				/>
 				<Route
 					path={PAGE_CONFIG.favorite}
-					element={<>lorem</>}
+					element={<FavoritePage />}
 				/>
 			</Route>
 		</Routes>
