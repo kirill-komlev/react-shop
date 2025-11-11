@@ -1,24 +1,27 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 
-import { Box, Container, FormControl, Grid, IconButton, MenuItem, Paper, Select, Stack, Typography } from '@mui/material'
+import { Box, Container, Grid, Paper, Stack, Typography } from '@mui/material'
 
 import { ProductCard, ProductCardHorizontal } from 'widgets/product-card/ui/ProductCard'
+import { ProductFilter } from 'widgets/product-filter/ui/ProductFilter'
+import { ProductSort } from 'widgets/product-sort/ui/ProductSort'
+import { ProductDirection } from 'widgets/product-direction/ui/ProductDirection'
 
+import { Button } from 'shared/ui/Button'
+
+import { initialFilter } from 'shared/configs/filter'
+import { CATEGORIES_FULL } from 'shared/configs/categories'
 import { DATA } from 'shared/configs/data'
 
-import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
-import { CATEGORIES_FULL } from 'shared/configs/categories'
-import { ProductFilter } from 'widgets/product-filter/ui/ProductFilter'
-import { Button } from 'shared/ui/Button'
-import { initialFilter } from 'shared/configs/filter'
 import { sortBy } from 'shared/libs/sortBy'
+import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 
-import AppsIcon from '@mui/icons-material/Apps'
-import ReorderIcon from '@mui/icons-material/Reorder'
+import { useProductDirection } from 'app/providers/store-provider/StoreProvider'
 
 export function CatalogCategoryPage() {
-	const [productDirection, setProductDirection] = useState('horizontal')
+	const productDirection = useProductDirection(state => state.productDirection)
+
 	const [productCount, setProductCount] = useState(10)
 	const [filter, setFilter] = useState(initialFilter)
 	const [sort, setSort] = useState('id, asc')
@@ -118,33 +121,12 @@ export function CatalogCategoryPage() {
 									alignItems='center'
 								>
 									<Typography variant='body1'>Сортировка:</Typography>
-									<FormControl
-										variant='standard'
-										sx={{ minWidth: 120 }}
-									>
-										<Select
-											labelId='select-standard-label'
-											id='select-standard'
-											value={sort}
-											onChange={handleChange}
-										>
-											<MenuItem value='id, asc'>по новизне</MenuItem>
-											<MenuItem value='name, asc'>по имени</MenuItem>
-											<MenuItem value='discountValue, asc'>сначала недорогие</MenuItem>
-											<MenuItem value='discountValue, desc'>сначала дорогие</MenuItem>
-											<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
-										</Select>
-									</FormControl>
+									<ProductSort
+										value={sort}
+										onChange={handleChange}
+									/>
 								</Stack>
-								<Stack direction='row'>
-									<IconButton onClick={() => setProductDirection('vertical')}>
-										<AppsIcon color={productDirection == 'vertical' ? 'primary' : 'disabled'} />
-									</IconButton>
-
-									<IconButton onClick={() => setProductDirection('horizontal')}>
-										<ReorderIcon color={productDirection == 'horizontal' ? 'primary' : 'disabled'} />
-									</IconButton>
-								</Stack>
+								<ProductDirection />
 							</Stack>
 						</Paper>
 						<Grid
