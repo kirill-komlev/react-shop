@@ -63,8 +63,8 @@ export function CatalogCategoryPage() {
 				return false
 			}
 
-			// Фильтр по скидке
-			if (filter.isDiscount && !product.inStock) {
+			// Фильтр по наличию
+			if (filter.isInStock && !product.inStock) {
 				return false
 			}
 
@@ -79,87 +79,81 @@ export function CatalogCategoryPage() {
 	const sortedData = sortBy(filteredData, sort)
 
 	return (
-		<Box
-			component='section'
-			py={4}
-			minHeight='100vh'
+		<Container
+			maxWidth='xl'
+			sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}
 		>
-			<Container
-				maxWidth='xl'
-				sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}
+			<Typography
+				variant='h4'
+				width='100%'
 			>
-				<Typography
-					variant='h4'
-					width='100%'
+				{capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}: {filteredData.length}
+			</Typography>
+			<Box
+				display='flex'
+				alignItems='flex-start'
+				width='100%'
+				gap={4}
+			>
+				<ProductFilter
+					filter={filter}
+					setFilter={setFilter}
+					category={capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}
+				/>
+				<Stack
+					gap={2}
+					sx={{ width: '100%' }}
 				>
-					{capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}: {filteredData.length}
-				</Typography>
-				<Box
-					display='flex'
-					alignItems='flex-start'
-					width='100%'
-					gap={4}
-				>
-					<ProductFilter
-						filter={filter}
-						setFilter={setFilter}
-						category={capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}
-					/>
-					<Stack
-						gap={2}
-						sx={{ width: '100%' }}
-					>
-						<Paper sx={{ p: 2 }}>
+					<Paper sx={{ p: 2 }}>
+						<Stack
+							direction='row'
+							alignItems='center'
+							justifyContent='space-between'
+						>
 							<Stack
 								direction='row'
+								spacing={1}
 								alignItems='center'
-								justifyContent='space-between'
 							>
-								<Stack
-									direction='row'
-									spacing={1}
-									alignItems='center'
-								>
-									<Typography variant='body1'>Сортировка:</Typography>
-									<ProductSort
-										value={sort}
-										onChange={handleChange}
-									/>
-								</Stack>
-								<ProductDirection />
+								<Typography variant='body1'>Сортировка:</Typography>
+								<ProductSort
+									value={sort}
+									onChange={handleChange}
+								/>
 							</Stack>
-						</Paper>
-						<Grid
-							container
-							spacing={2}
-							width='100%'
-						>
-							{sortedData.slice(0, productCount).map((item, index) => {
-								if (productDirection == 'vertical') {
-									return (
-										<Grid
-											size={4}
-											key={index}
-										>
-											<ProductCard data={item} />
-										</Grid>
-									)
-								} else {
-									return (
-										<Grid
-											size={12}
-											key={index}
-										>
-											<ProductCardHorizontal data={item} />
-										</Grid>
-									)
-								}
-							})}
-						</Grid>
-					</Stack>
-				</Box>
-				{sortedData.length > productCount ? <Button onClick={() => setProductCount(productCount + 4)}>Показать еще</Button> : ''}
-			</Container>
-		</Box>
+							<ProductDirection />
+						</Stack>
+					</Paper>
+					<Grid
+						container
+						spacing={2}
+						width='100%'
+					>
+						{sortedData.slice(0, productCount).map((item, index) => {
+							if (productDirection == 'vertical') {
+								return (
+									<Grid
+										size={4}
+										key={index}
+									>
+										<ProductCard data={item} />
+									</Grid>
+								)
+							} else {
+								return (
+									<Grid
+										size={12}
+										key={index}
+									>
+										<ProductCardHorizontal data={item} />
+									</Grid>
+								)
+							}
+						})}
+					</Grid>
+				</Stack>
+			</Box>
+			{sortedData.length > productCount ? <Button onClick={() => setProductCount(productCount + 4)}>Показать еще</Button> : ''}
+		</Container>
 	)
 }
