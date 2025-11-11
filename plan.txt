@@ -1,0 +1,246 @@
+src/
+│
+├── app/                           # Инициализация приложения
+│   ├── providers/                # Провайдеры приложения
+│   │   ├── app-router/           # Роутер
+│   │   │   ├── ui/AppRouter.tsx
+│   │   │   └── index.ts
+│   │   ├── theme-provider/       # Тема (светлая/тёмная)
+│   │   │   ├── ui/ThemeProvider.tsx
+│   │   │   └── index.ts
+│   │   ├── store-provider/       # Redux/Toolkit store
+│   │   │   ├── ui/StoreProvider.tsx
+│   │   │   └── index.ts
+│   │   └── index.ts              # Объединение всех провайдеров
+│   ├── styles/                   # Глобальные стили
+│   │   ├── globals.css
+│   │   ├── variables.css         # CSS переменные (цвета, шрифты)
+│   │   └── reset.css             # Сброс стилей
+│   ├── main.tsx                  # Точка входа
+│   └── index.ts
+│
+├── pages/                        # Страницы приложения
+│   ├── home/                     # Главная страница
+│   │   ├── ui/HomePage.tsx
+│   │   ├── index.ts
+│   │   └── lib/                  # Логика главной страницы
+│   ├── catalog/                  # Каталог товаров
+│   │   ├── ui/CatalogPage.tsx
+│   │   ├── lib/
+│   │   │   ├── useCatalogFilters.ts
+│   │   │   └── useCatalogSort.ts
+│   │   └── index.ts
+│   ├── product/                  # Страница товара
+│   │   ├── ui/ProductPage.tsx
+│   │   ├── lib/
+│   │   │   ├── useProductData.ts
+│   │   │   └── useProductGallery.ts
+│   │   └── index.ts
+│   ├── cart/                     # Корзина
+│   │   ├── ui/CartPage.tsx
+│   │   ├── lib/useCartOperations.ts
+│   │   └── index.ts
+│   ├── checkout/                 # Оформление заказа
+│   │   ├── ui/CheckoutPage.tsx
+│   │   ├── lib/
+│   │   │   ├── useCheckoutForm.ts
+│   │   │   └── useOrderValidation.ts
+│   │   └── index.ts
+│   ├── profile/                  # Личный кабинет
+│   │   ├── ui/ProfilePage.tsx
+│   │   ├── lib/useProfileData.ts
+│   │   └── index.ts
+│   └── index.ts                  # Public API pages
+│
+├── widgets/                      # Независимые виджеты
+│   ├── header/                   # Шапка сайта
+│   │   ├── ui/Header.tsx
+│   │   ├── ui/HeaderLogo.tsx
+│   │   ├── ui/HeaderNav.tsx
+│   │   ├── lib/useHeaderNavigation.ts
+│   │   └── index.ts
+│   ├── footer/                   # Подвал
+│   │   ├── ui/Footer.tsx
+│   │   ├── ui/FooterLinks.tsx
+│   │   └── index.ts
+│   ├── product-card/             # Карточка товара
+│   │   ├── ui/ProductCard.tsx
+│   │   ├── ui/ProductCardSkeleton.tsx
+│   │   ├── lib/useProductCard.ts
+│   │   └── index.ts
+│   ├── product-filter/           # Фильтр товаров
+│   │   ├── ui/ProductFilter.tsx
+│   │   ├── ui/PriceRangeFilter.tsx
+│   │   ├── ui/BrandFilter.tsx
+│   │   ├── ui/CategoryFilter.tsx
+│   │   ├── lib/useProductFilter.ts
+│   │   └── index.ts
+│   ├── product-grid/             # Сетка товаров
+│   │   ├── ui/ProductGrid.tsx
+│   │   ├── ui/ProductGridSkeleton.tsx
+│   │   └── index.ts
+│   ├── cart-sidebar/             # Боковая панель корзины
+│   │   ├── ui/CartSidebar.tsx
+│   │   ├── ui/CartItem.tsx
+│   │   ├── lib/useCartSidebar.ts
+│   │   └── index.ts
+│   ├── newsletter/               # Подписка на рассылку
+│   │   ├── ui/Newsletter.tsx
+│   │   ├── lib/useNewsletter.ts
+│   │   └── index.ts
+│   └── index.ts                  # Public API widgets
+│
+├── features/                     # Бизнес-фичи пользователя
+│   ├── add-to-cart/              # Добавление в корзину
+│   │   ├── ui/AddToCartButton.tsx
+│   │   ├── ui/AddToCartDropdown.tsx
+│   │   ├── model/
+│   │   │   ├── addToCartSlice.ts
+│   │   │   └── types.ts
+│   │   ├── lib/useAddToCart.ts
+│   │   └── index.ts
+│   ├── product-search/           # Поиск товаров
+│   │   ├── ui/SearchBar.tsx
+│   │   ├── ui/SearchResults.tsx
+│   │   ├── model/searchSlice.ts
+│   │   ├── lib/useProductSearch.ts
+│   │   └── index.ts
+│   ├── product-compare/          # Сравнение товаров
+│   │   ├── ui/CompareButton.tsx
+│   │   ├── ui/CompareTable.tsx
+│   │   ├── model/compareSlice.ts
+│   │   ├── lib/useProductCompare.ts
+│   │   └── index.ts
+│   ├── product-favorites/        # Избранное
+│   │   ├── ui/FavoriteButton.tsx
+│   │   ├── ui/FavoritesList.tsx
+│   │   ├── model/favoritesSlice.ts
+│   │   ├── lib/useFavorites.ts
+│   │   └── index.ts
+│   ├── product-reviews/          # Отзывы о товарах
+│   │   ├── ui/ReviewList.tsx
+│   │   ├── ui/ReviewForm.tsx
+│   │   ├── ui/ReviewItem.tsx
+│   │   ├── model/reviewsSlice.ts
+│   │   ├── lib/useProductReviews.ts
+│   │   └── index.ts
+│   ├── user-auth/                # Авторизация
+│   │   ├── ui/LoginForm.tsx
+│   │   ├── ui/RegisterForm.tsx
+│   │   ├── ui/AuthModal.tsx
+│   │   ├── model/authSlice.ts
+│   │   ├── lib/useAuth.ts
+│   │   └── index.ts
+│   ├── order-creation/           # Создание заказа
+│   │   ├── ui/OrderForm.tsx
+│   │   ├── ui/OrderSummary.tsx
+│   │   ├── model/orderSlice.ts
+│   │   ├── lib/useOrderCreation.ts
+│   │   └── index.ts
+│   └── index.ts                  # Public API features
+│
+├── entities/                     # Бизнес-сущности
+│   ├── product/                  # Сущность товара
+│   │   ├── ui/ProductImage.tsx
+│   │   ├── ui/ProductPrice.tsx
+│   │   ├── ui/ProductRating.tsx
+│   │   ├── model/
+│   │   │   ├── productSlice.ts
+│   │   │   ├── productApi.ts     # RTK Query endpoints
+│   │   │   └── types.ts          # Типы Product, ProductDetails
+│   │   ├── lib/
+│   │   │   ├── constants.ts      # Категории, бренды
+│   │   │   ├── helpers.ts        # formatPrice, calculateDiscount
+│   │   │   └── hooks/
+│   │   │       ├── useProducts.ts
+│   │   │       └── useProduct.ts
+│   │   └── index.ts
+│   ├── user/                     # Сущность пользователя
+│   │   ├── model/
+│   │   │   ├── userSlice.ts
+│   │   │   ├── userApi.ts
+│   │   │   └── types.ts          # User, UserProfile
+│   │   ├── lib/useUser.ts
+│   │   └── index.ts
+│   ├── cart/                     # Сущность корзины
+│   │   ├── ui/CartBadge.tsx
+│   │   ├── model/
+│   │   │   ├── cartSlice.ts
+│   │   │   └── types.ts          # CartItem, CartState
+│   │   ├── lib/
+│   │   │   ├── useCart.ts
+│   │   │   ├── cartCalculations.ts
+│   │   │   └── constants.ts      # Доставка, налоги
+│   │   └── index.ts
+│   ├── order/                    # Сущность заказа
+│   │   ├── model/
+│   │   │   ├── orderSlice.ts
+│   │   │   ├── orderApi.ts
+│   │   │   └── types.ts          # Order, OrderStatus
+│   │   ├── lib/useOrders.ts
+│   │   └── index.ts
+│   ├── category/                 # Сущность категории
+│   │   ├── model/
+│   │   │   ├── categorySlice.ts
+│   │   │   ├── categoryApi.ts
+│   │   │   └── types.ts          # Category, Subcategory
+│   │   ├── lib/useCategories.ts
+│   │   └── index.ts
+│   └── index.ts                  # Public API entities
+│
+├── shared/                       # Переиспользуемый код
+│   ├── api/                      # API клиенты
+│   │   ├── base-api.ts           # Базовые настройки RTK Query
+│   │   ├── products-api.ts       # Эндпоинты товаров
+│   │   ├── cart-api.ts           # Эндпоинты корзины
+│   │   ├── orders-api.ts         # Эндпоинты заказов
+│   │   └── index.ts
+│   ├── ui/                       # Базовые UI компоненты
+│   │   ├── button/
+│   │   │   ├── ui/Button.tsx
+│   │   │   ├── ui/IconButton.tsx
+│   │   │   └── index.ts
+│   │   ├── input/
+│   │   │   ├── ui/Input.tsx
+│   │   │   ├── ui/Select.tsx
+│   │   │   ├── ui/Checkbox.tsx
+│   │   │   └── index.ts
+│   │   ├── modal/
+│   │   │   ├── ui/Modal.tsx
+│   │   │   ├── ui/ModalHeader.tsx
+│   │   │   └── index.ts
+│   │   ├── layout/
+│   │   │   ├── ui/Container.tsx
+│   │   │   ├── ui/Grid.tsx
+│   │   │   ├── ui/Flex.tsx
+│   │   │   └── index.ts
+│   │   ├── rating/
+│   │   │   ├── ui/Rating.tsx
+│   │   │   ├── ui/StarRating.tsx
+│   │   │   └── index.ts
+│   │   ├── skeleton/
+│   │   │   ├── ui/Skeleton.tsx
+│   │   │   ├── ui/ProductSkeleton.tsx
+│   │   │   └── index.ts
+│   │   └── index.ts
+│   ├── lib/                      # Утилиты и хелперы
+│   │   ├── constants/
+│   │   │   ├── routes.ts         # Маршруты приложения
+│   │   │   ├── storage.ts        # Ключи localStorage
+│   │   │   └── app.ts            # Общие константы
+│   │   ├── helpers/
+│   │   │   ├── formatters.ts     # formatPrice, formatDate
+│   │   │   ├── validators.ts     # validateEmail, validatePhone
+│   │   │   └── sorters.ts        # sortBy (ваша функция)
+│   │   ├── hooks/
+│   │   │   ├── useLocalStorage.ts
+│   │   │   ├── useDebounce.ts
+│   │   │   ├── useMediaQuery.ts
+│   │   │   └── useClickOutside.ts
+│   │   └── index.ts
+│   ├── config/                   # Конфигурация
+│   │   ├── app-config.ts         # Настройки приложения
+│   │   └── theme-config.ts       # Настройки тем
+│   └── index.ts                  # Public API shared
+│
+└── index.tsx                     # Public API всего приложения
