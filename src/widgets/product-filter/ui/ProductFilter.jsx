@@ -185,18 +185,19 @@ export function ProductFilter({ category, filter, setFilter }) {
 										/>
 									}
 									label={
-										<Stack
-											direction='row'
-											spacing={0.5}
-										>
-											<Typography variant='body1'>{item.name}</Typography>
-											<Typography
-												variant='caption'
-												color='textSecondary'
-											>
-												({item.count})
-											</Typography>
-										</Stack>
+										<Typography variant='body1'>{item.name}</Typography>
+										// <Stack
+										// 	direction='row'
+										// 	spacing={0.5}
+										// >
+										// 	<Typography variant='body1'>{item.name}</Typography>
+										// 	<Typography
+										// 		variant='caption'
+										// 		color='textSecondary'
+										// 	>
+										// 		({item.count})
+										// 	</Typography>
+										// </Stack>
 									}
 									sx={{ width: '100%' }}
 								/>
