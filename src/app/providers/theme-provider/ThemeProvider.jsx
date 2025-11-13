@@ -22,9 +22,11 @@ const theme = createTheme({
 			// secondary: '#94a3b8',
 		},
 
-		background: {
-			paper: '#212121',
-			default: '#161616',
+		dark: {
+			background: {
+				paper: '#181818',
+				default: '#161616',
+			},
 		},
 	},
 })
