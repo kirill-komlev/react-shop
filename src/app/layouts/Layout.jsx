@@ -10,7 +10,6 @@ export function Layout() {
 			<Box
 				component='section'
 				mt={8}
-				py={4}
 				minHeight='100vh'
 			>
 				<Outlet />
