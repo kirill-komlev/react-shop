@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
@@ -26,7 +26,7 @@ import { Link } from 'shared/ui/Link'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { APP_CONFIG } from 'shared/configs/app.config'
 
-import { CATEGORIES } from 'shared/configs/categories'
+import { CATEGORIES_FULL } from 'shared/configs/categories'
 
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/providers/store-provider/StoreProvider'
@@ -63,11 +63,22 @@ export function Header() {
 		setAnchorEl(null)
 	}
 
+	const [scroll, setScroll] = useState(0)
+	useEffect(() => {
+		window.addEventListener('scroll', handleScroll)
+		return () => window.removeEventListener('scroll', handleScroll)
+	}, [])
+	const handleScroll = () => {
+		setScroll(window.scrollY)
+	}
+
 	return (
 		<Box sx={{ display: { sm: 'flex' } }}>
 			<AppBar
 				component='nav'
-				sx={{ backgroundImage: 'none' }}
+				color={scroll == 0 ? 'transparent' : 'default'}
+				enableColorOnDark
+				sx={{ backgroundImage: 'none', boxShadow: scroll == 0 ? 'none' : 'default' }}
 			>
 				<Container
 					maxWidth='xl'
@@ -93,8 +104,21 @@ export function Header() {
 									component='img'
 									src={APP_CONFIG.logo}
 								/> */}
-									<SportsEsportsIcon />
-									<Typography variant='h6'>{APP_CONFIG.name}</Typography>
+									<Box
+										bgcolor='primary.main'
+										height='48px'
+										width='48px'
+										borderRadius={1}
+										display='flex'
+										alignItems='center'
+										justifyContent='center'
+									>
+										<SportsEsportsIcon
+											fontSize='large'
+											sx={{ fill: '#ffffff' }}
+										/>
+									</Box>
+									<Typography variant='h5'>{APP_CONFIG.name}</Typography>
 								</Stack>
 							</Link>
 						</Typography>
@@ -126,7 +150,7 @@ export function Header() {
 									},
 								}}
 							>
-								{CATEGORIES.map((item, index) => (
+								{Object.values(CATEGORIES_FULL).map((item, index) => (
 									<Link
 										to={`${PAGE_CONFIG.catalog}/${item.en[1]}`}
 										hover={false}
