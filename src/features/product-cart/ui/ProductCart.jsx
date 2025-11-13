@@ -70,7 +70,7 @@ export const DeleteCartFull = id => {
 			onMouseOver={() => setIsHover(true)}
 			onMouseOut={() => setIsHover(false)}
 		>
-			{isHover ? 'Убрать' : 'В корзине'}
+			В корзине
 		</Button>
 	)
 }
