@@ -14,18 +14,11 @@ export const useCartStore = create()(
 	)
 )
 
-export const useCartDrawerStore = create()(
-	persist(
-		set => ({
-			cartDrawer: false,
-			openCartDrawer: () => set({ cartDrawer: true }),
-			closeCartDrawer: () => set({ cartDrawer: false }),
-		}),
-		{
-			name: 'cartDrawer',
-		}
-	)
-)
+export const useCartDrawerStore = create(set => ({
+	cartDrawer: false,
+	openCartDrawer: () => set({ cartDrawer: true }),
+	closeCartDrawer: () => set({ cartDrawer: false }),
+}))
 
 export const useFavoriteStore = create()(
 	persist(
