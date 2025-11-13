@@ -7,6 +7,7 @@ import { CatalogCategoryPage } from 'pages/catalog-category-page/ui/CatalogCateg
 
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { FavoritePage } from 'pages/favorite-page/ui/FavoritePage'
+import { CatalogPage } from 'pages/catalog-page/ui/CatalogPage'
 
 export function Router() {
 	return (
@@ -18,7 +19,7 @@ export function Router() {
 				/>
 				<Route
 					path={PAGE_CONFIG.catalog}
-					element={<>asd</>}
+					element={<CatalogPage />}
 				/>
 				<Route
 					path={`${PAGE_CONFIG.catalog}/:category`}
