@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, CardMedia, Stack, Typography, Rating, Grid, Box } from '@mui/material'
+import { Card, CardActions, CardContent, CardMedia, Stack, Typography, Rating, Grid, Box, Chip } from '@mui/material'
 
 import { AddFavorite, DeleteFavorite } from 'features/product-favorites/ui/ProductFavorites'
 import { AddCart, AddCartFull, DeleteCart, DeleteCartFull } from 'features/product-cart/ui/ProductCart'
@@ -54,14 +54,14 @@ export function ProductCard({ data }) {
 					<Rating
 						name='read-only'
 						value={data.rating}
-						precision={0.5}
+						precision={0.1}
 						readOnly
 					/>
 					<Typography
 						variant='body1'
 						sx={{ mt: '2px' }}
 					>
-						{/* {data.rating} */}
+						{data.rating}
 					</Typography>
 				</Stack>
 			</CardContent>
@@ -132,27 +132,25 @@ export function ProductCardHorizontal({ data }) {
 					image={data.image}
 					title={data.name}
 				/>
-				{data.discount == 0 ? (
-					''
-				) : (
-					<Typography
-						variant='caption'
-						color='#FFFFFF'
-						sx={{
-							position: 'absolute',
-							bottom: 6,
-							left: 8,
-							zIndex: 2,
-							px: 1,
-							py: 0.5,
-							pt: 0.7,
-							borderRadius: 2,
-							backgroundColor: 'error.main',
-						}}
+				<Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
+					<Stack
+						direction='row'
+						gap={1}
 					>
-						-{data.discount}%
-					</Typography>
-				)}
+						{data.discount != 0 && (
+							<Chip
+								label={`-${data.discount}%`}
+								color='error'
+							/>
+						)}
+						{data.isNew && (
+							<Chip
+								label='Новое'
+								color='warning'
+							/>
+						)}
+					</Stack>
+				</Box>
 			</Box>
 			<Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
 				<CardContent
