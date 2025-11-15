@@ -61,7 +61,7 @@ export function ProductFilter({ category, filter, setFilter }) {
 	return (
 		<Box
 			component={Paper}
-			sx={{ width: '100%', maxWidth: 360 }}
+			sx={{ width: '100%', maxWidth: 360, display: { sm: 'flex' } }}
 		>
 			<nav>
 				<List
