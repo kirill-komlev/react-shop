@@ -19,7 +19,7 @@ export const DATA = [
 		image: '/images/razer-viper-ultimate.jpg',
 		inStock: true,
 		discount: 10,
-		isNew: false,
+		isNew: true,
 	},
 	{
 		id: 1,
