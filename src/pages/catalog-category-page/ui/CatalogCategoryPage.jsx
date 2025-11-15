@@ -81,7 +81,9 @@ export function CatalogCategoryPage() {
 	const sortedData = sortBy(filteredData, sort)
 
 	return (
-		<Box mt={12}>
+		<Box
+		// mt={12}
+		>
 			<Container maxWidth='xl'>
 				<Stack gap={2}>
 					<Breadcrumbs>
