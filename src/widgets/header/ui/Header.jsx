@@ -10,7 +10,7 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuIcon from '@mui/icons-material/Menu'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Badge, Container, Drawer, Menu, MenuItem, Stack, Tooltip } from '@mui/material'
+import { Badge, Container, Drawer, Menu, MenuItem, Stack, Tooltip, BottomNavigation, BottomNavigationAction } from '@mui/material'
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -30,6 +30,8 @@ import { CATEGORIES_FULL } from 'shared/configs/categories'
 
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/providers/store-provider/StoreProvider'
+import { useParams } from 'react-router'
+import { MobileHeader } from './MobileHeader'
 
 const navItems = [
 	// ['Товары', PAGE_CONFIG.product],
@@ -73,144 +75,147 @@ export function Header() {
 	}
 
 	return (
-		<Box sx={{ display: { sm: 'flex' } }}>
-			<AppBar
-				component='nav'
-				color={scroll == 0 ? 'transparent' : 'default'}
-				enableColorOnDark
-				sx={{ backgroundImage: 'none', boxShadow: scroll == 0 ? 'none' : 'default' }}
-			>
-				<Container
-					maxWidth='xl'
-					disableGutters
+		<>
+			<Box sx={{ display: { sm: 'flex' } }}>
+				<AppBar
+					component='nav'
+					color={scroll == 0 ? 'transparent' : 'default'}
+					enableColorOnDark
+					sx={{ backgroundImage: 'none', boxShadow: scroll == 0 ? 'none' : 'default' }}
 				>
-					<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-						<Typography
-							variant='h6'
-							component='div'
-							sx={{ display: { xs: 'none', sm: 'block' } }}
-						>
-							<Link
-								to={PAGE_CONFIG.home}
-								hover={false}
+					<Container
+						maxWidth='xl'
+						disableGutters
+					>
+						<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+							<Typography
+								variant='h6'
+								component='div'
+								sx={{ display: { xs: 'none', sm: 'block' } }}
 							>
-								<Stack
-									direction='row'
-									spacing={1}
-									alignItems='center'
-									sx={{ color: 'primary.dark' }}
+								<Link
+									to={PAGE_CONFIG.home}
+									hover={false}
 								>
-									{/* <Box
+									<Stack
+										direction='row'
+										spacing={1}
+										alignItems='center'
+										sx={{ color: 'primary.dark' }}
+									>
+										{/* <Box
 									component='img'
 									src={APP_CONFIG.logo}
 								/> */}
-									<Box
-										bgcolor='primary.main'
-										height='48px'
-										width='48px'
-										borderRadius={1}
-										display='flex'
-										alignItems='center'
-										justifyContent='center'
-									>
-										<SportsEsportsIcon
-											fontSize='large'
-											sx={{ fill: '#ffffff' }}
-										/>
-									</Box>
-									<Typography variant='h5'>{APP_CONFIG.name}</Typography>
-								</Stack>
-							</Link>
-						</Typography>
-						<Stack
-							direction='row'
-							gap={1}
-							sx={{ display: { xs: 'none', sm: 'flex' } }}
-						>
-							<Button
-								variant='text'
-								sx={LinkButtonStyle}
-								id='basic-button'
-								aria-controls={open ? 'basic-menu' : undefined}
-								aria-haspopup='true'
-								aria-expanded={open ? 'true' : undefined}
-								onClick={handleClick}
-								endIcon={open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+										<Box
+											bgcolor='primary.main'
+											height='48px'
+											width='48px'
+											borderRadius={1}
+											display='flex'
+											alignItems='center'
+											justifyContent='center'
+										>
+											<SportsEsportsIcon
+												fontSize='large'
+												sx={{ fill: '#ffffff' }}
+											/>
+										</Box>
+										<Typography variant='h5'>{APP_CONFIG.name}</Typography>
+									</Stack>
+								</Link>
+							</Typography>
+							<Stack
+								direction='row'
+								gap={1}
+								sx={{ display: { xs: 'none', sm: 'flex' } }}
 							>
-								Каталог
-							</Button>
-							<Menu
-								id='basic-menu'
-								anchorEl={anchorEl}
-								open={open}
-								onClose={handleClose}
-								slotProps={{
-									list: {
-										'aria-labelledby': 'basic-button',
-									},
-								}}
-							>
-								{Object.values(CATEGORIES_FULL).map((item, index) => (
+								<Button
+									variant='text'
+									sx={LinkButtonStyle}
+									id='basic-button'
+									aria-controls={open ? 'basic-menu' : undefined}
+									aria-haspopup='true'
+									aria-expanded={open ? 'true' : undefined}
+									onClick={handleClick}
+									endIcon={open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+								>
+									Каталог
+								</Button>
+								<Menu
+									id='basic-menu'
+									anchorEl={anchorEl}
+									open={open}
+									onClose={handleClose}
+									slotProps={{
+										list: {
+											'aria-labelledby': 'basic-button',
+										},
+									}}
+								>
+									{Object.values(CATEGORIES_FULL).map((item, index) => (
+										<Link
+											to={`${PAGE_CONFIG.catalog}/${item.en[1]}`}
+											hover={false}
+											key={index}
+										>
+											<MenuItem onClick={handleClose}>{capitalizeFirstLetter(item.ru[1])}</MenuItem>
+										</Link>
+									))}
+								</Menu>
+								{navItems.map((item, index) => (
 									<Link
-										to={`${PAGE_CONFIG.catalog}/${item.en[1]}`}
-										hover={false}
 										key={index}
+										to={item[1]}
+										hover={false}
 									>
-										<MenuItem onClick={handleClose}>{capitalizeFirstLetter(item.ru[1])}</MenuItem>
+										<Button
+											variant='text'
+											sx={LinkButtonStyle}
+										>
+											{item[0]}
+										</Button>
 									</Link>
 								))}
-							</Menu>
-							{navItems.map((item, index) => (
-								<Link
-									key={index}
-									to={item[1]}
-									hover={false}
-								>
-									<Button
-										variant='text'
-										sx={LinkButtonStyle}
-									>
-										{item[0]}
-									</Button>
+							</Stack>
+							<Stack
+								direction='row'
+								gap={1}
+								sx={{ display: { xs: 'none', sm: 'flex' } }}
+							>
+								<Link to={PAGE_CONFIG.favorite}>
+									<Tooltip title='Избранное'>
+										<IconButton>
+											<Badge
+												max={9}
+												color='primary'
+												badgeContent={favorite.length}
+											>
+												<FavoriteIcon />
+											</Badge>
+										</IconButton>
+									</Tooltip>
 								</Link>
-							))}
-						</Stack>
-						<Stack
-							direction='row'
-							gap={1}
-							sx={{ display: { xs: 'none', sm: 'flex' } }}
-						>
-							<Link to={PAGE_CONFIG.favorite}>
-								<Tooltip title='Избранное'>
+								<Tooltip
+									title='Корзина'
+									onClick={openCartDrawer}
+								>
 									<IconButton>
 										<Badge
 											max={9}
 											color='primary'
-											badgeContent={favorite.length}
+											badgeContent={cart.length}
 										>
-											<FavoriteIcon />
+											<ShoppingCartIcon />
 										</Badge>
 									</IconButton>
 								</Tooltip>
-							</Link>
-							<Tooltip
-								title='Корзина'
-								onClick={openCartDrawer}
-							>
-								<IconButton>
-									<Badge
-										max={9}
-										color='primary'
-										badgeContent={cart.length}
-									>
-										<ShoppingCartIcon />
-									</Badge>
-								</IconButton>
-							</Tooltip>
-						</Stack>
-					</Toolbar>
-				</Container>
-			</AppBar>
-		</Box>
+							</Stack>
+						</Toolbar>
+					</Container>
+				</AppBar>
+			</Box>
+			<MobileHeader />
+		</>
 	)
 }
