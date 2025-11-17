@@ -6,17 +6,17 @@ const theme = createTheme({
 		nativeColor: true,
 	},
 	palette: {
-		mode: 'dark',
-		primary: {
-			main: alpha(COLORS.primary, 0.7),
-			light: alpha(COLORS.primary, 0.5),
-			dark: alpha(COLORS.primary, 0.9),
-		},
-		secondary: {
-			main: alpha(COLORS.secondary, 0.7),
-			light: alpha(COLORS.secondary, 0.5),
-			dark: alpha(COLORS.secondary, 0.9),
-		},
+		// mode: 'dark',
+		// primary: {
+		// 	main: alpha(COLORS.primary, 0.7),
+		// 	light: alpha(COLORS.primary, 0.5),
+		// 	dark: alpha(COLORS.primary, 0.9),
+		// },
+		// secondary: {
+		// 	main: alpha(COLORS.secondary, 0.7),
+		// 	light: alpha(COLORS.secondary, 0.5),
+		// 	dark: alpha(COLORS.secondary, 0.9),
+		// },
 		text: {
 			// primary: '#f1f5f9',
 			// secondary: '#94a3b8',
