@@ -11,7 +11,10 @@ export function ProductDirection() {
 	const setProductHorizontal = useProductDirection(state => state.setProductHorizontal)
 
 	return (
-		<Stack direction='row'>
+		<Stack
+			direction='row'
+			sx={{ display: { xs: 'none', md: 'flex' } }}
+		>
 			<IconButton onClick={setProductVertical}>
 				<AppsIcon color={productDirection == 'vertical' ? 'primary' : 'disabled'} />
 			</IconButton>

@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 import { Box, Breadcrumbs, Container, Grid, Paper, Stack, Typography } from '@mui/material'
 
 import { ProductCard, ProductCardHorizontal } from 'widgets/product-card/ui/ProductCard'
-import { ProductFilter } from 'widgets/product-filter/ui/ProductFilter'
+import { ProductFilter, MobileFilterButton } from 'widgets/product-filter/ui/ProductFilter'
 import { ProductSort } from 'widgets/product-sort/ui/ProductSort'
 import { ProductDirection } from 'widgets/product-direction/ui/ProductDirection'
 
@@ -81,9 +81,7 @@ export function CatalogCategoryPage() {
 	const sortedData = sortBy(filteredData, sort)
 
 	return (
-		<Box
-		// mt={12}
-		>
+		<Box pt={4}>
 			<Container maxWidth='xl'>
 				<Stack gap={2}>
 					<Breadcrumbs>
@@ -118,18 +116,14 @@ export function CatalogCategoryPage() {
 									alignItems='center'
 									justifyContent='space-between'
 								>
-									<Stack
-										direction='row'
-										spacing={1}
-										alignItems='center'
-									>
-										<Typography variant='body1'>Сортировка:</Typography>
-										<ProductSort
-											value={sort}
-											onChange={handleChange}
-										/>
-									</Stack>
+									<ProductSort
+										value={sort}
+										onChange={handleChange}
+									/>
 									<ProductDirection />
+									<Box display={{ xs: 'block', md: 'none' }}>
+										<MobileFilterButton />
+									</Box>
 								</Stack>
 							</Paper>
 							<Grid
@@ -137,26 +131,45 @@ export function CatalogCategoryPage() {
 								spacing={2}
 								width='100%'
 							>
-								{sortedData.slice(0, productCount).map((item, index) => {
-									if (productDirection == 'vertical') {
+								{sortedData.slice(0, productCount).map(item => {
+									if (productDirection == 'vertical')
 										return (
 											<Grid
-												size={4}
-												key={index}
+												size={{ xs: 12, sm: 6, md: 4 }}
+												key={item.id}
 											>
 												<ProductCard data={item} />
 											</Grid>
 										)
-									} else {
+									else
 										return (
 											<Grid
-												size={12}
-												key={index}
+												size={{ xs: 12, sm: 6, md: 12 }}
+												key={item.id}
 											>
-												<ProductCardHorizontal data={item} />
+												<Box sx={{ display: { xs: 'none', md: 'block' } }}>
+													<ProductCardHorizontal data={item} />
+												</Box>
+
+												<Box sx={{ display: { xs: 'block', md: 'none' } }}>
+													<ProductCard data={item} />
+												</Box>
 											</Grid>
+											/* <Grid
+													size={12}
+													key={item.id}
+													sx={{ display: { xs: 'none', md: 'block' } }}
+												>
+													<ProductCardHorizontal data={item} />
+												</Grid>
+												<Grid
+													size={{ xs: 12, sm: 6, md: 4 }}
+													key={item.id}
+													sx={{ display: { xs: 'block', md: 'none' } }}
+												>
+													<ProductCard data={item} />
+												</Grid> */
 										)
-									}
 								})}
 							</Grid>
 						</Stack>

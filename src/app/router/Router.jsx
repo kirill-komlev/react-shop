@@ -8,6 +8,7 @@ import { CatalogCategoryPage } from 'pages/catalog-category-page/ui/CatalogCateg
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { FavoritePage } from 'pages/favorite-page/ui/FavoritePage'
 import { CatalogPage } from 'pages/catalog-page/ui/CatalogPage'
+import { ProductPage } from 'pages/product-page/ui/ProductPage'
 
 export function Router() {
 	return (
@@ -27,21 +28,7 @@ export function Router() {
 				/>
 				<Route
 					path={`${PAGE_CONFIG.product}/:id`}
-					element={
-						<>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime sint iure cupiditate, est sapiente delectus vitae at. Voluptatum voluptatem, aperiam explicabo eaque
-							magni placeat itaque inventore ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error! magni placeat itaque inventore
-							ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore
-							ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error!
-							magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error!
-							ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore
-							ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error!
-							magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error!
-							ratione quisquam excepturi error! magni placeat itaque inventore ratione quisquam excepturi error! ratione quisquam excepturi error! magni placeat itaque inventore
-							ratione quisquam excepturi error! ratione quisquam excepturi error! ratione quisquam excepturi error! ratione quisquam excepturi error! ratione quisquam excepturi
-							error! ratione quisquam excepturi error!
-						</>
-					}
+					element={<ProductPage />}
 				/>
 				<Route
 					path={PAGE_CONFIG.sales}

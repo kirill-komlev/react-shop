@@ -41,34 +41,43 @@ export const AddCartFull = id => {
 }
 
 export const DeleteCart = id => {
-	const [isHover, setIsHover] = useState(false)
+	// const [isHover, setIsHover] = useState(false)
 	const deleteCart = useCartStore(state => state.deleteCart)
 	let productId = id.id
 	return (
 		<Tooltip title='Убрать из корзины'>
 			<IconButton
 				onClick={() => deleteCart(productId)}
-				onMouseOver={() => setIsHover(true)}
-				onMouseOut={() => setIsHover(false)}
+				// onMouseOver={() => setIsHover(true)}
+				// onMouseOut={() => setIsHover(false)}
 			>
-				{isHover ? <RemoveShoppingCartIcon color='error' /> : <ShoppingCartIcon color='primary' />}
+				{
+					// isHover ? <RemoveShoppingCartIcon color='error' /> :
+					<ShoppingCartIcon color='primary' />
+				}
 			</IconButton>
 		</Tooltip>
 	)
 }
 
 export const DeleteCartFull = id => {
-	const [isHover, setIsHover] = useState(false)
+	// const [isHover, setIsHover] = useState(false)
 	const deleteCart = useCartStore(state => state.deleteCart)
 	let productId = id.id
 	return (
 		<Button
 			variant='outlined'
-			color={isHover ? 'error' : 'primary'}
-			startIcon={isHover ? <RemoveShoppingCartIcon /> : <ShoppingCartIcon />}
+			color={
+				// isHover ? 'error' :
+				'primary'
+			}
+			startIcon={
+				// isHover ? <RemoveShoppingCartIcon /> :
+				<ShoppingCartIcon />
+			}
 			onClick={() => deleteCart(productId)}
-			onMouseOver={() => setIsHover(true)}
-			onMouseOut={() => setIsHover(false)}
+			// onMouseOver={() => setIsHover(true)}
+			// onMouseOut={() => setIsHover(false)}
 		>
 			В корзине
 		</Button>

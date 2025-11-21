@@ -1,23 +1,39 @@
-import { FormControl, MenuItem, Select } from '@mui/material'
+import { FormControl, MenuItem, Select, Stack, Typography } from '@mui/material'
+import { Sort } from '@mui/icons-material'
 
 export function ProductSort({ value, onChange }) {
 	return (
-		<FormControl
-			variant='standard'
-			sx={{ minWidth: 120 }}
-		>
-			<Select
-				labelId='select-standard-label'
-				id='select-standard'
-				value={value}
-				onChange={onChange}
+		<>
+			<Stack
+				direction='row'
+				spacing={1}
+				alignItems='center'
 			>
-				<MenuItem value='id, asc'>по новизне</MenuItem>
-				<MenuItem value='name, asc'>по имени</MenuItem>
-				<MenuItem value='discountValue, asc'>сначала недорогие</MenuItem>
-				<MenuItem value='discountValue, desc'>сначала дорогие</MenuItem>
-				<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
-			</Select>
-		</FormControl>
+				<Sort sx={{ display: { xs: 'flex', md: 'none' } }} />
+				<Typography
+					variant='body1'
+					sx={{ display: { xs: 'none', md: 'flex' } }}
+				>
+					Сортировка:
+				</Typography>
+				<FormControl
+					variant='standard'
+					sx={{ minWidth: 120 }}
+				>
+					<Select
+						labelId='select-standard-label'
+						id='select-standard'
+						value={value}
+						onChange={onChange}
+					>
+						<MenuItem value='id, asc'>по новизне</MenuItem>
+						<MenuItem value='name, asc'>по имени</MenuItem>
+						<MenuItem value='discountValue, asc'>сначала недорогие</MenuItem>
+						<MenuItem value='discountValue, desc'>сначала дорогие</MenuItem>
+						<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
+					</Select>
+				</FormControl>
+			</Stack>
+		</>
 	)
 }

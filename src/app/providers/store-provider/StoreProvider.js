@@ -45,3 +45,9 @@ export const useProductDirection = create()(
 		}
 	)
 )
+
+export const useFilterSidebarStore = create(set => ({
+	filterSidebar: false,
+	openFilterSidebar: () => set({ filterSidebar: true }),
+	closeFilterSidebar: () => set({ filterSidebar: false }),
+}))

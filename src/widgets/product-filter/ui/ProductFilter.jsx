@@ -1,7 +1,9 @@
-import { Box, Checkbox, Collapse, Divider, FormControlLabel, List, ListItem, ListSubheader, Paper, Stack, Typography } from '@mui/material'
+import { Box, Checkbox, Collapse, Divider, Drawer, FormControlLabel, IconButton, List, ListItem, ListSubheader, Paper, Stack, Typography } from '@mui/material'
 
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import { FilterList } from '@mui/icons-material'
+import CloseIcon from '@mui/icons-material/Close'
 
 import { useState } from 'react'
 import { DATA } from 'shared/configs/data'
@@ -9,9 +11,13 @@ import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { initialFilter } from 'shared/configs/filter'
+import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
 
 export function ProductFilter({ category, filter, setFilter }) {
 	const [open, setOpen] = useState({ brands: false, type: false })
+
+	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
+	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
 
 	const handleChange = e => {
 		const currentIndex = filter[e.target.id].indexOf(e.target.name)
@@ -58,200 +64,244 @@ export function ProductFilter({ category, filter, setFilter }) {
 
 	let uniqueType = [...new Set(data.map(item => item.features.type))]
 
-	return (
+	const DrawerContent = () => (
+		<nav>
+			<List
+				subheader={
+					<ListSubheader
+						component='div'
+						id='nested-list-subheader'
+					>
+						Цена
+					</ListSubheader>
+				}
+			>
+				<ListItem>
+					<Stack
+						direction='row'
+						spacing={2}
+					>
+						<Input
+							size='small'
+							id='price'
+							name='priceFrom'
+							label='От'
+							type='number'
+							placeholder='0'
+							onChange={e => handlePriceChange(Number(e.target.value), filter.price[1])}
+						/>
+						<Input
+							size='small'
+							id='price'
+							name='priceTo'
+							label='До'
+							type='number'
+							placeholder='10000'
+							onChange={e => handlePriceChange(filter.price[0], Number(e.target.value))}
+						/>
+					</Stack>
+				</ListItem>
+			</List>
+			<Divider />
+			<List>
+				<ListItem>
+					<FormControlLabel
+						control={
+							<Checkbox
+								id='rating'
+								name='isRatingAbove4'
+								onChange={handleBooleanChange}
+								checked={filter.isRatingAbove4}
+								inputProps={{ 'aria-label': 'controlled' }}
+							/>
+						}
+						label='Рейтинг 4 и выше'
+						sx={{ width: '100%' }}
+					/>
+				</ListItem>
+			</List>
+			<Divider />
+			<List>
+				<ListItem>
+					<FormControlLabel
+						control={
+							<Checkbox
+								id='discount'
+								name='isDiscount'
+								onChange={handleBooleanChange}
+								checked={filter.isDiscount}
+								inputProps={{ 'aria-label': 'controlled' }}
+							/>
+						}
+						label='По скидке'
+						sx={{ width: '100%' }}
+					/>
+				</ListItem>
+			</List>
+			<Divider />
+			<List>
+				<ListItem>
+					<FormControlLabel
+						control={
+							<Checkbox
+								id='inStock'
+								name='isInStock'
+								onChange={handleBooleanChange}
+								checked={filter.isInStock}
+								inputProps={{ 'aria-label': 'controlled' }}
+							/>
+						}
+						label='В наличии'
+						sx={{ width: '100%' }}
+					/>
+				</ListItem>
+			</List>
+			<Divider />
+			<List
+				subheader={
+					<ListSubheader
+						component='div'
+						id='nested-list-subheader'
+						sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+						onClick={() => setOpen({ ...open, brands: !open.brands })}
+					>
+						Бренд {open.brands ? <ExpandLess /> : <ExpandMore />}
+					</ListSubheader>
+				}
+			>
+				<Collapse
+					in={open.brands}
+					timeout='auto'
+					unmountOnExit
+				>
+					{uniqueBrands.sort().map(item => (
+						<ListItem key={item.name}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										id='brand'
+										name={item.name}
+										onChange={handleChange}
+										checked={filter.brand.includes(item.name)}
+										inputProps={{ 'aria-label': 'controlled' }}
+									/>
+								}
+								label={
+									<Typography variant='body1'>{item.name}</Typography>
+									// <Stack
+									// 	direction='row'
+									// 	spacing={0.5}
+									// >
+									// 	<Typography variant='body1'>{item.name}</Typography>
+									// 	<Typography
+									// 		variant='caption'
+									// 		color='textSecondary'
+									// 	>
+									// 		({item.count})
+									// 	</Typography>
+									// </Stack>
+								}
+								sx={{ width: '100%' }}
+							/>
+						</ListItem>
+					))}
+				</Collapse>
+			</List>
+			<Divider />
+			<List
+				subheader={
+					<ListSubheader
+						component='div'
+						id='nested-list-subheader'
+						sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+						onClick={() => setOpen({ ...open, type: !open.type })}
+					>
+						Тип {open.type ? <ExpandLess /> : <ExpandMore />}
+					</ListSubheader>
+				}
+			>
+				<Collapse
+					in={open.type}
+					timeout='auto'
+					unmountOnExit
+				>
+					{uniqueType.sort().map(item => (
+						<ListItem key={item}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										id='type'
+										name={item}
+										onChange={handleChange}
+										checked={filter.type.includes(item)}
+									/>
+								}
+								label={item}
+								sx={{ width: '100%' }}
+							/>
+						</ListItem>
+					))}
+				</Collapse>
+			</List>
+			<List>
+				<ListItem>
+					<Button
+						fullWidth
+						disabled={JSON.stringify(filter) == JSON.stringify(initialFilter)}
+						onClick={() => setFilter(initialFilter)}
+					>
+						Очистить фильтр
+					</Button>
+				</ListItem>
+			</List>
+		</nav>
+	)
+
+	const MobileFilterSidebar = () => (
+		<Drawer
+			open={filterSidebar}
+			onClose={closeFilterSidebar}
+			anchor='right'
+		>
+			<Box py={2}>
+				<Stack
+					direction='row'
+					alignItems='center'
+					justifyContent='space-between'
+					px={2}
+				>
+					<Typography variant='h4'>Фильтр</Typography>
+					<IconButton onClick={closeFilterSidebar}>
+						<CloseIcon />
+					</IconButton>
+				</Stack>
+				<DrawerContent />
+			</Box>
+		</Drawer>
+	)
+
+	const DesktopFilter = () => (
 		<Box
 			component={Paper}
-			sx={{ width: '100%', maxWidth: 360, display: { sm: 'flex' } }}
+			sx={{ width: '100%', maxWidth: 280, display: { xs: 'none', md: 'flex' } }}
 		>
-			<nav>
-				<List
-					subheader={
-						<ListSubheader
-							component='div'
-							id='nested-list-subheader'
-						>
-							Цена
-						</ListSubheader>
-					}
-				>
-					<ListItem>
-						<Stack
-							direction='row'
-							spacing={2}
-						>
-							<Input
-								size='small'
-								id='price'
-								name='priceFrom'
-								label='От'
-								type='number'
-								placeholder='0'
-								onChange={e => handlePriceChange(Number(e.target.value), filter.price[1])}
-							/>
-							<Input
-								size='small'
-								id='price'
-								name='priceTo'
-								label='До'
-								type='number'
-								placeholder='10000'
-								onChange={e => handlePriceChange(filter.price[0], Number(e.target.value))}
-							/>
-						</Stack>
-					</ListItem>
-				</List>
-				<Divider />
-				<List>
-					<ListItem>
-						<FormControlLabel
-							control={
-								<Checkbox
-									id='rating'
-									name='isRatingAbove4'
-									onChange={handleBooleanChange}
-									checked={filter.isRatingAbove4}
-									inputProps={{ 'aria-label': 'controlled' }}
-								/>
-							}
-							label='Рейтинг 4 и выше'
-							sx={{ width: '100%' }}
-						/>
-					</ListItem>
-				</List>
-				<Divider />
-				<List>
-					<ListItem>
-						<FormControlLabel
-							control={
-								<Checkbox
-									id='discount'
-									name='isDiscount'
-									onChange={handleBooleanChange}
-									checked={filter.isDiscount}
-									inputProps={{ 'aria-label': 'controlled' }}
-								/>
-							}
-							label='По скидке'
-							sx={{ width: '100%' }}
-						/>
-					</ListItem>
-				</List>
-				<Divider />
-				<List>
-					<ListItem>
-						<FormControlLabel
-							control={
-								<Checkbox
-									id='inStock'
-									name='isInStock'
-									onChange={handleBooleanChange}
-									checked={filter.isInStock}
-									inputProps={{ 'aria-label': 'controlled' }}
-								/>
-							}
-							label='В наличии'
-							sx={{ width: '100%' }}
-						/>
-					</ListItem>
-				</List>
-				<Divider />
-				<List
-					subheader={
-						<ListSubheader
-							component='div'
-							id='nested-list-subheader'
-							sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-							onClick={() => setOpen({ ...open, brands: !open.brands })}
-						>
-							Бренд {open.brands ? <ExpandLess /> : <ExpandMore />}
-						</ListSubheader>
-					}
-				>
-					<Collapse
-						in={open.brands}
-						timeout='auto'
-						unmountOnExit
-					>
-						{uniqueBrands.sort().map((item, index) => (
-							<ListItem key={index}>
-								<FormControlLabel
-									control={
-										<Checkbox
-											id='brand'
-											name={item.name}
-											onChange={handleChange}
-											checked={filter.brand.includes(item.name)}
-											inputProps={{ 'aria-label': 'controlled' }}
-										/>
-									}
-									label={
-										<Typography variant='body1'>{item.name}</Typography>
-										// <Stack
-										// 	direction='row'
-										// 	spacing={0.5}
-										// >
-										// 	<Typography variant='body1'>{item.name}</Typography>
-										// 	<Typography
-										// 		variant='caption'
-										// 		color='textSecondary'
-										// 	>
-										// 		({item.count})
-										// 	</Typography>
-										// </Stack>
-									}
-									sx={{ width: '100%' }}
-								/>
-							</ListItem>
-						))}
-					</Collapse>
-				</List>
-				<Divider />
-				<List
-					subheader={
-						<ListSubheader
-							component='div'
-							id='nested-list-subheader'
-							sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-							onClick={() => setOpen({ ...open, type: !open.type })}
-						>
-							Тип {open.type ? <ExpandLess /> : <ExpandMore />}
-						</ListSubheader>
-					}
-				>
-					<Collapse
-						in={open.type}
-						timeout='auto'
-						unmountOnExit
-					>
-						{uniqueType.sort().map((item, index) => (
-							<ListItem key={index}>
-								<FormControlLabel
-									control={
-										<Checkbox
-											id='type'
-											name={item}
-											onChange={handleChange}
-										/>
-									}
-									label={item}
-									sx={{ width: '100%' }}
-								/>
-							</ListItem>
-						))}
-					</Collapse>
-				</List>
-				<List>
-					<ListItem>
-						<Button
-							fullWidth
-							disabled={JSON.stringify(filter) == JSON.stringify(initialFilter)}
-							onClick={() => setFilter(initialFilter)}
-						>
-							Очистить фильтр
-						</Button>
-					</ListItem>
-				</List>
-			</nav>
+			<DrawerContent />
 		</Box>
+	)
+
+	return (
+		<>
+			<MobileFilterSidebar />
+			<DesktopFilter />
+		</>
+	)
+}
+
+export function MobileFilterButton() {
+	const openFilterSidebar = useFilterSidebarStore(state => state.openFilterSidebar)
+	return (
+		<IconButton onClick={openFilterSidebar}>
+			<FilterList />
+		</IconButton>
 	)
 }

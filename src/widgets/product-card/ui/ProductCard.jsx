@@ -20,12 +20,34 @@ export function ProductCard({ data }) {
 
 	return (
 		<Card sx={{ height: '100%' }}>
-			<CardMedia
-				component='img'
-				sx={{ height: 250, objectFit: 'contain', py: 1, background: '#fff' }}
-				image={data.image}
-				title={data.name}
-			/>
+			<Box position='relative'>
+				<CardMedia
+					component='img'
+					sx={{ height: 250, objectFit: 'contain', py: 1, background: '#fff' }}
+					image={data.image}
+					title={data.name}
+				/>
+				<Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
+					<Stack
+						direction='row'
+						gap={1}
+					>
+						{data.discount != 0 && (
+							<Chip
+								label={`-${data.discount}%`}
+								color='error'
+							/>
+						)}
+						{data.isNew && (
+							<Chip
+								label='Новое'
+								color='warning'
+							/>
+						)}
+					</Stack>
+				</Box>
+			</Box>
+
 			<CardContent sx={{ pb: 0 }}>
 				<Typography
 					gutterBottom
@@ -128,7 +150,7 @@ export function ProductCardHorizontal({ data }) {
 			<Box position='relative'>
 				<CardMedia
 					component='img'
-					sx={{ height: 200, width: 200, objectFit: 'contain', p: 2, background: '#fff' }}
+					sx={{ height: 200, width: 200, objectFit: 'contain', p: 2, my: 2, background: '#fff' }}
 					image={data.image}
 					title={data.name}
 				/>
@@ -152,85 +174,76 @@ export function ProductCardHorizontal({ data }) {
 					</Stack>
 				</Box>
 			</Box>
-			<Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-				<CardContent
-					sx={{ flex: '1 0 auto' }}
-					pb={2}
-				>
-					<Box
-						display='flex'
-						flexDirection='column'
-						justifyContent='space-between'
-						height='100%'
+			<CardContent
+				sx={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+				pb={2}
+			>
+				<Stack gap={1}>
+					<Typography
+						gutterBottom
+						variant='h5'
+						component='div'
 					>
-						<Stack gap={1}>
-							<Typography
-								gutterBottom
-								variant='h5'
-								component='div'
-							>
-								<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-									{data.features.type} {CATEGORIES_FULL[category].ru[0]} {data.name}
-								</Link>
-							</Typography>
-							<Typography
-								variant='body1'
-								color='textSecondary'
-							>
-								{data.category == 'Мыши' ? (
-									<>
-										{data.features.dpi} dpi, {data.features.connection}, {data.features.buttons} кнопок
-									</>
-								) : data.category == 'Клавиатуры' ? (
-									<>
-										{data.features.switch}, {data.features.connection}, {data.features.size}
-									</>
-								) : (
-									<>
-										{data.features.type}, {data.features.frequency}
-									</>
-								)}
-							</Typography>
-						</Stack>
-						<Stack
-							direction='row'
-							alignItems='center'
-							gap={1}
+						<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
+							{data.features.type} {CATEGORIES_FULL[category].ru[0]} {data.name}
+						</Link>
+					</Typography>
+					<Typography
+						variant='body1'
+						color='textSecondary'
+					>
+						{data.category == 'Мыши' ? (
+							<>
+								{data.features.dpi} dpi, {data.features.connection}, {data.features.buttons} кнопок
+							</>
+						) : data.category == 'Клавиатуры' ? (
+							<>
+								{data.features.switch}, {data.features.connection}, {data.features.size}
+							</>
+						) : (
+							<>
+								{data.features.type}, {data.features.frequency}
+							</>
+						)}
+					</Typography>
+				</Stack>
+				<Stack
+					direction='row'
+					alignItems='center'
+					gap={1}
+				>
+					<Stack
+						direction='row'
+						alignItems='center'
+						gap={1}
+					>
+						<Rating
+							name='read-only'
+							value={data.rating}
+							precision={0.5}
+							readOnly
+						/>
+						<Typography
+							variant='body1'
+							sx={{ mt: '2px' }}
 						>
-							<Stack
-								direction='row'
-								alignItems='center'
-								gap={1}
-							>
-								<Rating
-									name='read-only'
-									value={data.rating}
-									precision={0.5}
-									readOnly
-								/>
-								<Typography
-									variant='body1'
-									sx={{ mt: '2px' }}
-								>
-									{data.rating}
-								</Typography>
-							</Stack>
-							<Stack
-								direction='row'
-								alignItems='center'
-								gap={1}
-							>
-								<Typography
-									variant='body1'
-									sx={{ mt: '2px' }}
-								>
-									{data.inStock ? 'В наличии' : 'Нет в наличии'}
-								</Typography>
-							</Stack>
-						</Stack>
-					</Box>
-				</CardContent>
-			</Box>
+							{data.rating}
+						</Typography>
+					</Stack>
+					<Stack
+						direction='row'
+						alignItems='center'
+						gap={1}
+					>
+						<Typography
+							variant='body1'
+							sx={{ mt: '2px' }}
+						>
+							{data.inStock ? 'В наличии' : 'Нет в наличии'}
+						</Typography>
+					</Stack>
+				</Stack>
+			</CardContent>
 			<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 1, p: 2 }}>
 				{data.discount == 0 ? (
 					<Typography

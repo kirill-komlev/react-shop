@@ -26,17 +26,20 @@ export const AddFavorite = id => {
 }
 
 export const DeleteFavorite = id => {
-	const [isHover, setIsHover] = useState(false)
+	// const [isHover, setIsHover] = useState(false)
 	const deleteFavorite = useFavoriteStore(state => state.deleteFavorite)
 	let productId = id.id
 	return (
 		<Tooltip title='Убрать из избранного'>
 			<IconButton
 				onClick={() => deleteFavorite(productId)}
-				onMouseOver={() => setIsHover(true)}
-				onMouseOut={() => setIsHover(false)}
+				// onMouseOver={() => setIsHover(true)}
+				// onMouseOut={() => setIsHover(false)}
 			>
-				{isHover ? <HeartBrokenIcon color='error' /> : <FavoriteIcon color='primary' />}
+				{
+					// isHover ? <HeartBrokenIcon color='error' /> :
+					<FavoriteIcon color='primary' />
+				}
 			</IconButton>
 		</Tooltip>
 	)
