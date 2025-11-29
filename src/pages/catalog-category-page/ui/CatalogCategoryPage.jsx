@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams, useSearchParams } from 'react-router'
 
 import { Box, Breadcrumbs, Container, Grid, Paper, Stack, Typography } from '@mui/material'
 
@@ -20,23 +20,36 @@ import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useProductDirection } from 'app/providers/store-provider/StoreProvider'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
+import { compareObjects } from 'shared/libs/compareObjects'
+import { getQueryStringFromObject } from 'shared/libs/getQueryStringFromObject'
+import { getObjectFromQueryString } from 'shared/libs/getObjectFromQueryString'
+import { useURLSort } from 'shared/hooks/useURLSort'
 
 export function CatalogCategoryPage() {
 	const productDirection = useProductDirection(state => state.productDirection)
+	const [searchParams, setSearchParams] = useSearchParams()
+	const { sortValue, updateSort } = useURLSort('id, asc')
+	// const sort = searchParams.get('sort') || 'id, asc'
+	const filter = searchParams.get('filter') || initialFilter
 
-	const [productCount, setProductCount] = useState(10)
-	const [filter, setFilter] = useState(initialFilter)
-	const [sort, setSort] = useState('id, asc')
+	const [productCount, setProductCount] = useState(20)
+	// const [filter, setFilter] = useState(initialFilter)
+	// const [sort, setSort] = useState(searchSort)
 
 	// Сброс значения при переходе между страницами
-	useEffect(() => {
-		setFilter(initialFilter)
-		setSort('id, asc')
-	}, [location.pathname])
+	// useEffect(() => {
+	// 	setFilter(initialFilter)
+	// 	setSort('id, asc')
+	// }, [location.pathname])
+
+	// useEffect(() => {
+	// 	setSearchParams(getObjectFromQueryString(getQueryStringFromObject(compareObjects(initialFilter, filter))))
+	// }, [filter])
 
 	// Фильтр по категории
 	let { category } = useParams()
-	let data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
+
+	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
 	const filteredData = useMemo(() => {
 		return data.filter(product => {
@@ -74,11 +87,11 @@ export function CatalogCategoryPage() {
 		})
 	}, [filter, data])
 
-	const handleChange = event => {
-		setSort(event.target.value)
-	}
+	const sortedData = sortBy(filteredData, sortValue)
 
-	const sortedData = sortBy(filteredData, sort)
+	const handleChange = event => {
+		updateSort(event.target.value)
+	}
 
 	return (
 		<Box pt={4}>
@@ -103,7 +116,7 @@ export function CatalogCategoryPage() {
 					>
 						<ProductFilter
 							filter={filter}
-							setFilter={setFilter}
+							// setFilter={setFilter}
 							category={capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}
 						/>
 						<Stack
@@ -117,7 +130,7 @@ export function CatalogCategoryPage() {
 									justifyContent='space-between'
 								>
 									<ProductSort
-										value={sort}
+										value={sortValue}
 										onChange={handleChange}
 									/>
 									<ProductDirection />

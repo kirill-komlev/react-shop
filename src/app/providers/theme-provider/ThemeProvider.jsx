@@ -23,10 +23,10 @@ const theme = createTheme({
 		},
 
 		dark: {
-			background: {
-				paper: '#181818',
-				default: '#161616',
-			},
+			// background: {
+			// 	paper: '#181818',
+			// 	default: '#161616',
+			// },
 		},
 	},
 })

@@ -6,7 +6,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 
 import { Button } from 'shared/ui/Button'
 import { useCartStore } from 'app/providers/store-provider/StoreProvider'
-import { useState } from 'react'
+// import { useState } from 'react'
 
 export const AddCart = id => {
 	const addCart = useCartStore(state => state.addCart)

@@ -15,9 +15,6 @@ export function ProductCard({ data }) {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 
-	// Считает скидку
-	data.discountValue = calculateDiscount(data.price, data.discount)
-
 	return (
 		<Card sx={{ height: '100%' }}>
 			<Box position='relative'>
@@ -109,10 +106,10 @@ export function ProductCard({ data }) {
 							>
 								<Typography
 									variant='h6'
-									color='secondary'
+									color='primary'
 									sx={{ fontWeight: 'bold' }}
 								>
-									{data.discountValue} ₽
+									{Math.round(data.finalPrice)} ₽
 								</Typography>
 								<Typography
 									variant='caption'
@@ -139,9 +136,6 @@ export function ProductCard({ data }) {
 export function ProductCardHorizontal({ data }) {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
-
-	// Считает скидку
-	data.discountValue = Math.round((data.price / 100) * (100 - data.discount))
 
 	let { category } = useParams()
 
@@ -265,10 +259,10 @@ export function ProductCardHorizontal({ data }) {
 						</Typography>
 						<Typography
 							variant='h6'
-							color='secondary'
+							color='primary'
 							sx={{ fontWeight: 'bold', mt: '-8px' }}
 						>
-							{data.discountValue} ₽
+							{Math.round(data.finalPrice)} ₽
 						</Typography>
 					</Stack>
 				)}

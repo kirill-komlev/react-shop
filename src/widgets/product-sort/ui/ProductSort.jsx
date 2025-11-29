@@ -28,8 +28,8 @@ export function ProductSort({ value, onChange }) {
 					>
 						<MenuItem value='id, asc'>по новизне</MenuItem>
 						<MenuItem value='name, asc'>по имени</MenuItem>
-						<MenuItem value='discountValue, asc'>сначала недорогие</MenuItem>
-						<MenuItem value='discountValue, desc'>сначала дорогие</MenuItem>
+						<MenuItem value='finalPrice, asc'>сначала недорогие</MenuItem>
+						<MenuItem value='finalPrice, desc'>сначала дорогие</MenuItem>
 						<MenuItem value='rating, desc'>с лучшей оценкой</MenuItem>
 					</Select>
 				</FormControl>

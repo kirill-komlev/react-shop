@@ -19,6 +19,9 @@ export const DATA = [
 		image: '/images/razer-viper-ultimate.jpg',
 		inStock: true,
 		discount: 10,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 	{
@@ -40,6 +43,9 @@ export const DATA = [
 		image: '/images/razer-viper-ultimate.jpg',
 		inStock: true,
 		discount: 10,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -61,6 +67,9 @@ export const DATA = [
 		image: '/images/logitech-g502.jpg',
 		inStock: true,
 		discount: 5,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -82,6 +91,9 @@ export const DATA = [
 		image: '/images/steelseries-rival3.jpg',
 		inStock: true,
 		discount: 0,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 	{
@@ -103,6 +115,9 @@ export const DATA = [
 		image: '/images/hyperx-pulsefire-haste.jpg',
 		inStock: true,
 		discount: 15,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -124,6 +139,9 @@ export const DATA = [
 		image: '/images/razer-deathadder.jpg',
 		inStock: true,
 		discount: 0,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -145,6 +163,9 @@ export const DATA = [
 		image: '/images/logitech-g-pro-wireless.jpg',
 		inStock: true,
 		discount: 8,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -166,6 +187,9 @@ export const DATA = [
 		image: '/images/corsair-dark-core.jpg',
 		inStock: false,
 		discount: 12,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -187,6 +211,9 @@ export const DATA = [
 		image: '/images/asus-rog-gladius.jpg',
 		inStock: true,
 		discount: 20,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -208,6 +235,9 @@ export const DATA = [
 		image: '/images/razer-basilisk.jpg',
 		inStock: true,
 		discount: 0,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 	{
@@ -229,6 +259,9 @@ export const DATA = [
 		image: '/images/steelseries-aerox3.jpg',
 		inStock: true,
 		discount: 5,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 
@@ -252,6 +285,9 @@ export const DATA = [
 		image: '/images/logitech-g-pro-kb.jpg',
 		inStock: true,
 		discount: 0,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 	{
@@ -273,6 +309,9 @@ export const DATA = [
 		image: '/images/razer-blackwidow.jpg',
 		inStock: false,
 		discount: 20,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -294,6 +333,9 @@ export const DATA = [
 		image: '/images/steelseries-apex-pro.jpg',
 		inStock: true,
 		discount: 10,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -315,6 +357,9 @@ export const DATA = [
 		image: '/images/hyperx-alloy-origins.jpg',
 		inStock: true,
 		discount: 15,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -336,6 +381,9 @@ export const DATA = [
 		image: '/images/corsair-k70.jpg',
 		inStock: true,
 		discount: 0,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 	{
@@ -357,6 +405,9 @@ export const DATA = [
 		image: '/images/razer-huntsman-mini.jpg',
 		inStock: true,
 		discount: 8,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -378,6 +429,9 @@ export const DATA = [
 		image: '/images/logitech-g813.jpg',
 		inStock: true,
 		discount: 12,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -399,6 +453,9 @@ export const DATA = [
 		image: '/images/asus-rog-strix.jpg',
 		inStock: true,
 		discount: 25,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 
@@ -421,6 +478,9 @@ export const DATA = [
 		image: '/images/steelseries-arctis-pro.jpg',
 		inStock: true,
 		discount: 15,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -441,6 +501,9 @@ export const DATA = [
 		image: '/images/hyperx-cloud-ii.jpg',
 		inStock: true,
 		discount: 10,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -461,6 +524,9 @@ export const DATA = [
 		image: '/images/razer-blackshark.jpg',
 		inStock: true,
 		discount: 0,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 	{
@@ -481,6 +547,9 @@ export const DATA = [
 		image: '/images/logitech-g733.jpg',
 		inStock: true,
 		discount: 18,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -501,6 +570,9 @@ export const DATA = [
 		image: '/images/corsair-virtuoso.jpg',
 		inStock: false,
 		discount: 22,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -521,6 +593,9 @@ export const DATA = [
 		image: '/images/asus-rog-delta.jpg',
 		inStock: true,
 		discount: 30,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: false,
 	},
 	{
@@ -541,6 +616,9 @@ export const DATA = [
 		image: '/images/steelseries-arctis7.jpg',
 		inStock: true,
 		discount: 14,
+		get finalPrice() {
+			return this.price * (1 - this.discount / 100)
+		},
 		isNew: true,
 	},
 ]
