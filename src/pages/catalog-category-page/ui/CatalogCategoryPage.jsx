@@ -24,72 +24,64 @@ import { compareObjects } from 'shared/libs/compareObjects'
 import { getQueryStringFromObject } from 'shared/libs/getQueryStringFromObject'
 import { getObjectFromQueryString } from 'shared/libs/getObjectFromQueryString'
 import { useURLSort } from 'shared/hooks/useURLSort'
+// import { useURLFilter } from 'shared/hooks/useURLFilter'
 
 export function CatalogCategoryPage() {
 	const productDirection = useProductDirection(state => state.productDirection)
-	const [searchParams, setSearchParams] = useSearchParams()
-	const { sortValue, updateSort } = useURLSort('id, asc')
-	// const sort = searchParams.get('sort') || 'id, asc'
-	const filter = searchParams.get('filter') || initialFilter
+	const { sortValue, updateSort } = useURLSort()
+	// const { filter } = useURLFilter()
 
 	const [productCount, setProductCount] = useState(20)
-	// const [filter, setFilter] = useState(initialFilter)
-	// const [sort, setSort] = useState(searchSort)
-
-	// Сброс значения при переходе между страницами
-	// useEffect(() => {
-	// 	setFilter(initialFilter)
-	// 	setSort('id, asc')
-	// }, [location.pathname])
-
-	// useEffect(() => {
-	// 	setSearchParams(getObjectFromQueryString(getQueryStringFromObject(compareObjects(initialFilter, filter))))
-	// }, [filter])
 
 	// Фильтр по категории
 	let { category } = useParams()
 
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
-	const filteredData = useMemo(() => {
-		return data.filter(product => {
-			// Фильтр по бренду
-			if (filter.brand.length > 0 && !filter.brand.includes(product.brand)) {
-				return false
-			}
+	// const filteredData = useMemo(() => {
+	// 	return data.filter(product => {
+	// 		// Фильтр по бренду
+	// 		if (filter.brand.length > 0 && !filter.brand.includes(product.brand)) {
+	// 			return false
+	// 		}
 
-			// Фильтр по типу
-			if (filter.type.length > 0 && !filter.type.includes(product.features.type)) {
-				return false
-			}
+	// 		// Фильтр по типу
+	// 		if (filter.type.length > 0 && !filter.type.includes(product.features.type)) {
+	// 			return false
+	// 		}
 
-			// Фильтр по цене
-			if (product.price < filter.price[0] || product.price > filter.price[1]) {
-				return false
-			}
+	// 		// Фильтр по цене
+	// 		if (product.price < filter.price[0] || product.price > filter.price[1]) {
+	// 			return false
+	// 		}
 
-			// Фильтр по рейтингу
-			if (filter.isRatingAbove4 && product.rating < 4) {
-				return false
-			}
+	// 		// Фильтр по рейтингу
+	// 		if (filter.isRatingAbove4 && product.rating < 4) {
+	// 			return false
+	// 		}
 
-			// Фильтр по скидке
-			if (filter.isDiscount && product.discount === 0) {
-				return false
-			}
+	// 		// Фильтр по скидке
+	// 		if (filter.isDiscount && product.discount === 0) {
+	// 			return false
+	// 		}
 
-			// Фильтр по наличию
-			if (filter.isInStock && !product.inStock) {
-				return false
-			}
+	// 		// Фильтр по наличию
+	// 		if (filter.isInStock && !product.inStock) {
+	// 			return false
+	// 		}
 
-			return true
-		})
-	}, [filter, data])
+	// 		return true
+	// 	})
+	// }, [filter, data])
 
-	const sortedData = sortBy(filteredData, sortValue)
+	// console.log(filter)
 
-	const handleChange = event => {
+	const sortedData = useMemo(() => {
+		// return sortBy(filteredData, sortValue)
+		return sortBy(data, sortValue)
+	}, [data, sortValue])
+
+	const handleChangeSort = event => {
 		updateSort(event.target.value)
 	}
 
@@ -106,7 +98,7 @@ export function CatalogCategoryPage() {
 						variant='h4'
 						width='100%'
 					>
-						{capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}: {filteredData.length}
+						{/* {capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}: {filteredData.length} */}
 					</Typography>
 					<Box
 						display='flex'
@@ -114,11 +106,7 @@ export function CatalogCategoryPage() {
 						width='100%'
 						gap={4}
 					>
-						<ProductFilter
-							filter={filter}
-							// setFilter={setFilter}
-							category={capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])}
-						/>
+						<ProductFilter category={capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1])} />
 						<Stack
 							gap={2}
 							sx={{ width: '100%' }}
@@ -131,7 +119,7 @@ export function CatalogCategoryPage() {
 								>
 									<ProductSort
 										value={sortValue}
-										onChange={handleChange}
+										onChange={handleChangeSort}
 									/>
 									<ProductDirection />
 									<Box display={{ xs: 'block', md: 'none' }}>

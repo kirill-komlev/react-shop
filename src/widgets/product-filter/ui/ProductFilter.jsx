@@ -12,45 +12,14 @@ import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { initialFilter } from 'shared/configs/filter'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
+// import { useURLFilter } from 'shared/hooks/useURLFilter'
 
-export function ProductFilter({ category, filter, setFilter }) {
+export function ProductFilter({ category }) {
 	const [open, setOpen] = useState({ brands: false, type: false })
-
+	// const { filter, handleChange, handlePriceChange, handleBooleanChange, resetFilters } = useURLFilter()
+	const [filter, setFilter] = useState(initialFilter)
 	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
 	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
-
-	const handleChange = e => {
-		const currentIndex = filter[e.target.id].indexOf(e.target.name)
-		const newFilter = [...filter[e.target.id]]
-
-		if (currentIndex === -1) {
-			newFilter.push(e.target.name)
-		} else {
-			newFilter.splice(currentIndex, 1)
-		}
-
-		setFilter({
-			...filter,
-			[e.target.id]: newFilter,
-		})
-	}
-
-	const handlePriceChange = (min, max) => {
-		if (max === 0 || min > max) {
-			max = 999999
-		}
-		setFilter(prev => ({
-			...prev,
-			price: [min, max],
-		}))
-	}
-
-	const handleBooleanChange = e => {
-		setFilter({
-			...filter,
-			[e.target.name]: e.target.checked,
-		})
-	}
 
 	// Получение данных с определенной категорией
 	let data = DATA.filter(item => item.category === capitalizeFirstLetter(category))
@@ -63,6 +32,59 @@ export function ProductFilter({ category, filter, setFilter }) {
 	).map(([name, count]) => ({ name, count }))
 
 	let uniqueType = [...new Set(data.map(item => item.features.type))]
+
+	const handleFilterChange = e => {
+		if (e.target.id === 'brand' || e.target.id === 'type') {
+			const currentIndex = filter[e.target.id].indexOf(e.target.name)
+			const newFilter = [...filter[e.target.id]]
+
+			if (currentIndex === -1) {
+				newFilter.push(e.target.name)
+			} else {
+				newFilter.splice(currentIndex, 1)
+			}
+
+			return setFilter({
+				...filter,
+				[e.target.id]: newFilter,
+			})
+		} else if (e.target.id === 'bool') {
+			return setFilter({ ...filter, [e.target.name]: e.target.checked })
+		} else if (e.target.id === 'price') {
+			let min = filter.price[0]
+			let max = filter.price[1]
+
+			if (e.target.name == 'priceFrom') min = Number(e.target.value)
+			else max = Number(e.target.value)
+
+			if (max === 0 || min > max) {
+				max = 999999
+			}
+
+			return setFilter({
+				...filter,
+				price: [min, max],
+			})
+
+			// if (e.target.name == 'priceFrom') {
+			// }
+
+			// if (max === 0 || min > max) {
+			// 	max = 999999
+			// }
+
+			// setFilter({
+			// 	...filter,
+			// 	price: [min, max],
+			// })
+		}
+	}
+
+	const resetFilters = () => {
+		setFilter(initialFilter)
+	}
+
+	console.log(filter)
 
 	const DrawerContent = () => (
 		<nav>
@@ -88,7 +110,8 @@ export function ProductFilter({ category, filter, setFilter }) {
 							label='От'
 							type='number'
 							placeholder='0'
-							onChange={e => handlePriceChange(Number(e.target.value), filter.price[1])}
+							// value={filter.price[0]}
+							onChange={handleFilterChange}
 						/>
 						<Input
 							size='small'
@@ -97,7 +120,7 @@ export function ProductFilter({ category, filter, setFilter }) {
 							label='До'
 							type='number'
 							placeholder='10000'
-							onChange={e => handlePriceChange(filter.price[0], Number(e.target.value))}
+							onChange={handleFilterChange}
 						/>
 					</Stack>
 				</ListItem>
@@ -108,11 +131,10 @@ export function ProductFilter({ category, filter, setFilter }) {
 					<FormControlLabel
 						control={
 							<Checkbox
-								id='rating'
+								id='bool'
 								name='isRatingAbove4'
-								onChange={handleBooleanChange}
+								onChange={handleFilterChange}
 								checked={filter.isRatingAbove4}
-								inputProps={{ 'aria-label': 'controlled' }}
 							/>
 						}
 						label='Рейтинг 4 и выше'
@@ -126,11 +148,10 @@ export function ProductFilter({ category, filter, setFilter }) {
 					<FormControlLabel
 						control={
 							<Checkbox
-								id='discount'
+								id='bool'
 								name='isDiscount'
-								onChange={handleBooleanChange}
+								onChange={handleFilterChange}
 								checked={filter.isDiscount}
-								inputProps={{ 'aria-label': 'controlled' }}
 							/>
 						}
 						label='По скидке'
@@ -144,11 +165,10 @@ export function ProductFilter({ category, filter, setFilter }) {
 					<FormControlLabel
 						control={
 							<Checkbox
-								id='inStock'
+								id='bool'
 								name='isInStock'
-								onChange={handleBooleanChange}
+								onChange={handleFilterChange}
 								checked={filter.isInStock}
-								inputProps={{ 'aria-label': 'controlled' }}
 							/>
 						}
 						label='В наличии'
@@ -181,9 +201,8 @@ export function ProductFilter({ category, filter, setFilter }) {
 									<Checkbox
 										id='brand'
 										name={item.name}
-										onChange={handleChange}
+										onChange={handleFilterChange}
 										checked={filter.brand.includes(item.name)}
-										inputProps={{ 'aria-label': 'controlled' }}
 									/>
 								}
 								label={
@@ -232,7 +251,7 @@ export function ProductFilter({ category, filter, setFilter }) {
 									<Checkbox
 										id='type'
 										name={item}
-										onChange={handleChange}
+										onChange={handleFilterChange}
 										checked={filter.type.includes(item)}
 									/>
 								}
@@ -248,9 +267,19 @@ export function ProductFilter({ category, filter, setFilter }) {
 					<Button
 						fullWidth
 						disabled={JSON.stringify(filter) == JSON.stringify(initialFilter)}
-						onClick={() => setFilter(initialFilter)}
+						// onClick={resetFilters}
 					>
-						Очистить фильтр
+						Применить
+					</Button>
+				</ListItem>
+				<ListItem>
+					<Button
+						fullWidth
+						variant='text'
+						disabled={JSON.stringify(filter) == JSON.stringify(initialFilter)}
+						onClick={resetFilters}
+					>
+						Очистить
 					</Button>
 				</ListItem>
 			</List>
