@@ -1,4 +1,4 @@
-import { Box, Checkbox, Collapse, Divider, Drawer, FormControlLabel, IconButton, List, ListItem, ListSubheader, Paper, Stack, Typography } from '@mui/material'
+import { Box, Checkbox, Collapse, Divider, Drawer, FormControlLabel, IconButton, List, ListItem, ListSubheader, Paper, Slider, Stack, Typography } from '@mui/material'
 
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
@@ -51,33 +51,55 @@ export function ProductFilter({ category }) {
 		} else if (e.target.id === 'bool') {
 			return setFilter({ ...filter, [e.target.name]: e.target.checked })
 		} else if (e.target.id === 'price') {
-			let min = filter.price[0]
-			let max = filter.price[1]
-
-			if (e.target.name == 'priceFrom') min = Number(e.target.value)
-			else max = Number(e.target.value)
-
-			if (max === 0 || min > max) {
-				max = 999999
-			}
-
+			console.log(e.target)
 			return setFilter({
 				...filter,
-				price: [min, max],
+				price: e.target.value,
 			})
-
-			// if (e.target.name == 'priceFrom') {
-			// }
-
-			// if (max === 0 || min > max) {
-			// 	max = 999999
-			// }
-
-			// setFilter({
-			// 	...filter,
-			// 	price: [min, max],
-			// })
 		}
+		// else if (e.target.name === 'priceFrom' || e.target.name === 'priceTo') {
+		// let [min, max] = filter.price
+
+		// console.log(e.target)
+		// console.log(e.target.name, Number(e.target.value))
+
+		// if (e.target.name == 'priceFrom') [min, max] = [Number(e.target.value), filter.price[1]]
+		// else if (e.target.name == 'priceTo') [min, max] = [filter.price[0], Number(e.target.value)]
+
+		// if (max === 0 || min > max) {
+		// 	max = 999999
+		// }
+
+		// console.log(min, max)
+
+		// return setFilter({
+		// 	...filter,
+		// 	price: [min, max],
+		// })
+
+		// if (e.target.name == 'priceFrom') {
+		// }
+
+		// if (max === 0 || min > max) {
+		// 	max = 999999
+		// }
+
+		// setFilter({
+		// 	...filter,
+		// 	price: [min, max],
+		// })
+		// }
+	}
+
+	const handleChange = (event, newValue) => {
+		setFilter({
+			...filter,
+			price: newValue,
+		})
+	}
+
+	function valuetext(value) {
+		return `${value} P`
 	}
 
 	const resetFilters = () => {
@@ -99,13 +121,12 @@ export function ProductFilter({ category }) {
 				}
 			>
 				<ListItem>
-					<Stack
+					{/* <Stack
 						direction='row'
 						spacing={2}
 					>
 						<Input
 							size='small'
-							id='price'
 							name='priceFrom'
 							label='От'
 							type='number'
@@ -115,14 +136,22 @@ export function ProductFilter({ category }) {
 						/>
 						<Input
 							size='small'
-							id='price'
 							name='priceTo'
 							label='До'
 							type='number'
 							placeholder='10000'
 							onChange={handleFilterChange}
 						/>
-					</Stack>
+					</Stack> */}
+					<Slider
+						getAriaLabel={() => 'Price range'}
+						id='price'
+						value={filter.price}
+						onChange={handleChange}
+						valueLabelDisplay='auto'
+						getAriaValueText={valuetext}
+						sx={{ mt: 4 }}
+					/>
 				</ListItem>
 			</List>
 			<Divider />
