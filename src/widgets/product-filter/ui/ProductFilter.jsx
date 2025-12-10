@@ -10,14 +10,13 @@ import { DATA } from 'shared/configs/data'
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
-import { initialFilter } from 'shared/configs/filter'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
-// import { useURLFilter } from 'shared/hooks/useURLFilter'
+import { useURLFilter } from 'shared/hooks/useURLFilter'
 
 export function ProductFilter({ category }) {
 	const [open, setOpen] = useState({ brands: false, type: false })
-	// const { filter, handleChange, handlePriceChange, handleBooleanChange, resetFilters } = useURLFilter()
-	const [filter, setFilter] = useState(initialFilter)
+	const { localFilter, activeFilter, handleChange, handlePriceChange, handleBooleanChange, resetFilters, applyFiltersToURL } = useURLFilter()
+
 	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
 	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
 
@@ -33,80 +32,16 @@ export function ProductFilter({ category }) {
 
 	let uniqueType = [...new Set(data.map(item => item.features.type))]
 
-	const handleFilterChange = e => {
-		if (e.target.id === 'brand' || e.target.id === 'type') {
-			const currentIndex = filter[e.target.id].indexOf(e.target.name)
-			const newFilter = [...filter[e.target.id]]
-
-			if (currentIndex === -1) {
-				newFilter.push(e.target.name)
-			} else {
-				newFilter.splice(currentIndex, 1)
-			}
-
-			return setFilter({
-				...filter,
-				[e.target.id]: newFilter,
-			})
-		} else if (e.target.id === 'bool') {
-			return setFilter({ ...filter, [e.target.name]: e.target.checked })
-		} else if (e.target.id === 'price') {
-			console.log(e.target)
-			return setFilter({
-				...filter,
-				price: e.target.value,
-			})
-		}
-		// else if (e.target.name === 'priceFrom' || e.target.name === 'priceTo') {
-		// let [min, max] = filter.price
-
-		// console.log(e.target)
-		// console.log(e.target.name, Number(e.target.value))
-
-		// if (e.target.name == 'priceFrom') [min, max] = [Number(e.target.value), filter.price[1]]
-		// else if (e.target.name == 'priceTo') [min, max] = [filter.price[0], Number(e.target.value)]
-
-		// if (max === 0 || min > max) {
-		// 	max = 999999
-		// }
-
-		// console.log(min, max)
-
-		// return setFilter({
-		// 	...filter,
-		// 	price: [min, max],
-		// })
-
-		// if (e.target.name == 'priceFrom') {
-		// }
-
-		// if (max === 0 || min > max) {
-		// 	max = 999999
-		// }
-
-		// setFilter({
-		// 	...filter,
-		// 	price: [min, max],
-		// })
-		// }
+	// Обработчики для полей цены
+	const handlePriceFromChange = e => {
+		const value = Number(e.target.value) || 0
+		handlePriceChange(value, localFilter.price[1])
 	}
 
-	const handleChange = (event, newValue) => {
-		setFilter({
-			...filter,
-			price: newValue,
-		})
+	const handlePriceToChange = e => {
+		const value = Number(e.target.value) || 0
+		handlePriceChange(localFilter.price[0], value)
 	}
-
-	function valuetext(value) {
-		return `${value} P`
-	}
-
-	const resetFilters = () => {
-		setFilter(initialFilter)
-	}
-
-	console.log(filter)
 
 	const DrawerContent = () => (
 		<nav>
@@ -121,37 +56,31 @@ export function ProductFilter({ category }) {
 				}
 			>
 				<ListItem>
-					{/* <Stack
+					<Stack
 						direction='row'
 						spacing={2}
 					>
 						<Input
+							key={`price-from-${localFilter.price[0]}`}
 							size='small'
 							name='priceFrom'
 							label='От'
 							type='number'
 							placeholder='0'
-							// value={filter.price[0]}
-							onChange={handleFilterChange}
+							value={localFilter.price[0]}
+							onChange={handlePriceFromChange}
 						/>
 						<Input
+							key={`price-to-${localFilter.price[1]}`}
 							size='small'
 							name='priceTo'
 							label='До'
 							type='number'
 							placeholder='10000'
-							onChange={handleFilterChange}
+							value={localFilter.price[1]}
+							onChange={handlePriceToChange}
 						/>
-					</Stack> */}
-					<Slider
-						getAriaLabel={() => 'Price range'}
-						id='price'
-						value={filter.price}
-						onChange={handleChange}
-						valueLabelDisplay='auto'
-						getAriaValueText={valuetext}
-						sx={{ mt: 4 }}
-					/>
+					</Stack>
 				</ListItem>
 			</List>
 			<Divider />
@@ -162,8 +91,8 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isRatingAbove4'
-								onChange={handleFilterChange}
-								checked={filter.isRatingAbove4}
+								onChange={handleBooleanChange}
+								checked={localFilter.isRatingAbove4}
 							/>
 						}
 						label='Рейтинг 4 и выше'
@@ -179,8 +108,8 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isDiscount'
-								onChange={handleFilterChange}
-								checked={filter.isDiscount}
+								onChange={handleBooleanChange}
+								checked={localFilter.isDiscount}
 							/>
 						}
 						label='По скидке'
@@ -196,8 +125,8 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isInStock'
-								onChange={handleFilterChange}
-								checked={filter.isInStock}
+								onChange={handleBooleanChange}
+								checked={localFilter.isInStock}
 							/>
 						}
 						label='В наличии'
@@ -230,8 +159,8 @@ export function ProductFilter({ category }) {
 									<Checkbox
 										id='brand'
 										name={item.name}
-										onChange={handleFilterChange}
-										checked={filter.brand.includes(item.name)}
+										onChange={handleChange}
+										checked={localFilter.brand.includes(item.name)}
 									/>
 								}
 								label={
@@ -280,8 +209,8 @@ export function ProductFilter({ category }) {
 									<Checkbox
 										id='type'
 										name={item}
-										onChange={handleFilterChange}
-										checked={filter.type.includes(item)}
+										onChange={handleChange}
+										checked={localFilter.type.includes(item)}
 									/>
 								}
 								label={item}
@@ -295,8 +224,8 @@ export function ProductFilter({ category }) {
 				<ListItem>
 					<Button
 						fullWidth
-						disabled={JSON.stringify(filter) == JSON.stringify(initialFilter)}
-						// onClick={resetFilters}
+						disabled={JSON.stringify(localFilter) == JSON.stringify(activeFilter)}
+						onClick={applyFiltersToURL}
 					>
 						Применить
 					</Button>
@@ -305,7 +234,6 @@ export function ProductFilter({ category }) {
 					<Button
 						fullWidth
 						variant='text'
-						disabled={JSON.stringify(filter) == JSON.stringify(initialFilter)}
 						onClick={resetFilters}
 					>
 						Очистить

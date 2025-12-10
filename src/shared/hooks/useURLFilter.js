@@ -115,10 +115,7 @@ export const useURLFilter = (defaultFilter = initialFilter) => {
 	}
 
 	const handlePriceChange = (min, max) => {
-		if (max === 0 || min > max) {
-			max = 999999
-		}
-
+		if (max === 0 || min > max) max = 999999
 		setLocalFilter({
 			...localFilter,
 			price: [min, max],

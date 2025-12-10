@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router'
+import { useMemo, useState } from 'react'
+import { useParams } from 'react-router'
 
 import { Box, Breadcrumbs, Container, Grid, Paper, Stack, Typography } from '@mui/material'
 
@@ -10,7 +10,6 @@ import { ProductDirection } from 'widgets/product-direction/ui/ProductDirection'
 
 import { Button } from 'shared/ui/Button'
 
-import { initialFilter } from 'shared/configs/filter'
 import { CATEGORIES_FULL } from 'shared/configs/categories'
 import { DATA } from 'shared/configs/data'
 
@@ -20,16 +19,13 @@ import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useProductDirection } from 'app/providers/store-provider/StoreProvider'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
-import { compareObjects } from 'shared/libs/compareObjects'
-import { getQueryStringFromObject } from 'shared/libs/getQueryStringFromObject'
-import { getObjectFromQueryString } from 'shared/libs/getObjectFromQueryString'
 import { useURLSort } from 'shared/hooks/useURLSort'
-// import { useURLFilter } from 'shared/hooks/useURLFilter'
+import { useURLFilter } from 'shared/hooks/useURLFilter'
 
 export function CatalogCategoryPage() {
 	const productDirection = useProductDirection(state => state.productDirection)
 	const { sortValue, updateSort } = useURLSort()
-	// const { filter } = useURLFilter()
+	const { activeFilter } = useURLFilter()
 
 	const [productCount, setProductCount] = useState(20)
 
@@ -38,48 +34,46 @@ export function CatalogCategoryPage() {
 
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
-	// const filteredData = useMemo(() => {
-	// 	return data.filter(product => {
-	// 		// Фильтр по бренду
-	// 		if (filter.brand.length > 0 && !filter.brand.includes(product.brand)) {
-	// 			return false
-	// 		}
+	const filteredData = useMemo(() => {
+		return data.filter(product => {
+			// Фильтр по бренду
+			if (activeFilter.brand.length > 0 && !activeFilter.brand.includes(product.brand)) {
+				return false
+			}
 
-	// 		// Фильтр по типу
-	// 		if (filter.type.length > 0 && !filter.type.includes(product.features.type)) {
-	// 			return false
-	// 		}
+			// Фильтр по типу
+			if (activeFilter.type.length > 0 && !activeFilter.type.includes(product.features.type)) {
+				return false
+			}
 
-	// 		// Фильтр по цене
-	// 		if (product.price < filter.price[0] || product.price > filter.price[1]) {
-	// 			return false
-	// 		}
+			// Фильтр по цене
+			if (product.price < activeFilter.price[0] || product.price > activeFilter.price[1]) {
+				return false
+			}
 
-	// 		// Фильтр по рейтингу
-	// 		if (filter.isRatingAbove4 && product.rating < 4) {
-	// 			return false
-	// 		}
+			// Фильтр по рейтингу
+			if (activeFilter.isRatingAbove4 && product.rating < 4) {
+				return false
+			}
 
-	// 		// Фильтр по скидке
-	// 		if (filter.isDiscount && product.discount === 0) {
-	// 			return false
-	// 		}
+			// Фильтр по скидке
+			if (activeFilter.isDiscount && product.discount === 0) {
+				return false
+			}
 
-	// 		// Фильтр по наличию
-	// 		if (filter.isInStock && !product.inStock) {
-	// 			return false
-	// 		}
+			// Фильтр по наличию
+			if (activeFilter.isInStock && !product.inStock) {
+				return false
+			}
 
-	// 		return true
-	// 	})
-	// }, [filter, data])
-
-	// console.log(filter)
+			return true
+		})
+	}, [activeFilter, data])
 
 	const sortedData = useMemo(() => {
-		// return sortBy(filteredData, sortValue)
-		return sortBy(data, sortValue)
-	}, [data, sortValue])
+		return sortBy(filteredData, sortValue)
+		// return sortBy(data, sortValue)
+	}, [filteredData, sortValue])
 
 	const handleChangeSort = event => {
 		updateSort(event.target.value)
