@@ -1,73 +1,115 @@
-import { useCallback, useMemo } from 'react'
+// shared/hooks/useURLFilter.js
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 
-export const useURLFilter = () => {
+export function useURLFilter(initialFilter = {}) {
 	const [searchParams, setSearchParams] = useSearchParams()
 
-	const params = useMemo(() => {
-		const paramsObj = {}
-		searchParams.forEach((value, key) => {
-			if (paramsObj[key]) {
-				if (Array.isArray(paramsObj[key])) {
-					paramsObj[key].push(value)
-				} else {
-					paramsObj[key] = [paramsObj[key], value]
+	// Конвертируем объект фильтра в URL параметры
+	const filtersToParams = useCallback(filters => {
+		const params = new URLSearchParams()
+
+		Object.entries(filters).forEach(([key, value]) => {
+			if (value === undefined || value === null || value === '') return
+
+			if (Array.isArray(value)) {
+				// Для массивов (например, price, brand, type)
+				if (key === 'price') {
+					if (value[0] > 0) params.set('priceFrom', value[0])
+					if (value[1] < 10000) params.set('priceTo', value[1])
+				} else if (value.length > 0) {
+					// Для массива значений (brand, type) - сохраняем как строку с разделителем
+					params.set(key, value.join(','))
 				}
-			} else {
-				paramsObj[key] = value
+			} else if (typeof value === 'boolean') {
+				// Для булевых значений - сохраняем только true
+				if (value) {
+					params.set(key, 'true')
+				}
+			} else if (typeof value === 'number') {
+				params.set(key, value.toString())
+			} else if (typeof value === 'string') {
+				params.set(key, value)
 			}
 		})
 
-		// Преобразуем строки в нужные типы
-		if (paramsObj.brand) {
-			paramsObj.brand = Array.isArray(paramsObj.brand) ? paramsObj.brand : [paramsObj.brand]
-		}
-		if (paramsObj.type) {
-			paramsObj.type = Array.isArray(paramsObj.type) ? paramsObj.type : [paramsObj.type]
-		}
-		if (paramsObj.price) {
-			const prices = paramsObj.price.split('-').map(Number)
-			if (prices.length === 2 && !isNaN(prices[0]) && !isNaN(prices[1])) {
-				paramsObj.price = prices
-			}
-		}
-		if (paramsObj.isRatingAbove4) {
-			paramsObj.isRatingAbove4 = paramsObj.isRatingAbove4 === 'true'
-		}
-		if (paramsObj.isDiscount) {
-			paramsObj.isDiscount = paramsObj.isDiscount === 'true'
-		}
-		if (paramsObj.isInStock) {
-			paramsObj.isInStock = paramsObj.isInStock === 'true'
+		return params
+	}, [])
+
+	// Конвертируем URL параметры обратно в объект фильтра
+	const paramsToFilters = useCallback(() => {
+		const filters = { ...initialFilter }
+
+		// Восстанавливаем цену
+		const priceFrom = searchParams.get('priceFrom')
+		const priceTo = searchParams.get('priceTo')
+		if (priceFrom || priceTo) {
+			filters.price = [priceFrom ? Number(priceFrom) : initialFilter.price[0], priceTo ? Number(priceTo) : initialFilter.price[1]]
 		}
 
-		return paramsObj
-	}, [searchParams])
+		// Восстанавливаем булевые значения
+		filters.isRatingAbove4 = searchParams.get('isRatingAbove4') === 'true'
+		filters.isDiscount = searchParams.get('isDiscount') === 'true'
+		filters.isInStock = searchParams.get('isInStock') === 'true'
 
-	const updateParams = useCallback(
-		newParams => {
-			setSearchParams(prev => {
-				const newSearchParams = new URLSearchParams(prev)
+		// Восстанавливаем массивы значений
+		const brandParam = searchParams.get('brand')
+		if (brandParam) {
+			filters.brand = brandParam.split(',')
+		}
 
-				Object.entries(newParams).forEach(([key, value]) => {
-					// Удаляем параметр если значение пустое
-					if (value === '' || value === undefined || value === null || (Array.isArray(value) && value.length === 0) || (typeof value === 'boolean' && !value)) {
-						newSearchParams.delete(key)
-					} else if (Array.isArray(value)) {
-						newSearchParams.delete(key)
-						value.forEach(item => {
-							newSearchParams.append(key, item.toString())
-						})
-					} else {
-						newSearchParams.set(key, value.toString())
-					}
-				})
+		const typeParam = searchParams.get('type')
+		if (typeParam) {
+			filters.type = typeParam.split(',')
+		}
 
-				return newSearchParams
+		return filters
+	}, [searchParams, initialFilter])
+
+	// Функция для применения фильтров к URL
+	const applyFiltersToURL = useCallback(
+		filters => {
+			const params = filtersToParams(filters)
+
+			// Сохраняем текущие параметры, не связанные с фильтрацией
+			searchParams.forEach((value, key) => {
+				if (!params.has(key) && !['priceFrom', 'priceTo', 'isRatingAbove4', 'isDiscount', 'isInStock', 'brand', 'type'].includes(key)) {
+					params.set(key, value)
+				}
 			})
+
+			setSearchParams(params)
 		},
-		[setSearchParams]
+		[filtersToParams, searchParams, setSearchParams]
 	)
 
-	return { params, updateParams }
+	// Функция для сброса фильтров
+	const resetFilters = useCallback(() => {
+		const params = new URLSearchParams(searchParams)
+
+		// Удаляем только параметры фильтров
+		const filterKeys = ['priceFrom', 'priceTo', 'isRatingAbove4', 'isDiscount', 'isInStock', 'brand', 'type']
+		filterKeys.forEach(key => params.delete(key))
+
+		setSearchParams(params)
+	}, [searchParams, setSearchParams])
+
+	// Текущие фильтры из URL
+	const currentFilters = useMemo(() => {
+		return paramsToFilters()
+	}, [paramsToFilters])
+
+	// Проверяем, есть ли активные фильтры
+	const hasActiveFilters = useMemo(() => {
+		const defaultParams = filtersToParams(initialFilter).toString()
+		const currentParams = filtersToParams(currentFilters).toString()
+		return defaultParams !== currentParams
+	}, [currentFilters, initialFilter, filtersToParams])
+
+	return {
+		currentFilters,
+		applyFiltersToURL,
+		resetFilters,
+		hasActiveFilters,
+	}
 }

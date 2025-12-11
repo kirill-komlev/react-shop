@@ -12,11 +12,11 @@ import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
 import { useURLFilter } from 'shared/hooks/useURLFilter'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { compareObjects } from 'shared/libs/compareObjects'
 import { initialFilter } from 'shared/configs/filter'
 
-function BrandsList(data) {
+function DataList(data, type, name, props) {
 	const [isOpen, setIsOpen] = useState(false)
 
 	return (
@@ -28,46 +28,7 @@ function BrandsList(data) {
 					sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
 					onClick={() => setIsOpen(!isOpen)}
 				>
-					Бренд {isOpen ? <ExpandLess /> : <ExpandMore />}
-				</ListSubheader>
-			}
-		>
-			<Collapse
-				in={isOpen}
-				timeout='auto'
-			>
-				{data.sort().map(item => (
-					<ListItem key={item.name}>
-						<FormControlLabel
-							control={
-								<Checkbox
-									id='brand'
-									value={item.name}
-								/>
-							}
-							label={item.name}
-							sx={{ width: '100%' }}
-						/>
-					</ListItem>
-				))}
-			</Collapse>
-		</List>
-	)
-}
-
-function TypesList(data) {
-	const [isOpen, setIsOpen] = useState(false)
-
-	return (
-		<List
-			subheader={
-				<ListSubheader
-					component='div'
-					id='nested-list-subheader'
-					sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-					onClick={() => setIsOpen(!isOpen)}
-				>
-					Тип {isOpen ? <ExpandLess /> : <ExpandMore />}
+					{name} {isOpen ? <ExpandLess /> : <ExpandMore />}
 				</ListSubheader>
 			}
 		>
@@ -80,8 +41,9 @@ function TypesList(data) {
 						<FormControlLabel
 							control={
 								<Checkbox
-									id='type'
+									id={type}
 									value={item}
+									{...props}
 								/>
 							}
 							label={item}
@@ -95,22 +57,38 @@ function TypesList(data) {
 }
 
 export function ProductFilter({ category }) {
+	const { control, handleSubmit, register, reset } = useForm({
+		defaultValues: initialFilter,
+	})
+
 	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
 	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
 
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(category))
-	const uniqueBrands = Object.entries(
-		data.reduce((acc, item) => {
-			acc[item.brand] = (acc[item.brand] || 0) + 1
-			return acc
-		}, {})
-	).map(([name, count]) => ({ name, count }))
+	// const uniqueBrands = Object.entries(
+	// 	data.reduce((acc, item) => {
+	// 		acc[item.brand] = (acc[item.brand] || 0) + 1
+	// 		return acc
+	// 	}, {})
+	// ).map(([name, count]) => ({ name, count }))
+	const uniqueBrands = [...new Set(data.map(item => item.brand))]
 	const uniqueType = [...new Set(data.map(item => item.features.type))]
+
+	const onSubmit = data => {
+		localStorage.setItem('filter', JSON.stringify(compareObjects(initialFilter, data)))
+	}
+
+	const onReset = () => {
+		reset()
+	}
 
 	console.log('render')
 
 	const DrawerContent = () => (
-		<Box>
+		<Box
+			component='form'
+			onSubmit={handleSubmit(onSubmit)}
+		>
 			<List
 				subheader={
 					<ListSubheader
@@ -122,25 +100,43 @@ export function ProductFilter({ category }) {
 				}
 			>
 				<ListItem>
-					<Stack
-						direction='row'
-						spacing={2}
-					>
-						<Input
-							size='small'
-							name='priceFrom'
-							label='От'
-							type='number'
-							placeholder='0'
-						/>
-						<Input
-							size='small'
-							name='priceTo'
-							label='До'
-							type='number'
-							placeholder='10000'
-						/>
-					</Stack>
+					<Controller
+						name='price' // Изменили на price
+						control={control}
+						render={({ field }) => (
+							<Stack
+								direction='row'
+								spacing={2}
+							>
+								<Input
+									id='priceFrom'
+									size='small'
+									name='priceFrom'
+									label='От'
+									type='number'
+									placeholder='0'
+									value={field.value[0]} // Первый элемент массива - "от"
+									onChange={e => {
+										// Обновляем только первый элемент массива, второй оставляем без изменений
+										field.onChange([Number(e.target.value), field.value[1]])
+									}}
+								/>
+								<Input
+									id='priceTo'
+									size='small'
+									name='priceTo'
+									label='До'
+									type='number'
+									placeholder='10000'
+									// value={} // Второй элемент массива - "до"
+									onChange={e => {
+										// Обновляем только второй элемент массива, первый оставляем без изменений
+										field.onChange([field.value[0], Number(e.target.value)])
+									}}
+								/>
+							</Stack>
+						)}
+					/>
 				</ListItem>
 			</List>
 			<Divider />
@@ -151,6 +147,7 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isRatingAbove4'
+								{...register('isRatingAbove4')}
 							/>
 						}
 						label='Рейтинг 4 и выше'
@@ -166,6 +163,7 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isDiscount'
+								{...register('isDiscount')}
 							/>
 						}
 						label='По скидке'
@@ -181,6 +179,7 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isInStock'
+								{...register('isInStock')}
 							/>
 						}
 						label='В наличии'
@@ -189,17 +188,23 @@ export function ProductFilter({ category }) {
 				</ListItem>
 			</List>
 			<Divider />
-			{BrandsList(uniqueBrands)}
+			{DataList(uniqueBrands, 'brand', 'Бренд', { ...register('brand') })}
 			<Divider />
-			{TypesList(uniqueType)}
+			{DataList(uniqueType, 'type', 'Тип', { ...register('type') })}
 			<List>
 				<ListItem>
-					<Button fullWidth>Применить</Button>
+					<Button
+						fullWidth
+						type='submit'
+					>
+						Применить
+					</Button>
 				</ListItem>
 				<ListItem>
 					<Button
 						fullWidth
 						variant='text'
+						onClick={onReset}
 					>
 						Очистить
 					</Button>
