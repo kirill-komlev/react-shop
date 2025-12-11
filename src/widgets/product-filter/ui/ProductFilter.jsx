@@ -5,17 +5,37 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { FilterList } from '@mui/icons-material'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DATA } from 'shared/configs/data'
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
 import { useURLFilter } from 'shared/hooks/useURLFilter'
+import { useForm } from 'react-hook-form'
+import { compareObjects } from 'shared/libs/compareObjects'
+import { initialFilter } from 'shared/configs/filter'
 
 export function ProductFilter({ category }) {
-	const [open, setOpen] = useState({ brands: false, type: false })
-	const { localFilter, activeFilter, handleChange, handlePriceChange, handleBooleanChange, resetFilters, applyFiltersToURL } = useURLFilter()
+	const [open, setOpen] = useState({ brand: false, type: false })
+	const { params, updateParams } = useURLFilter()
+	const { register, handleSubmit, reset, watch, setValue } = useForm({
+		defaultValues: initialFilter,
+	})
+
+	// Восстанавливаем значения из URL при загрузке
+	useEffect(() => {
+		const restoredFilter = {
+			brand: params.brand || initialFilter.brand,
+			type: params.type || initialFilter.type,
+			price: params.price || initialFilter.price,
+			isRatingAbove4: params.isRatingAbove4 || initialFilter.isRatingAbove4,
+			isDiscount: params.isDiscount || initialFilter.isDiscount,
+			isInStock: params.isInStock || initialFilter.isInStock,
+		}
+
+		reset(restoredFilter)
+	}, [params, reset])
 
 	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
 	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
@@ -32,19 +52,36 @@ export function ProductFilter({ category }) {
 
 	let uniqueType = [...new Set(data.map(item => item.features.type))]
 
-	// Обработчики для полей цены
-	const handlePriceFromChange = e => {
-		const value = Number(e.target.value) || 0
-		handlePriceChange(value, localFilter.price[1])
+	const onSubmit = data => {
+		// Форматируем price для URL
+		const urlParams = {
+			...data,
+			price: data.price.join('-'), // Сохраняем как "0-99999"
+		}
+
+		updateParams(urlParams)
 	}
 
-	const handlePriceToChange = e => {
-		const value = Number(e.target.value) || 0
-		handlePriceChange(localFilter.price[0], value)
+	const handleReset = () => {
+		reset(initialFilter)
+		updateParams({})
 	}
+
+	const handlePriceChange = (index, value) => {
+		const currentPrice = watch('price')
+		const newPrice = [...currentPrice]
+		const numValue = Number(value) || 0
+		newPrice[index] = numValue
+		setValue('price', newPrice)
+	}
+
+	console.log('render')
 
 	const DrawerContent = () => (
-		<nav>
+		<Box
+			component='form'
+			onSubmit={handleSubmit(onSubmit)}
+		>
 			<List
 				subheader={
 					<ListSubheader
@@ -61,24 +98,26 @@ export function ProductFilter({ category }) {
 						spacing={2}
 					>
 						<Input
-							key={`price-from-${localFilter.price[0]}`}
 							size='small'
 							name='priceFrom'
 							label='От'
 							type='number'
 							placeholder='0'
-							value={localFilter.price[0]}
-							onChange={handlePriceFromChange}
+							value={watch('price')[0]}
+							onChange={e => handlePriceChange(0, e.target.value)}
+							// value={localFilter.price[0]}
+							// onChange={handlePriceFromChange}
 						/>
 						<Input
-							key={`price-to-${localFilter.price[1]}`}
 							size='small'
 							name='priceTo'
 							label='До'
 							type='number'
 							placeholder='10000'
-							value={localFilter.price[1]}
-							onChange={handlePriceToChange}
+							value={watch('price')[1]}
+							onChange={e => handlePriceChange(1, e.target.value)}
+							// value={localFilter.price[1]}
+							// onChange={handlePriceToChange}
 						/>
 					</Stack>
 				</ListItem>
@@ -91,8 +130,9 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isRatingAbove4'
-								onChange={handleBooleanChange}
-								checked={localFilter.isRatingAbove4}
+								{...register('isRatingAbove4')}
+								// onChange={handleBooleanChange}
+								// checked={localFilter.isRatingAbove4}
 							/>
 						}
 						label='Рейтинг 4 и выше'
@@ -108,8 +148,9 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isDiscount'
-								onChange={handleBooleanChange}
-								checked={localFilter.isDiscount}
+								{...register('isDiscount')}
+								// onChange={handleBooleanChange}
+								// checked={localFilter.isDiscount}
 							/>
 						}
 						label='По скидке'
@@ -125,8 +166,8 @@ export function ProductFilter({ category }) {
 							<Checkbox
 								id='bool'
 								name='isInStock'
-								onChange={handleBooleanChange}
-								checked={localFilter.isInStock}
+								{...register('isInStock')}
+								// onChange={handleBooleanChange}
 							/>
 						}
 						label='В наличии'
@@ -141,14 +182,14 @@ export function ProductFilter({ category }) {
 						component='div'
 						id='nested-list-subheader'
 						sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-						onClick={() => setOpen({ ...open, brands: !open.brands })}
+						onClick={() => setOpen({ ...open, brand: !open.brand })}
 					>
-						Бренд {open.brands ? <ExpandLess /> : <ExpandMore />}
+						Бренд {open.brand ? <ExpandLess /> : <ExpandMore />}
 					</ListSubheader>
 				}
 			>
 				<Collapse
-					in={open.brands}
+					in={open.brand}
 					timeout='auto'
 					unmountOnExit
 				>
@@ -158,9 +199,10 @@ export function ProductFilter({ category }) {
 								control={
 									<Checkbox
 										id='brand'
-										name={item.name}
-										onChange={handleChange}
-										checked={localFilter.brand.includes(item.name)}
+										value={item.name}
+										{...register('brand')}
+										// onChange={handleChange}
+										// checked={localFilter.brand.includes(item.name)}
 									/>
 								}
 								label={
@@ -208,9 +250,10 @@ export function ProductFilter({ category }) {
 								control={
 									<Checkbox
 										id='type'
-										name={item}
-										onChange={handleChange}
-										checked={localFilter.type.includes(item)}
+										value={item}
+										{...register('type')}
+										// onChange={handleChange}
+										// checked={localFilter.type.includes(item)}
 									/>
 								}
 								label={item}
@@ -224,8 +267,10 @@ export function ProductFilter({ category }) {
 				<ListItem>
 					<Button
 						fullWidth
-						disabled={JSON.stringify(localFilter) == JSON.stringify(activeFilter)}
-						onClick={applyFiltersToURL}
+						// disabled={JSON.stringify(localFilter) == JSON.stringify(activeFilter)}
+						type='submit'
+
+						// onClick={applyFiltersToURL}
 					>
 						Применить
 					</Button>
@@ -234,13 +279,13 @@ export function ProductFilter({ category }) {
 					<Button
 						fullWidth
 						variant='text'
-						onClick={resetFilters}
+						// onClick={resetFilters}
 					>
 						Очистить
 					</Button>
 				</ListItem>
 			</List>
-		</nav>
+		</Box>
 	)
 
 	const MobileFilterSidebar = () => (

@@ -35,39 +35,40 @@ export function CatalogCategoryPage() {
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
 	const filteredData = useMemo(() => {
-		return data.filter(product => {
-			// Фильтр по бренду
-			if (activeFilter.brand.length > 0 && !activeFilter.brand.includes(product.brand)) {
-				return false
-			}
+		return data
+		// .filter(product => {
+		// 	// Фильтр по бренду
+		// 	if (activeFilter.brand.length > 0 && !activeFilter.brands.includes(product.brand)) {
+		// 		return false
+		// 	}
 
-			// Фильтр по типу
-			if (activeFilter.type.length > 0 && !activeFilter.type.includes(product.features.type)) {
-				return false
-			}
+		// 	// Фильтр по типу
+		// 	if (activeFilter.type.length > 0 && !activeFilter.type.includes(product.features.type)) {
+		// 		return false
+		// 	}
 
-			// Фильтр по цене
-			if (product.price < activeFilter.price[0] || product.price > activeFilter.price[1]) {
-				return false
-			}
+		// 	// Фильтр по цене
+		// 	if (product.price < activeFilter.price[0] || product.price > activeFilter.price[1]) {
+		// 		return false
+		// 	}
 
-			// Фильтр по рейтингу
-			if (activeFilter.isRatingAbove4 && product.rating < 4) {
-				return false
-			}
+		// 	// Фильтр по рейтингу
+		// 	if (activeFilter.isRatingAbove4 && product.rating < 4) {
+		// 		return false
+		// 	}
 
-			// Фильтр по скидке
-			if (activeFilter.isDiscount && product.discount === 0) {
-				return false
-			}
+		// 	// Фильтр по скидке
+		// 	if (activeFilter.isDiscount && product.discount === 0) {
+		// 		return false
+		// 	}
 
-			// Фильтр по наличию
-			if (activeFilter.isInStock && !product.inStock) {
-				return false
-			}
+		// 	// Фильтр по наличию
+		// 	if (activeFilter.isInStock && !product.inStock) {
+		// 		return false
+		// 	}
 
-			return true
-		})
+		// 	return true
+		// })
 	}, [activeFilter, data])
 
 	const sortedData = useMemo(() => {

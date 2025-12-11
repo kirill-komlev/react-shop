@@ -1,7 +1,7 @@
 export const initialFilter = {
 	brand: [],
 	type: [],
-	price: [0, 99999],
+	price: ['', ''],
 	isRatingAbove4: false,
 	isDiscount: false,
 	isInStock: false,
