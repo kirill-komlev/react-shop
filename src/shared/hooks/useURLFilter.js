@@ -1,115 +1,164 @@
-// shared/hooks/useURLFilter.js
-import { useCallback, useEffect, useMemo } from 'react'
-import { useSearchParams } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { initialFilter } from 'shared/configs/filter'
 
-export function useURLFilter(initialFilter = {}) {
-	const [searchParams, setSearchParams] = useSearchParams()
+export const useURLFilter = () => {
+	const navigate = useNavigate()
+	const location = useLocation()
+	const [pendingFilter, setPendingFilter] = useState({ ...initialFilter })
 
-	// Конвертируем объект фильтра в URL параметры
-	const filtersToParams = useCallback(filters => {
+	// Получение параметров из URL
+	const searchParams = useMemo(() => {
+		return new URLSearchParams(location.search)
+	}, [location.search])
+
+	// Преобразование фильтра в URL параметры
+	const filterToParams = useCallback(filter => {
 		const params = new URLSearchParams()
 
-		Object.entries(filters).forEach(([key, value]) => {
-			if (value === undefined || value === null || value === '') return
+		// Массивы сохраняем как строки через ПЛЮС
+		if (filter.brand.length > 0) {
+			params.set('brand', filter.brand.join('-'))
+		}
 
-			if (Array.isArray(value)) {
-				// Для массивов (например, price, brand, type)
-				if (key === 'price') {
-					if (value[0] > 0) params.set('priceFrom', value[0])
-					if (value[1] < 10000) params.set('priceTo', value[1])
-				} else if (value.length > 0) {
-					// Для массива значений (brand, type) - сохраняем как строку с разделителем
-					params.set(key, value.join(','))
-				}
-			} else if (typeof value === 'boolean') {
-				// Для булевых значений - сохраняем только true
-				if (value) {
-					params.set(key, 'true')
-				}
-			} else if (typeof value === 'number') {
-				params.set(key, value.toString())
-			} else if (typeof value === 'string') {
-				params.set(key, value)
+		if (filter.type.length > 0) {
+			params.set('type', filter.type.join('-'))
+		}
+
+		// Цена сохраняем как "min-max" (например: "2000-5000")
+		if (filter.price[0] || filter.price[1]) {
+			let min = filter.price[0] || ''
+			let max = filter.price[1] || ''
+			if (max === 0 || min > max) {
+				max = 999999
 			}
-		})
+			params.set('price', `${min}-${max}`)
+		}
+
+		// Булевы значения
+		if (filter.isRatingAbove4) {
+			params.set('rating_above_4', 'true')
+		}
+
+		if (filter.isDiscount) {
+			params.set('discount', 'true')
+		}
+
+		if (filter.isInStock) {
+			params.set('in_stock', 'true')
+		}
 
 		return params
 	}, [])
 
-	// Конвертируем URL параметры обратно в объект фильтра
-	const paramsToFilters = useCallback(() => {
-		const filters = { ...initialFilter }
+	// Преобразование URL параметров в фильтр
+	const paramsToFilter = useCallback(() => {
+		const filter = { ...initialFilter }
 
-		// Восстанавливаем цену
-		const priceFrom = searchParams.get('priceFrom')
-		const priceTo = searchParams.get('priceTo')
-		if (priceFrom || priceTo) {
-			filters.price = [priceFrom ? Number(priceFrom) : initialFilter.price[0], priceTo ? Number(priceTo) : initialFilter.price[1]]
-		}
-
-		// Восстанавливаем булевые значения
-		filters.isRatingAbove4 = searchParams.get('isRatingAbove4') === 'true'
-		filters.isDiscount = searchParams.get('isDiscount') === 'true'
-		filters.isInStock = searchParams.get('isInStock') === 'true'
-
-		// Восстанавливаем массивы значений
+		// Обрабатываем массивы - разделяем по ПЛЮСУ
 		const brandParam = searchParams.get('brand')
 		if (brandParam) {
-			filters.brand = brandParam.split(',')
+			filter.brand = brandParam.split('-').filter(item => item.trim() !== '')
 		}
 
 		const typeParam = searchParams.get('type')
 		if (typeParam) {
-			filters.type = typeParam.split(',')
+			filter.type = typeParam.split('-').filter(item => item.trim() !== '')
 		}
 
-		return filters
-	}, [searchParams, initialFilter])
+		// Обрабатываем цену в формате "min-max"
+		const priceParam = searchParams.get('price')
+		if (priceParam) {
+			const [min, max] = priceParam.split('-')
+			filter.price[0] = min || ''
+			filter.price[1] = max || ''
+		}
 
-	// Функция для применения фильтров к URL
-	const applyFiltersToURL = useCallback(
-		filters => {
-			const params = filtersToParams(filters)
+		// Обрабатываем булевы значения
+		filter.isRatingAbove4 = searchParams.get('rating_above_4') === 'true'
+		filter.isDiscount = searchParams.get('discount') === 'true'
+		filter.isInStock = searchParams.get('in_stock') === 'true'
 
-			// Сохраняем текущие параметры, не связанные с фильтрацией
-			searchParams.forEach((value, key) => {
-				if (!params.has(key) && !['priceFrom', 'priceTo', 'isRatingAbove4', 'isDiscount', 'isInStock', 'brand', 'type'].includes(key)) {
-					params.set(key, value)
-				}
-			})
+		return filter
+	}, [searchParams])
 
-			setSearchParams(params)
+	// Получить текущий фильтр из URL
+	const getFilterFromUrl = useCallback(() => {
+		return paramsToFilter()
+	}, [paramsToFilter])
+
+	// Обновить URL с новым фильтром
+	const updateUrlWithFilter = useCallback(
+		newFilter => {
+			const params = filterToParams(newFilter)
+			const searchString = params.toString()
+
+			// Обновляем URL без перезагрузки страницы
+			navigate(
+				{
+					pathname: location.pathname,
+					search: searchString ? `?${searchString}` : '',
+				},
+				{ replace: true }
+			)
 		},
-		[filtersToParams, searchParams, setSearchParams]
+		[filterToParams, navigate, location.pathname]
 	)
 
-	// Функция для сброса фильтров
-	const resetFilters = useCallback(() => {
-		const params = new URLSearchParams(searchParams)
+	// Сбросить фильтр в URL
+	const resetFilterInUrl = useCallback(() => {
+		navigate(
+			{
+				pathname: location.pathname,
+				search: '',
+			},
+			{ replace: true }
+		)
 
-		// Удаляем только параметры фильтров
-		const filterKeys = ['priceFrom', 'priceTo', 'isRatingAbove4', 'isDiscount', 'isInStock', 'brand', 'type']
-		filterKeys.forEach(key => params.delete(key))
+		// Также сбрасываем pending фильтр
+		setPendingFilter({ ...initialFilter })
+	}, [navigate, location.pathname])
 
-		setSearchParams(params)
-	}, [searchParams, setSearchParams])
+	// Загрузка фильтра из URL при монтировании и обновлении URL
+	useEffect(() => {
+		const filterFromUrl = getFilterFromUrl()
 
-	// Текущие фильтры из URL
-	const currentFilters = useMemo(() => {
-		return paramsToFilters()
-	}, [paramsToFilters])
+		// Если в URL есть параметры фильтра, устанавливаем их в pendingFilter
+		if (location.search) {
+			setPendingFilter(filterFromUrl)
+		}
+	}, [location.search, getFilterFromUrl])
 
-	// Проверяем, есть ли активные фильтры
-	const hasActiveFilters = useMemo(() => {
-		const defaultParams = filtersToParams(initialFilter).toString()
-		const currentParams = filtersToParams(currentFilters).toString()
-		return defaultParams !== currentParams
-	}, [currentFilters, initialFilter, filtersToParams])
+	// Получить текущий фильтр из URL
+	const currentFilter = useMemo(() => {
+		return getFilterFromUrl()
+	}, [getFilterFromUrl])
+
+	// Инициализируем pendingFilter при первом рендере
+	useEffect(() => {
+		const filterFromUrl = getFilterFromUrl()
+		setPendingFilter(filterFromUrl)
+	}, [])
+
+	// Функция для применения фильтра (сохранения в URL)
+	const applyFilter = useCallback(() => {
+		updateUrlWithFilter(pendingFilter)
+	}, [pendingFilter, updateUrlWithFilter])
 
 	return {
-		currentFilters,
-		applyFiltersToURL,
-		resetFilters,
-		hasActiveFilters,
+		// Фильтр из URL (активный фильтр)
+		currentFilter,
+
+		// Фильтр, который пока не применен (предварительный)
+		pendingFilter,
+		setPendingFilter,
+
+		// Функции для работы с URL
+		applyFilter,
+		resetFilterInUrl,
+
+		// Вспомогательные функции
+		getFilterFromUrl,
+		updateUrlWithFilter,
 	}
 }

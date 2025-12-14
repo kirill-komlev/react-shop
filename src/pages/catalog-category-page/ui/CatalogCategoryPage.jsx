@@ -25,7 +25,7 @@ import { useURLFilter } from 'shared/hooks/useURLFilter'
 export function CatalogCategoryPage() {
 	const productDirection = useProductDirection(state => state.productDirection)
 	const { sortValue, updateSort } = useURLSort()
-	const { activeFilter } = useURLFilter()
+	const { currentFilter } = useURLFilter()
 
 	const [productCount, setProductCount] = useState(20)
 
@@ -35,41 +35,40 @@ export function CatalogCategoryPage() {
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
 	const filteredData = useMemo(() => {
-		return data
-		// .filter(product => {
-		// 	// Фильтр по бренду
-		// 	if (activeFilter.brand.length > 0 && !activeFilter.brands.includes(product.brand)) {
-		// 		return false
-		// 	}
+		return data.filter(product => {
+			// Фильтр по бренду
+			if (currentFilter.brand.length > 0 && !currentFilter.brands.includes(product.brand)) {
+				return false
+			}
 
-		// 	// Фильтр по типу
-		// 	if (activeFilter.type.length > 0 && !activeFilter.type.includes(product.features.type)) {
-		// 		return false
-		// 	}
+			// Фильтр по типу
+			if (currentFilter.type.length > 0 && !currentFilter.type.includes(product.features.type)) {
+				return false
+			}
 
-		// 	// Фильтр по цене
-		// 	if (product.price < activeFilter.price[0] || product.price > activeFilter.price[1]) {
-		// 		return false
-		// 	}
+			// Фильтр по цене
+			if (product.price < currentFilter.price[0] || product.price > currentFilter.price[1]) {
+				return false
+			}
 
-		// 	// Фильтр по рейтингу
-		// 	if (activeFilter.isRatingAbove4 && product.rating < 4) {
-		// 		return false
-		// 	}
+			// Фильтр по рейтингу
+			if (currentFilter.isRatingAbove4 && product.rating < 4) {
+				return false
+			}
 
-		// 	// Фильтр по скидке
-		// 	if (activeFilter.isDiscount && product.discount === 0) {
-		// 		return false
-		// 	}
+			// Фильтр по скидке
+			if (currentFilter.isDiscount && product.discount === 0) {
+				return false
+			}
 
-		// 	// Фильтр по наличию
-		// 	if (activeFilter.isInStock && !product.inStock) {
-		// 		return false
-		// 	}
+			// Фильтр по наличию
+			if (currentFilter.isInStock && !product.inStock) {
+				return false
+			}
 
-		// 	return true
-		// })
-	}, [activeFilter, data])
+			return true
+		})
+	}, [currentFilter, data])
 
 	const sortedData = useMemo(() => {
 		return sortBy(filteredData, sortValue)
