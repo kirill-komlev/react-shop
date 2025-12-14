@@ -1,94 +1,76 @@
-import { Box, Checkbox, Collapse, Divider, Drawer, FormControlLabel, IconButton, List, ListItem, ListSubheader, Paper, Slider, Stack, Typography } from '@mui/material'
+import { Box, Checkbox, Collapse, Divider, Drawer, FormControlLabel, IconButton, List, ListItem, ListSubheader, Paper, Stack, Typography } from '@mui/material'
 
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { FilterList } from '@mui/icons-material'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useState } from 'react'
 import { DATA } from 'shared/configs/data'
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
-import { useURLFilter } from 'shared/hooks/useURLFilter'
-import { Controller, useForm } from 'react-hook-form'
-import { compareObjects } from 'shared/libs/compareObjects'
 import { initialFilter } from 'shared/configs/filter'
 
-function DataList(data, type, name, props) {
-	const [isOpen, setIsOpen] = useState(false)
-
-	return (
-		<List
-			subheader={
-				<ListSubheader
-					component='div'
-					id='nested-list-subheader'
-					sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-					onClick={() => setIsOpen(!isOpen)}
-				>
-					{name} {isOpen ? <ExpandLess /> : <ExpandMore />}
-				</ListSubheader>
-			}
-		>
-			<Collapse
-				in={isOpen}
-				timeout='auto'
-			>
-				{data.sort().map(item => (
-					<ListItem key={item}>
-						<FormControlLabel
-							control={
-								<Checkbox
-									id={type}
-									value={item}
-									{...props}
-								/>
-							}
-							label={item}
-							sx={{ width: '100%' }}
-						/>
-					</ListItem>
-				))}
-			</Collapse>
-		</List>
-	)
-}
-
 export function ProductFilter({ category }) {
-	const { control, handleSubmit, register, reset } = useForm({
-		defaultValues: initialFilter,
-	})
+	const [isBrandOpen, setIsBrandOpen] = useState(false)
+	const [isTypeOpen, setIsTypeOpen] = useState(false)
+	const [filter, setFilter] = useState(initialFilter)
 
 	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
 	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
 
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(category))
-	// const uniqueBrands = Object.entries(
-	// 	data.reduce((acc, item) => {
-	// 		acc[item.brand] = (acc[item.brand] || 0) + 1
-	// 		return acc
-	// 	}, {})
-	// ).map(([name, count]) => ({ name, count }))
+
 	const uniqueBrands = [...new Set(data.map(item => item.brand))]
 	const uniqueType = [...new Set(data.map(item => item.features.type))]
 
-	const onSubmit = data => {
-		localStorage.setItem('filter', JSON.stringify(compareObjects(initialFilter, data)))
+	const handleChange = e => {
+		const currentIndex = filter[e.target.id].indexOf(e.target.name)
+		const newFilter = [...filter[e.target.id]]
+
+		if (currentIndex === -1) {
+			newFilter.push(e.target.name)
+		} else {
+			newFilter.splice(currentIndex, 1)
+		}
+
+		setFilter({
+			...filter,
+			[e.target.id]: newFilter,
+		})
+	}
+
+	const handlePriceChange = (min, max) => {
+		if (max === 0 || min > max) {
+			max = 999999
+		}
+		setFilter(prev => ({
+			...prev,
+			price: [min, max],
+		}))
+	}
+
+	const handleBooleanChange = e => {
+		setFilter({
+			...filter,
+			[e.target.name]: e.target.checked,
+		})
+	}
+
+	const onSubmit = () => {
+		console.log(filter)
 	}
 
 	const onReset = () => {
-		reset()
+		setFilter(initialFilter)
 	}
 
 	console.log('render')
 
 	const DrawerContent = () => (
-		<Box
-			component='form'
-			onSubmit={handleSubmit(onSubmit)}
-		>
+		<Box>
 			<List
 				subheader={
 					<ListSubheader
@@ -100,102 +82,141 @@ export function ProductFilter({ category }) {
 				}
 			>
 				<ListItem>
-					<Controller
-						name='price' // Изменили на price
-						control={control}
-						render={({ field }) => (
-							<Stack
-								direction='row'
-								spacing={2}
-							>
-								<Input
-									id='priceFrom'
-									size='small'
-									name='priceFrom'
-									label='От'
-									type='number'
-									placeholder='0'
-									value={field.value[0]} // Первый элемент массива - "от"
-									onChange={e => {
-										// Обновляем только первый элемент массива, второй оставляем без изменений
-										field.onChange([Number(e.target.value), field.value[1]])
-									}}
-								/>
-								<Input
-									id='priceTo'
-									size='small'
-									name='priceTo'
-									label='До'
-									type='number'
-									placeholder='10000'
-									// value={} // Второй элемент массива - "до"
-									onChange={e => {
-										// Обновляем только второй элемент массива, первый оставляем без изменений
-										field.onChange([field.value[0], Number(e.target.value)])
-									}}
-								/>
-							</Stack>
-						)}
-					/>
+					<Stack
+						direction='row'
+						spacing={2}
+					>
+						<Input
+							id='priceFrom'
+							size='small'
+							name='priceFrom'
+							label='От'
+							type='number'
+							placeholder='0'
+							onChange={e => handlePriceChange(Number(e.target.value), filter.price[1])}
+						/>
+						<Input
+							id='priceTo'
+							size='small'
+							name='priceTo'
+							label='До'
+							type='number'
+							placeholder='10000'
+							onChange={e => handlePriceChange(filter.price[0], Number(e.target.value))}
+						/>
+					</Stack>
 				</ListItem>
 			</List>
 			<Divider />
-			<List>
-				<ListItem>
-					<FormControlLabel
-						control={
-							<Checkbox
-								id='bool'
-								name='isRatingAbove4'
-								{...register('isRatingAbove4')}
+			{[
+				{
+					id: 'isRatingAbove4',
+					label: 'Рейтинг 4 и выше',
+				},
+				{
+					id: 'isDiscount',
+					label: 'По скидке',
+				},
+				{
+					id: 'isInStock',
+					label: 'В наличии',
+				},
+			].map((item, index) => (
+				<div key={index}>
+					<List>
+						<ListItem>
+							<FormControlLabel
+								control={
+									<Checkbox
+										id={item.id}
+										checked={filter[item.id]}
+										onChange={handleBooleanChange}
+									/>
+								}
+								label={item.label}
+								sx={{ width: '100%' }}
 							/>
-						}
-						label='Рейтинг 4 и выше'
-						sx={{ width: '100%' }}
-					/>
-				</ListItem>
-			</List>
-			<Divider />
-			<List>
-				<ListItem>
-					<FormControlLabel
-						control={
-							<Checkbox
-								id='bool'
-								name='isDiscount'
-								{...register('isDiscount')}
+						</ListItem>
+					</List>
+					<Divider />
+				</div>
+			))}
+
+			<List
+				subheader={
+					<ListSubheader
+						component='div'
+						id='nested-list-subheader'
+						sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+						onClick={() => setIsBrandOpen(!isBrandOpen)}
+					>
+						Бренд {isBrandOpen ? <ExpandLess /> : <ExpandMore />}
+					</ListSubheader>
+				}
+			>
+				<Collapse
+					in={isBrandOpen}
+					timeout='auto'
+				>
+					{uniqueBrands.sort().map(item => (
+						<ListItem key={item}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										id='brand'
+										value={item}
+										checked={filter.brand.includes(item)}
+										onChange={handleChange}
+									/>
+								}
+								label={item}
+								sx={{ width: '100%' }}
 							/>
-						}
-						label='По скидке'
-						sx={{ width: '100%' }}
-					/>
-				</ListItem>
+						</ListItem>
+					))}
+				</Collapse>
 			</List>
 			<Divider />
-			<List>
-				<ListItem>
-					<FormControlLabel
-						control={
-							<Checkbox
-								id='bool'
-								name='isInStock'
-								{...register('isInStock')}
+			<List
+				subheader={
+					<ListSubheader
+						component='div'
+						id='nested-list-subheader'
+						sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+						onClick={() => setIsTypeOpen(!isTypeOpen)}
+					>
+						Тип {isTypeOpen ? <ExpandLess /> : <ExpandMore />}
+					</ListSubheader>
+				}
+			>
+				<Collapse
+					in={isTypeOpen}
+					timeout='auto'
+				>
+					{uniqueType.sort().map(item => (
+						<ListItem key={item}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										id='type'
+										value={item}
+										checked={filter.type.includes(item)}
+										onChange={handleChange}
+									/>
+								}
+								label={item}
+								sx={{ width: '100%' }}
 							/>
-						}
-						label='В наличии'
-						sx={{ width: '100%' }}
-					/>
-				</ListItem>
+						</ListItem>
+					))}
+				</Collapse>
 			</List>
 			<Divider />
-			{DataList(uniqueBrands, 'brand', 'Бренд', { ...register('brand') })}
-			<Divider />
-			{DataList(uniqueType, 'type', 'Тип', { ...register('type') })}
 			<List>
 				<ListItem>
 					<Button
 						fullWidth
-						type='submit'
+						onClick={onSubmit}
 					>
 						Применить
 					</Button>
