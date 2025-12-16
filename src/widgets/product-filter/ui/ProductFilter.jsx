@@ -66,8 +66,7 @@ const DrawerContent = currentData => {
 	}
 
 	const onReset = () => {
-		setPendingFilter({ ...initialFilter })
-		resetFilterInUrl() // Сбрасываем URL
+		resetFilterInUrl()
 	}
 
 	return (
@@ -94,8 +93,8 @@ const DrawerContent = currentData => {
 							label='От'
 							type='number'
 							placeholder='0'
-							value={pendingFilter.price[0]}
-							onChange={e => handlePriceChange(Number(e.target.value), pendingFilter.price[1])}
+							value={pendingFilter.price[0] || ''}
+							onChange={e => handlePriceChange(e.target.value, pendingFilter.price[1])}
 						/>
 						<Input
 							id='priceTo'
@@ -104,8 +103,8 @@ const DrawerContent = currentData => {
 							label='До'
 							type='number'
 							placeholder='10000'
-							value={pendingFilter.price[1]}
-							onChange={e => handlePriceChange(pendingFilter.price[0], Number(e.target.value))}
+							value={pendingFilter.price[1] || ''}
+							onChange={e => handlePriceChange(pendingFilter.price[0], e.target.value)}
 						/>
 					</Stack>
 				</ListItem>

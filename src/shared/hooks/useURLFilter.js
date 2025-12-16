@@ -7,93 +7,73 @@ export const useURLFilter = () => {
 	const location = useLocation()
 	const [pendingFilter, setPendingFilter] = useState({ ...initialFilter })
 
-	// Получение параметров из URL
-	const searchParams = useMemo(() => {
-		return new URLSearchParams(location.search)
-	}, [location.search])
+	// Функция для получения фильтра из URL
+	const getFilterFromUrl = useCallback(() => {
+		if (!location.search) return { ...initialFilter }
 
-	// Преобразование фильтра в URL параметры
-	const filterToParams = useCallback(filter => {
-		const params = new URLSearchParams()
-
-		// Массивы сохраняем как строки через ПЛЮС
-		if (filter.brand.length > 0) {
-			params.set('brand', filter.brand.join('-'))
-		}
-
-		if (filter.type.length > 0) {
-			params.set('type', filter.type.join('-'))
-		}
-
-		// Цена сохраняем как "min-max" (например: "2000-5000")
-		if (filter.price[0] || filter.price[1]) {
-			let min = filter.price[0] || ''
-			let max = filter.price[1] || ''
-			if (max === 0 || min > max) {
-				max = 999999
-			}
-			params.set('price', `${min}-${max}`)
-		}
-
-		// Булевы значения
-		if (filter.isRatingAbove4) {
-			params.set('rating_above_4', 'true')
-		}
-
-		if (filter.isDiscount) {
-			params.set('discount', 'true')
-		}
-
-		if (filter.isInStock) {
-			params.set('in_stock', 'true')
-		}
-
-		return params
-	}, [])
-
-	// Преобразование URL параметров в фильтр
-	const paramsToFilter = useCallback(() => {
+		const params = new URLSearchParams(location.search)
 		const filter = { ...initialFilter }
 
-		// Обрабатываем массивы - разделяем по ПЛЮСУ
-		const brandParam = searchParams.get('brand')
+		// Бренды - разделяем по '-'
+		const brandParam = params.get('brand')
 		if (brandParam) {
 			filter.brand = brandParam.split('-').filter(item => item.trim() !== '')
 		}
 
-		const typeParam = searchParams.get('type')
+		// Типы - разделяем по '-'
+		const typeParam = params.get('type')
 		if (typeParam) {
 			filter.type = typeParam.split('-').filter(item => item.trim() !== '')
 		}
 
-		// Обрабатываем цену в формате "min-max"
-		const priceParam = searchParams.get('price')
-		if (priceParam) {
+		// Цена
+		const priceParam = params.get('price')
+		if (priceParam && priceParam !== '-') {
 			const [min, max] = priceParam.split('-')
 			filter.price[0] = min || ''
 			filter.price[1] = max || ''
 		}
 
-		// Обрабатываем булевы значения
-		filter.isRatingAbove4 = searchParams.get('rating_above_4') === 'true'
-		filter.isDiscount = searchParams.get('discount') === 'true'
-		filter.isInStock = searchParams.get('in_stock') === 'true'
+		// Булевы значения
+		filter.isRatingAbove4 = params.get('rating_above_4') === 'true'
+		filter.isDiscount = params.get('discount') === 'true'
+		filter.isInStock = params.get('in_stock') === 'true'
 
 		return filter
-	}, [searchParams])
+	}, [location.search])
 
-	// Получить текущий фильтр из URL
-	const getFilterFromUrl = useCallback(() => {
-		return paramsToFilter()
-	}, [paramsToFilter])
-
-	// Обновить URL с новым фильтром
+	// Функция для сохранения фильтра в URL
 	const updateUrlWithFilter = useCallback(
-		newFilter => {
-			const params = filterToParams(newFilter)
-			const searchString = params.toString()
+		filter => {
+			const params = new URLSearchParams()
 
-			// Обновляем URL без перезагрузки страницы
+			// Бренды - объединяем через '-'
+			if (filter.brand.length > 0) {
+				params.set('brand', filter.brand.join('-'))
+			}
+
+			// Типы - объединяем через '-'
+			if (filter.type.length > 0) {
+				params.set('type', filter.type.join('-'))
+			}
+
+			// Цена
+			if (filter.price[0] || filter.price[1]) {
+				params.set('price', `${filter.price[0] || ''}-${filter.price[1] || ''}`)
+			}
+
+			// Булевы значения
+			if (filter.isRatingAbove4) {
+				params.set('rating_above_4', 'true')
+			}
+			if (filter.isDiscount) {
+				params.set('discount', 'true')
+			}
+			if (filter.isInStock) {
+				params.set('in_stock', 'true')
+			}
+
+			const searchString = params.toString()
 			navigate(
 				{
 					pathname: location.pathname,
@@ -102,10 +82,10 @@ export const useURLFilter = () => {
 				{ replace: true }
 			)
 		},
-		[filterToParams, navigate, location.pathname]
+		[navigate, location.pathname]
 	)
 
-	// Сбросить фильтр в URL
+	// Сбросить фильтр
 	const resetFilterInUrl = useCallback(() => {
 		navigate(
 			{
@@ -114,50 +94,32 @@ export const useURLFilter = () => {
 			},
 			{ replace: true }
 		)
-
-		// Также сбрасываем pending фильтр
+		// Сразу сбрасываем pendingFilter
 		setPendingFilter({ ...initialFilter })
 	}, [navigate, location.pathname])
 
-	// Загрузка фильтра из URL при монтировании и обновлении URL
-	useEffect(() => {
-		const filterFromUrl = getFilterFromUrl()
-
-		// Если в URL есть параметры фильтра, устанавливаем их в pendingFilter
-		if (location.search) {
-			setPendingFilter(filterFromUrl)
-		}
-	}, [location.search, getFilterFromUrl])
-
-	// Получить текущий фильтр из URL
-	const currentFilter = useMemo(() => {
-		return getFilterFromUrl()
-	}, [getFilterFromUrl])
-
-	// Инициализируем pendingFilter при первом рендере
-	useEffect(() => {
-		const filterFromUrl = getFilterFromUrl()
-		setPendingFilter(filterFromUrl)
-	}, [])
-
-	// Функция для применения фильтра (сохранения в URL)
+	// Применить фильтр
 	const applyFilter = useCallback(() => {
 		updateUrlWithFilter(pendingFilter)
 	}, [pendingFilter, updateUrlWithFilter])
 
-	return {
-		// Фильтр из URL (активный фильтр)
-		currentFilter,
+	// При загрузке страницы загружаем фильтр из URL
+	useEffect(() => {
+		const filterFromUrl = getFilterFromUrl()
+		setPendingFilter(filterFromUrl)
+	}, [getFilterFromUrl]) // При монтировании и при изменении getFilterFromUrl
 
-		// Фильтр, который пока не применен (предварительный)
+	// Текущий активный фильтр из URL
+	const currentFilter = useMemo(() => {
+		return getFilterFromUrl()
+	}, [getFilterFromUrl])
+
+	return {
+		currentFilter,
 		pendingFilter,
 		setPendingFilter,
-
-		// Функции для работы с URL
 		applyFilter,
 		resetFilterInUrl,
-
-		// Вспомогательные функции
 		getFilterFromUrl,
 		updateUrlWithFilter,
 	}
