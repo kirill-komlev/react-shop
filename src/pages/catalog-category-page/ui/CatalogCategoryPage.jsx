@@ -21,7 +21,6 @@ import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
 import { useURLSort } from 'shared/hooks/useURLSort'
 import { useURLFilter } from 'shared/hooks/useURLFilter'
-import { initialFilter } from 'shared/configs/filter'
 
 export function CatalogCategoryPage() {
 	const productDirection = useProductDirection(state => state.productDirection)
@@ -32,50 +31,47 @@ export function CatalogCategoryPage() {
 
 	// Фильтр по категории
 	let { category } = useParams()
-	console.log(currentFilter)
 
 	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
 	const filteredData = useMemo(() => {
-		return data
-		// .filter(product => {
-		// 	// Фильтр по бренду
-		// 	if (currentFilter.brand.length > 0 && !currentFilter.brand.includes(product.brand)) {
-		// 		return false
-		// 	}
+		return data.filter(product => {
+			// Фильтр по бренду
+			if (currentFilter.brand.length > 0 && !currentFilter.brand.includes(product.brand)) {
+				return false
+			}
 
-		// 	// Фильтр по типу
-		// 	if (currentFilter.type.length > 0 && !currentFilter.type.includes(product.features.type)) {
-		// 		return false
-		// 	}
+			// Фильтр по типу
+			if (currentFilter.type.length > 0 && !currentFilter.type.includes(product.features.type)) {
+				return false
+			}
 
-		// 	// Фильтр по цене
-		// 	if (currentFilter.price !== initialFilter.price) {
-		// 		return false
-		// 	} else {
-		// 		if (product.price < currentFilter.price[0] || product.price > currentFilter.price[1]) {
-		// 			return false
-		// 		}
-		// 	}
+			// Фильтр по цене
+			// if (currentFilter.price !== initialFilter.price) {
+			// 	return false
+			// } else {
+			// 	if (product.price < currentFilter.price[0] || product.price > currentFilter.price[1]) {
+			// 		return false
+			// 	}
+			// }
 
-		// 	console.log(data)
-		// // Фильтр по рейтингу
-		// if (currentFilter.isRatingAbove4 && product.rating < 4) {
-		// 	return false
-		// }
+			// Фильтр по рейтингу
+			if (currentFilter.isRatingAbove4 && product.rating < 4) {
+				return false
+			}
 
-		// // Фильтр по скидке
-		// if (currentFilter.isDiscount && product.discount === 0) {
-		// 	return false
-		// }
+			// Фильтр по скидке
+			if (currentFilter.isDiscount && product.discount === 0) {
+				return false
+			}
 
-		// // Фильтр по наличию
-		// if (currentFilter.isInStock && !product.inStock) {
-		// 	return false
-		// }
+			// Фильтр по наличию
+			if (currentFilter.isInStock && !product.inStock) {
+				return false
+			}
 
-		// 	return true
-		// })
+			return true
+		})
 	}, [currentFilter, data])
 
 	const sortedData = useMemo(() => {
@@ -85,8 +81,6 @@ export function CatalogCategoryPage() {
 	const handleChangeSort = event => {
 		updateSort(event.target.value)
 	}
-
-	console.log(filteredData)
 
 	return (
 		<Box pt={4}>

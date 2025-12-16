@@ -27,12 +27,12 @@ export const useURLFilter = () => {
 		}
 
 		// Цена
-		const priceParam = params.get('price')
-		if (priceParam && priceParam !== '-') {
-			const [min, max] = priceParam.split('-')
-			filter.price[0] = min || ''
-			filter.price[1] = max || ''
-		}
+		// const priceParam = params.get('price')
+		// if (priceParam && priceParam !== '-') {
+		// 	const [min, max] = priceParam.split('-')
+		// 	filter.price[0] = Number(min)
+		// 	filter.price[1] = Number(max)
+		// }
 
 		// Булевы значения
 		filter.isRatingAbove4 = params.get('rating_above_4') === 'true'
@@ -58,9 +58,9 @@ export const useURLFilter = () => {
 			}
 
 			// Цена
-			if (filter.price[0] || filter.price[1]) {
-				params.set('price', `${filter.price[0] || ''}-${filter.price[1] || ''}`)
-			}
+			// if (filter.price[0] || filter.price[1]) {
+			// 	params.set('price', `${filter.price[0] || initialFilter.price[0]}-${filter.price[1] || initialFilter.price[1]}`)
+			// }
 
 			// Булевы значения
 			if (filter.isRatingAbove4) {

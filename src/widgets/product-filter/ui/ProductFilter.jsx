@@ -11,7 +11,6 @@ import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
-import { initialFilter } from 'shared/configs/filter'
 import { useURLFilter } from 'shared/hooks/useURLFilter'
 
 const DrawerContent = currentData => {
@@ -47,12 +46,12 @@ const DrawerContent = currentData => {
 		})
 	}
 
-	const handlePriceChange = (min, max) => {
-		setPendingFilter({
-			...pendingFilter,
-			price: [min, max],
-		})
-	}
+	// const handlePriceChange = (min, max) => {
+	// 	setPendingFilter({
+	// 		...pendingFilter,
+	// 		price: [min, max],
+	// 	})
+	// }
 
 	const handleBooleanChange = e => {
 		setPendingFilter({
@@ -70,8 +69,8 @@ const DrawerContent = currentData => {
 	}
 
 	return (
-		<Box>
-			<List
+		<Box width='100%'>
+			{/* <List
 				subheader={
 					<ListSubheader
 						component='div'
@@ -93,7 +92,7 @@ const DrawerContent = currentData => {
 							label='От'
 							type='number'
 							placeholder='0'
-							value={pendingFilter.price[0] || ''}
+							value={pendingFilter.price[0]}
 							onChange={e => handlePriceChange(e.target.value, pendingFilter.price[1])}
 						/>
 						<Input
@@ -103,13 +102,13 @@ const DrawerContent = currentData => {
 							label='До'
 							type='number'
 							placeholder='10000'
-							value={pendingFilter.price[1] || ''}
+							value={pendingFilter.price[1]}
 							onChange={e => handlePriceChange(pendingFilter.price[0], e.target.value)}
 						/>
 					</Stack>
 				</ListItem>
 			</List>
-			<Divider />
+			<Divider /> */}
 			{[
 				{
 					id: 'isRatingAbove4',
@@ -143,7 +142,6 @@ const DrawerContent = currentData => {
 					<Divider />
 				</div>
 			))}
-
 			<List
 				subheader={
 					<ListSubheader
@@ -248,8 +246,13 @@ export function ProductFilter({ category }) {
 			open={filterSidebar}
 			onClose={closeFilterSidebar}
 			anchor='right'
+			sx={{ display: { xs: 'block', md: 'none' } }}
 		>
-			<Box py={2}>
+			<Box
+				py={2}
+				maxWidth='320px'
+				width='100%'
+			>
 				<Stack
 					direction='row'
 					alignItems='center'
