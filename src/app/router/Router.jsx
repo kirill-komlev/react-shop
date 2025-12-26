@@ -27,7 +27,7 @@ export function Router() {
 					element={<CatalogCategoryPage />}
 				/>
 				<Route
-					path={`${PAGE_CONFIG.product}/:id`}
+					path={`${PAGE_CONFIG.product}/:id/:name`}
 					element={<ProductPage />}
 				/>
 				<Route

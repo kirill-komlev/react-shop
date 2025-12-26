@@ -13,7 +13,7 @@ export function CatalogItem({ index }) {
 				sx={{
 					p: 2,
 					'&:hover': {
-						backgroundColor: 'primary.main',
+						color: 'primary.main',
 						transition: '.2s',
 					},
 				}}

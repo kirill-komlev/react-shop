@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, CardMedia, Stack, Typography, Rating, Grid, Box, Chip } from '@mui/material'
+import { Card, CardActions, CardContent, CardMedia, Stack, Typography, Grid, Box, Chip } from '@mui/material'
 
 import { AddFavorite, DeleteFavorite } from 'features/product-favorites/ui/ProductFavorites'
 import { AddCart, AddCartFull, DeleteCart, DeleteCartFull } from 'features/product-cart/ui/ProductCart'
@@ -9,7 +9,37 @@ import { Link } from 'shared/ui/Link'
 import { useFavoriteStore, useCartStore } from 'app/providers/store-provider/StoreProvider'
 import { CATEGORIES_FULL } from 'shared/configs/categories'
 import { useParams } from 'react-router'
-import { calculateDiscount } from 'shared/libs/calculateDiscount'
+import { Rating } from 'shared/ui/Rating'
+
+const CardImage = ({ data }) => (
+	<Box position='relative'>
+		<CardMedia
+			component='img'
+			sx={{ height: 250, objectFit: 'contain', p: 1, background: '#fff' }}
+			image={data.image}
+			title={data.name}
+		/>
+		<Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 2 }}>
+			<Stack
+				direction='row'
+				gap={1}
+			>
+				{data.discount != 0 && (
+					<Chip
+						label={`-${data.discount}%`}
+						color='error'
+					/>
+				)}
+				{data.isNew && (
+					<Chip
+						label='Новое'
+						color='warning'
+					/>
+				)}
+			</Stack>
+		</Box>
+	</Box>
+)
 
 export function ProductCard({ data }) {
 	const favorite = useFavoriteStore(state => state.favorite)
@@ -17,34 +47,7 @@ export function ProductCard({ data }) {
 
 	return (
 		<Card sx={{ height: '100%' }}>
-			<Box position='relative'>
-				<CardMedia
-					component='img'
-					sx={{ height: 250, objectFit: 'contain', py: 1, background: '#fff' }}
-					image={data.image}
-					title={data.name}
-				/>
-				<Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
-					<Stack
-						direction='row'
-						gap={1}
-					>
-						{data.discount != 0 && (
-							<Chip
-								label={`-${data.discount}%`}
-								color='error'
-							/>
-						)}
-						{data.isNew && (
-							<Chip
-								label='Новое'
-								color='warning'
-							/>
-						)}
-					</Stack>
-				</Box>
-			</Box>
-
+			<CardImage data={data} />
 			<CardContent sx={{ pb: 0 }}>
 				<Typography
 					gutterBottom
@@ -65,24 +68,7 @@ export function ProductCard({ data }) {
 						</Link>
 					)}
 				</Typography>
-				<Stack
-					direction='row'
-					alignItems='center'
-					gap={1}
-				>
-					<Rating
-						name='read-only'
-						value={data.rating}
-						precision={0.1}
-						readOnly
-					/>
-					<Typography
-						variant='body1'
-						sx={{ mt: '2px' }}
-					>
-						{data.rating}
-					</Typography>
-				</Stack>
+				<Rating rating={data.rating} />
 			</CardContent>
 			<CardActions>
 				<Grid
@@ -141,33 +127,7 @@ export function ProductCardHorizontal({ data }) {
 
 	return (
 		<Card sx={{ display: 'flex' }}>
-			<Box position='relative'>
-				<CardMedia
-					component='img'
-					sx={{ height: 200, width: 200, objectFit: 'contain', p: 2, my: 2, background: '#fff' }}
-					image={data.image}
-					title={data.name}
-				/>
-				<Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 2 }}>
-					<Stack
-						direction='row'
-						gap={1}
-					>
-						{data.discount != 0 && (
-							<Chip
-								label={`-${data.discount}%`}
-								color='error'
-							/>
-						)}
-						{data.isNew && (
-							<Chip
-								label='Новое'
-								color='warning'
-							/>
-						)}
-					</Stack>
-				</Box>
-			</Box>
+			<CardImage data={data} />
 			<CardContent
 				sx={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
 				pb={2}
@@ -178,7 +138,7 @@ export function ProductCardHorizontal({ data }) {
 						variant='h5'
 						component='div'
 					>
-						<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
+						<Link to={`${PAGE_CONFIG.product}/${data.id}/${data.name.replace(/\s/g, '-').toLowerCase()}`}>
 							{data.features.type} {CATEGORIES_FULL[category].ru[0]} {data.name}
 						</Link>
 					</Typography>
@@ -206,24 +166,7 @@ export function ProductCardHorizontal({ data }) {
 					alignItems='center'
 					gap={1}
 				>
-					<Stack
-						direction='row'
-						alignItems='center'
-						gap={1}
-					>
-						<Rating
-							name='read-only'
-							value={data.rating}
-							precision={0.5}
-							readOnly
-						/>
-						<Typography
-							variant='body1'
-							sx={{ mt: '2px' }}
-						>
-							{data.rating}
-						</Typography>
-					</Stack>
+					<Rating rating={data.rating} />
 					<Stack
 						direction='row'
 						alignItems='center'
