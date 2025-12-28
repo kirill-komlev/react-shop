@@ -30,7 +30,6 @@ import { CATEGORIES_FULL } from 'shared/configs/categories'
 
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/providers/store-provider/StoreProvider'
-import { useParams } from 'react-router'
 import { MobileHeader } from './MobileHeader'
 
 const navItems = [
@@ -121,7 +120,12 @@ export function Header() {
 												sx={{ fill: '#ffffff' }}
 											/>
 										</Box>
-										<Typography variant='h5'>{APP_CONFIG.name}</Typography>
+										<Typography
+											variant='h5'
+											color={scroll == 0 ? 'white' : 'primary'}
+										>
+											{APP_CONFIG.name}
+										</Typography>
 									</Stack>
 								</Link>
 							</Typography>
@@ -191,7 +195,7 @@ export function Header() {
 												color='primary'
 												badgeContent={favorite.length}
 											>
-												<FavoriteIcon />
+												<FavoriteIcon color={scroll == 0 ? 'white' : 'primary'} />
 											</Badge>
 										</IconButton>
 									</Tooltip>
@@ -206,7 +210,7 @@ export function Header() {
 											color='primary'
 											badgeContent={cart.length}
 										>
-											<ShoppingCartIcon />
+											<ShoppingCartIcon color={scroll == 0 ? 'white' : 'primary'} />
 										</Badge>
 									</IconButton>
 								</Tooltip>

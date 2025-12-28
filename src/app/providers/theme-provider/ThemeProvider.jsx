@@ -6,6 +6,12 @@ const theme = createTheme({
 		nativeColor: true,
 	},
 	palette: {
+		white: {
+			main: '#ffffffea',
+			light: '#ffffff',
+			dark: '#ffffffc4',
+			contrastText: '#000000',
+		},
 		// mode: 'dark',
 		// primary: {
 		// 	main: alpha(COLORS.primary, 0.7),

@@ -15,7 +15,7 @@ const CardImage = ({ data }) => (
 	<Box position='relative'>
 		<CardMedia
 			component='img'
-			sx={{ height: 250, objectFit: 'contain', p: 1, background: '#fff' }}
+			sx={{ height: 250, minWidth: 250, objectFit: 'contain', p: 1, background: '#fff' }}
 			image={data.image}
 			title={data.name}
 		/>
