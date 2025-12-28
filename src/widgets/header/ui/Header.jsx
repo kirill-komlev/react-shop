@@ -1,24 +1,17 @@
 import { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
-import MenuIcon from '@mui/icons-material/Menu'
+
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Badge, Container, Drawer, Menu, MenuItem, Stack, Tooltip, BottomNavigation, BottomNavigationAction } from '@mui/material'
+import { Badge, Container, Menu, MenuItem, Stack, Tooltip } from '@mui/material'
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
-import GamepadIcon from '@mui/icons-material/Gamepad'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import DeleteIcon from '@mui/icons-material/Delete'
 
 import { Button } from 'shared/ui/Button'
 import { Link } from 'shared/ui/Link'
@@ -31,6 +24,7 @@ import { CATEGORIES_FULL } from 'shared/configs/categories'
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/providers/store-provider/StoreProvider'
 import { MobileHeader } from './MobileHeader'
+import { useLocation } from 'react-router'
 
 const navItems = [
 	// ['Товары', PAGE_CONFIG.product],
@@ -55,6 +49,15 @@ export function Header() {
 	const cart = useCartStore(state => state.cart)
 	const openCartDrawer = useCartDrawerStore(state => state.openCartDrawer)
 
+	const [path, setPath] = useState('')
+
+	const location = useLocation()
+	useEffect(() => {
+		setPath(location.pathname)
+	}, [location])
+
+	console.log(path)
+
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
 	const handleClick = event => {
@@ -78,7 +81,8 @@ export function Header() {
 			<Box sx={{ display: { sm: 'flex' } }}>
 				<AppBar
 					component='nav'
-					color={scroll == 0 ? 'transparent' : 'default'}
+					color={path == '/' ? (scroll == 0 ? 'transparent' : 'white') : 'white'}
+					// color='primary'
 					enableColorOnDark
 					sx={{ backgroundImage: 'none', boxShadow: scroll == 0 ? 'none' : 'default' }}
 				>
@@ -117,12 +121,12 @@ export function Header() {
 										>
 											<SportsEsportsIcon
 												fontSize='large'
-												sx={{ fill: '#ffffff' }}
+												color='white'
 											/>
 										</Box>
 										<Typography
 											variant='h5'
-											color={scroll == 0 ? 'white' : 'primary'}
+											color={path == '/' ? (scroll == 0 ? 'white' : 'primary') : 'primary'}
 										>
 											{APP_CONFIG.name}
 										</Typography>
@@ -195,7 +199,10 @@ export function Header() {
 												color='primary'
 												badgeContent={favorite.length}
 											>
-												<FavoriteIcon color={scroll == 0 ? 'white' : 'primary'} />
+												<FavoriteIcon
+													color={path == '/' ? (scroll == 0 ? 'white' : 'primary') : 'primary'}
+													// color={scroll == 0 ? 'white' : 'primary'}
+												/>
 											</Badge>
 										</IconButton>
 									</Tooltip>
@@ -210,7 +217,10 @@ export function Header() {
 											color='primary'
 											badgeContent={cart.length}
 										>
-											<ShoppingCartIcon color={scroll == 0 ? 'white' : 'primary'} />
+											<ShoppingCartIcon
+												color={path == '/' ? (scroll == 0 ? 'white' : 'primary') : 'primary'}
+												// color={scroll == 0 ? 'white' : 'primary'}
+											/>
 										</Badge>
 									</IconButton>
 								</Tooltip>
