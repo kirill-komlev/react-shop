@@ -9,6 +9,7 @@ import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { FavoritePage } from 'pages/favorite-page/ui/FavoritePage'
 import { CatalogPage } from 'pages/catalog-page/ui/CatalogPage'
 import { ProductPage } from 'pages/product-page/ui/ProductPage'
+import { CartPage } from 'pages/cart-page/ui/CartPage'
 
 export function Router() {
 	return (
@@ -40,7 +41,7 @@ export function Router() {
 				/>
 				<Route
 					path={PAGE_CONFIG.cart}
-					element={<>lorem</>}
+					element={<CartPage />}
 				/>
 				<Route
 					path={PAGE_CONFIG.favorite}

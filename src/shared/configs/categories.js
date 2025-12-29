@@ -8,7 +8,7 @@ export const CATEGORIES_FULL = {
 	keyboards: {
 		en: ['keyboard', 'keyboards'],
 		ru: ['клавиатура', 'клавиатуры'],
-		img: '/images/logitech-g-pro-kb.jpg',
+		img: '/images/logitech-g-pro-x-kb.jpg',
 	},
 	headphones: {
 		en: ['headphones', 'headphones'],

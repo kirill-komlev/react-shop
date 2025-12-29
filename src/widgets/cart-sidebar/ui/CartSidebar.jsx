@@ -7,11 +7,20 @@ import { CartItem } from './CartItem'
 
 import { DATA } from 'shared/configs/data'
 import { Button } from 'shared/ui/Button'
+import { PAGE_CONFIG } from 'shared/configs/page.config'
+import { Link } from 'shared/ui/Link'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router'
 
 export function CartSidebar() {
 	const cart = useCartStore(state => state.cart)
 	const cartDrawer = useCartDrawerStore(state => state.cartDrawer)
 	const closeCartDrawer = useCartDrawerStore(state => state.closeCartDrawer)
+
+	const location = useLocation()
+	useEffect(() => {
+		closeCartDrawer()
+	}, [location])
 
 	// Нахождения товаров, которые должны быть в корзине
 	let productsWithDiscount = 0
@@ -82,7 +91,7 @@ export function CartSidebar() {
 							>
 								<Typography
 									variant='h6'
-									color='secondary'
+									color='primary'
 									sx={{ fontWeight: 700 }}
 								>
 									{productsWithDiscount} ₽
@@ -96,7 +105,9 @@ export function CartSidebar() {
 							</Stack>
 						)}
 					</Stack>
-					<Button fullWidth>Перейти в корзину</Button>
+					<Link to={PAGE_CONFIG.cart}>
+						<Button fullWidth>Перейти в корзину</Button>
+					</Link>
 				</Stack>
 			</Box>
 		</Drawer>

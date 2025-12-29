@@ -370,7 +370,7 @@ export function Header() {
 								</Link>
 								<Tooltip
 									title='Корзина'
-									onClick={openCartDrawer}
+									onClick={path != '/cart' ? openCartDrawer : () => console.log()}
 								>
 									<IconButton>
 										<Badge

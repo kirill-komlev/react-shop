@@ -2,8 +2,10 @@ import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 import { calculateDiscount } from 'shared/libs/calculateDiscount'
+import { useCartStore } from 'app/providers/store-provider/StoreProvider'
 
 export function CartItem({ data }) {
+	const deleteCart = useCartStore(state => state.deleteCart)
 	return (
 		<Stack
 			direction='row'
@@ -32,7 +34,7 @@ export function CartItem({ data }) {
 					>
 						<Typography
 							variant='body1'
-							color='secondary'
+							color='primary'
 						>
 							{calculateDiscount(data.price, data.discount)} ₽
 						</Typography>
@@ -46,7 +48,10 @@ export function CartItem({ data }) {
 				)}
 			</Stack>
 			<Tooltip title='Удалить из корзины'>
-				<IconButton sx={{ ml: 'auto' }}>
+				<IconButton
+					sx={{ ml: 'auto' }}
+					onClick={() => deleteCart(data.id)}
+				>
 					<DeleteIcon />
 				</IconButton>
 			</Tooltip>
