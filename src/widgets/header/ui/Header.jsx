@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton'
 
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { alpha, Badge, Container, Divider, InputBase, List, ListItem, ListItemText, Menu, MenuItem, Paper, Stack, styled, Tooltip } from '@mui/material'
+import { Badge, Container, Divider, InputBase, List, ListItem, ListItemText, Menu, MenuItem, Stack, styled, Tooltip } from '@mui/material'
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -27,14 +27,13 @@ import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/provider
 import { MobileHeader } from './MobileHeader'
 import { useLocation } from 'react-router'
 import { DATA } from 'shared/configs/data'
-import { findKeyByValue } from 'shared/libs/findKeyByValue'
 import { transformWord } from 'shared/libs/transformWord'
 
-const navItems = [
-	// ['Товары', PAGE_CONFIG.product],
-	['Акции', PAGE_CONFIG.sales],
-	['О нас', PAGE_CONFIG.about],
-]
+// const navItems = [
+// 	// ['Товары', PAGE_CONFIG.product],
+// 	['Акции', PAGE_CONFIG.sales],
+// 	['О нас', PAGE_CONFIG.about],
+// ]
 
 const LinkButtonStyle = {
 	px: 2,
@@ -83,8 +82,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 		transition: theme.transitions.create('width'),
 		[theme.breakpoints.up('sm')]: {
 			width: '0ch',
+			'& .ListStyle': {
+				display: 'none',
+			},
 			'&:focus': {
 				width: '25ch',
+				'& .ListStyle': {
+					display: 'block',
+				},
 			},
 		},
 	},
@@ -105,8 +110,25 @@ export function Header() {
 
 	const [searchTerm, setSearchTerm] = useState('')
 	const [searchResults, setSearchResults] = useState([])
+	const [isFocused, setIsFocused] = useState(false)
 	const handleChange = e => {
 		setSearchTerm(e.target.value)
+	}
+
+	const handleFocus = () => {
+		setIsFocused(true)
+	}
+
+	const handleBlur = () => {
+		// Добавляем небольшую задержку, чтобы клик по списку успел сработать
+		setTimeout(() => setIsFocused(false), 200)
+	}
+
+	const ListStyle = {
+		display: isFocused && searchTerm ? 'block' : 'none',
+		width: '100%',
+		px: 2,
+		bgcolor: 'white.dark',
 	}
 	useEffect(() => {
 		const results = data.filter(item => item.toLowerCase().includes(searchTerm))
@@ -175,11 +197,7 @@ export function Header() {
 			>
 				<List
 					aria-label='search items'
-					sx={{
-						width: '100%',
-						px: 2,
-						bgcolor: 'white.dark',
-					}}
+					sx={ListStyle}
 				>
 					{searchResults.length === 0 ? (
 						<ListItem>
@@ -187,7 +205,7 @@ export function Header() {
 						</ListItem>
 					) : (
 						searchResults.map(item => (
-							<>
+							<Box key={item}>
 								<ListItem>
 									<Link
 										to={`${PAGE_CONFIG.product}/${DATA.find(p => p.name === item)?.id}/${item}`}
@@ -197,7 +215,7 @@ export function Header() {
 									</Link>
 								</ListItem>
 								<Divider />
-							</>
+							</Box>
 						))
 					)}
 				</List>
@@ -328,6 +346,8 @@ export function Header() {
 									<StyledInputBase
 										value={searchTerm}
 										onChange={handleChange}
+										onFocus={handleFocus}
+										onBlur={handleBlur}
 										placeholder='Поиск...'
 										inputProps={{ 'aria-label': 'search' }}
 									/>

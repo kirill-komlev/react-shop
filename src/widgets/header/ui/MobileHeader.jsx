@@ -1,4 +1,3 @@
-import { useParams } from 'react-router'
 import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 
 import HomeIcon from '@mui/icons-material/Home'
