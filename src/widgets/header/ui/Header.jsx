@@ -26,8 +26,8 @@ import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/providers/store-provider/StoreProvider'
 import { MobileHeader } from './MobileHeader'
 import { useLocation } from 'react-router'
-import { DATA } from 'shared/configs/data'
 import { transformWord } from 'shared/libs/transformWord'
+import { useData } from 'shared/hooks/useData'
 
 // const navItems = [
 // 	// ['Товары', PAGE_CONFIG.product],
@@ -101,12 +101,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 // }))
 
 // const data = DATA.map(item => `${item.category} ${item.name}`)
-const data = DATA.map(item => item.name)
 
 export function Header() {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 	const openCartDrawer = useCartDrawerStore(state => state.openCartDrawer)
+
+	const { items } = useData()
+	const data = items?.map(item => item.name)
 
 	const [searchTerm, setSearchTerm] = useState('')
 	const [searchResults, setSearchResults] = useState([])
@@ -131,7 +133,7 @@ export function Header() {
 		bgcolor: 'white.dark',
 	}
 	useEffect(() => {
-		const results = data.filter(item => item.toLowerCase().includes(searchTerm))
+		const results = data?.filter(item => item.toLowerCase().includes(searchTerm))
 		setSearchResults(results)
 	}, [searchTerm])
 
@@ -199,19 +201,19 @@ export function Header() {
 					aria-label='search items'
 					sx={ListStyle}
 				>
-					{searchResults.length === 0 ? (
+					{searchResults?.length === 0 ? (
 						<ListItem>
 							<ListItemText primary='Товар не найден' />
 						</ListItem>
 					) : (
-						searchResults.map(item => (
+						searchResults?.map(item => (
 							<Box key={item}>
 								<ListItem>
 									<Link
-										to={`${PAGE_CONFIG.product}/${DATA.find(p => p.name === item)?.id}/${item}`}
+										to={`${PAGE_CONFIG.product}/${items?.find(p => p.name === item)?.id}/${item}`}
 										style={{ width: '100%', textDecoration: 'none', color: 'inherit' }}
 									>
-										<ListItemText primary={`${transformWord(DATA.find(p => p.name === item)?.category, 'ru')} ${item}`} />
+										<ListItemText primary={`${transformWord(items?.find(p => p.name === item)?.category, 'ru')} ${item}`} />
 									</Link>
 								</ListItem>
 								<Divider />

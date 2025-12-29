@@ -11,7 +11,6 @@ import { ProductDirection } from 'widgets/product-direction/ui/ProductDirection'
 import { Button } from 'shared/ui/Button'
 
 import { CATEGORIES_FULL } from 'shared/configs/categories'
-import { DATA } from 'shared/configs/data'
 
 import { sortBy } from 'shared/libs/sortBy'
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
@@ -21,6 +20,7 @@ import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
 import { useURLSort } from 'shared/hooks/useURLSort'
 import { useURLFilter } from 'shared/hooks/useURLFilter'
+import { useData } from 'shared/hooks/useData'
 
 export function CatalogCategoryPage() {
 	const productDirection = useProductDirection(state => state.productDirection)
@@ -32,10 +32,11 @@ export function CatalogCategoryPage() {
 	// Фильтр по категории
 	let { category } = useParams()
 
-	const data = DATA.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
+	const { items } = useData()
+	const data = items?.filter(item => item.category === capitalizeFirstLetter(CATEGORIES_FULL[category].ru[1]))
 
 	const filteredData = useMemo(() => {
-		return data.filter(product => {
+		return data?.filter(product => {
 			// Фильтр по бренду
 			if (currentFilter.brand.length > 0 && !currentFilter.brand.includes(product.brand)) {
 				return false
@@ -129,7 +130,7 @@ export function CatalogCategoryPage() {
 								spacing={2}
 								width='100%'
 							>
-								{sortedData.slice(0, productCount).map(item => {
+								{sortedData?.slice(0, productCount)?.map(item => {
 									if (productDirection == 'vertical')
 										return (
 											<Grid
@@ -156,20 +157,6 @@ export function CatalogCategoryPage() {
 													<ProductCard data={item} />
 												</Box>
 											</Grid>
-											/* <Grid
-													size={12}
-													key={item.id}
-													sx={{ display: { xs: 'none', md: 'block' } }}
-												>
-													<ProductCardHorizontal data={item} />
-												</Grid>
-												<Grid
-													size={{ xs: 12, sm: 6, md: 4 }}
-													key={item.id}
-													sx={{ display: { xs: 'block', md: 'none' } }}
-												>
-													<ProductCard data={item} />
-												</Grid> */
 										)
 								})}
 							</Grid>

@@ -2,13 +2,15 @@ import { Box, Container, Grid, Stack, Typography } from '@mui/material'
 
 import { ProductCard } from 'widgets/product-card/ui/ProductCard'
 
-import { DATA } from 'shared/configs/data'
 import { Button } from 'shared/ui/Button'
 import Particles from 'shared/ui/Particles/Particles'
 import { Link } from 'shared/ui/Link'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
+import { useData } from 'shared/hooks/useData'
 
 export function HomePage() {
+	const { items } = useData()
+
 	return (
 		<>
 			<Box
@@ -72,10 +74,10 @@ export function HomePage() {
 					spacing={2}
 					width='100%'
 				>
-					{DATA.slice(0, 4).map((item, index) => (
+					{items?.slice(0, 4).map(item => (
 						<Grid
 							size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
-							key={index}
+							key={item.name}
 						>
 							<ProductCard data={item} />
 						</Grid>

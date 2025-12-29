@@ -5,12 +5,12 @@ import { useCartDrawerStore, useCartStore } from 'app/providers/store-provider/S
 
 import { CartItem } from './CartItem'
 
-import { DATA } from 'shared/configs/data'
 import { Button } from 'shared/ui/Button'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
 import { useEffect } from 'react'
 import { useLocation } from 'react-router'
+import { useData } from 'shared/hooks/useData'
 
 export function CartSidebar() {
 	const cart = useCartStore(state => state.cart)
@@ -27,7 +27,9 @@ export function CartSidebar() {
 	let productsWithoutDiscount = 0
 	let discount = 0
 
-	const productsInCart = DATA.filter(item => {
+	const { items } = useData()
+
+	const productsInCart = items?.filter(item => {
 		if (cart.indexOf(item.id) != -1) {
 			discount += item.discount
 			productsWithoutDiscount += item.price
@@ -64,7 +66,7 @@ export function CartSidebar() {
 				</Stack>
 				<Box>
 					<Stack gap={3}>
-						{productsInCart.map((item, index) => (
+						{productsInCart?.map((item, index) => (
 							<CartItem
 								key={index}
 								data={item}

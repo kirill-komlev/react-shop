@@ -6,12 +6,12 @@ import { FilterList } from '@mui/icons-material'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useState } from 'react'
-import { DATA } from 'shared/configs/data'
 import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { Input } from 'shared/ui/Input'
 import { Button } from 'shared/ui/Button'
 import { useFilterSidebarStore } from 'app/providers/store-provider/StoreProvider'
 import { useURLFilter } from 'shared/hooks/useURLFilter'
+import { useData } from 'shared/hooks/useData'
 
 const DrawerContent = currentData => {
 	const data = currentData.data
@@ -19,8 +19,8 @@ const DrawerContent = currentData => {
 	const [isBrandOpen, setIsBrandOpen] = useState(false)
 	const [isTypeOpen, setIsTypeOpen] = useState(false)
 
-	const uniqueBrands = [...new Set(data.map(item => item.brand))]
-	const uniqueType = [...new Set(data.map(item => item.features.type))]
+	const uniqueBrands = [...new Set(data?.map(item => item.brand))]
+	const uniqueType = [...new Set(data?.map(item => item.features.type))]
 
 	const {
 		pendingFilter, // Предварительный фильтр (еще не применен)
@@ -239,7 +239,9 @@ export function ProductFilter({ category }) {
 	const filterSidebar = useFilterSidebarStore(state => state.filterSidebar)
 	const closeFilterSidebar = useFilterSidebarStore(state => state.closeFilterSidebar)
 
-	const data = DATA.filter(item => item.category === capitalizeFirstLetter(category))
+	const { items } = useData()
+
+	const data = items?.filter(item => item.category === capitalizeFirstLetter(category))
 
 	const MobileFilterSidebar = () => (
 		<Drawer

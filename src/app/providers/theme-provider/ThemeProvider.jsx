@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider as MuiThemeProvider, alpha } from '@mui/material'
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material'
 import { COLORS } from 'shared/configs/color.config'
 
 const theme = createTheme({

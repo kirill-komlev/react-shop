@@ -4,8 +4,8 @@ import { AddCartFull, DeleteCartFull } from 'features/product-cart/ui/ProductCar
 import { AddFavorite, DeleteFavorite } from 'features/product-favorites/ui/ProductFavorites'
 import { useParams } from 'react-router'
 import { CATEGORIES_FULL } from 'shared/configs/categories'
-import { DATA } from 'shared/configs/data'
 import { PAGE_CONFIG } from 'shared/configs/page.config'
+import { useDataById } from 'shared/hooks/useDataById'
 import { findKeyByValue } from 'shared/libs/findKeyByValue'
 import { Link } from 'shared/ui/Link'
 import { Rating } from 'shared/ui/Rating'
@@ -33,8 +33,11 @@ export function ProductPage() {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 
-	const data = DATA[product.id]
+	const { item, isLoading } = useDataById(product.id)
+	// const data = DATA[product.id]
+	const data = item
 
+	if (isLoading) return <></>
 	return (
 		<Box pt={4}>
 			<Container maxWidth='xl'>
@@ -104,10 +107,12 @@ export function ProductPage() {
 										/>
 									</>
 								) : data.category == 'Клавиатуры' ? (
-									<><Features
+									<>
+										<Features
 											features='Подключение'
 											value={data.features.connection}
-										/></>
+										/>
+									</>
 								) : (
 									<></>
 								)}

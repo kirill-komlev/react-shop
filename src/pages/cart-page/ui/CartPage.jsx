@@ -1,6 +1,5 @@
 import { Box, Container, Stack, Typography, Grid, Paper, Tooltip, IconButton, Snackbar } from '@mui/material'
 import { useCartStore, useFavoriteStore } from 'app/providers/store-provider/StoreProvider'
-import { DATA } from 'shared/configs/data'
 import { calculateDiscount } from 'shared/libs/calculateDiscount'
 import { declensionOfNumber } from 'shared/libs/declensionOfNumber'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -11,7 +10,6 @@ import { useState } from 'react'
 
 const CartItem = ({ data }) => {
 	const deleteCart = useCartStore(state => state.deleteCart)
-
 	const favorite = useFavoriteStore(state => state.favorite)
 
 	return (
