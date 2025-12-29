@@ -5,13 +5,14 @@ import IconButton from '@mui/material/IconButton'
 
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Badge, Container, Menu, MenuItem, Stack, Tooltip } from '@mui/material'
+import { alpha, Badge, Container, Divider, InputBase, List, ListItem, ListItemText, Menu, MenuItem, Paper, Stack, styled, Tooltip } from '@mui/material'
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import SearchIcon from '@mui/icons-material/Search'
 
 import { Button } from 'shared/ui/Button'
 import { Link } from 'shared/ui/Link'
@@ -25,6 +26,9 @@ import { capitalizeFirstLetter } from 'shared/libs/capitalizeFirstLetter'
 import { useFavoriteStore, useCartStore, useCartDrawerStore } from 'app/providers/store-provider/StoreProvider'
 import { MobileHeader } from './MobileHeader'
 import { useLocation } from 'react-router'
+import { DATA } from 'shared/configs/data'
+import { findKeyByValue } from 'shared/libs/findKeyByValue'
+import { transformWord } from 'shared/libs/transformWord'
 
 const navItems = [
 	// ['Товары', PAGE_CONFIG.product],
@@ -44,19 +48,77 @@ const LinkButtonStyle = {
 	},
 }
 
+const Search = styled('div')(({ theme }) => ({
+	position: 'relative',
+	borderRadius: theme.shape.borderRadius,
+	// backgroundColor: alpha(theme.palette.common.white, 0.15),
+	// '&:hover': {
+	// 	backgroundColor: alpha(theme.palette.common.white, 0.25),
+	// },
+	marginLeft: 0,
+	width: '100%',
+	[theme.breakpoints.up('sm')]: {
+		marginLeft: theme.spacing(1),
+		width: 'auto',
+	},
+}))
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+	padding: theme.spacing(0, 2),
+	height: '100%',
+	position: 'absolute',
+	pointerEvents: 'none',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+}))
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+	color: 'inherit',
+	width: '100%',
+	'& .MuiInputBase-input': {
+		padding: theme.spacing(1, 0, 1, 0),
+		// vertical padding + font size from searchIcon
+		paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+		transition: theme.transitions.create('width'),
+		[theme.breakpoints.up('sm')]: {
+			width: '0ch',
+			'&:focus': {
+				width: '25ch',
+			},
+		},
+	},
+}))
+
+// const data = DATA.map(item => ({
+// 	id: item.id,
+// 	name: item.name,
+// }))
+
+// const data = DATA.map(item => `${item.category} ${item.name}`)
+const data = DATA.map(item => item.name)
+
 export function Header() {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 	const openCartDrawer = useCartDrawerStore(state => state.openCartDrawer)
 
-	const [path, setPath] = useState('')
+	const [searchTerm, setSearchTerm] = useState('')
+	const [searchResults, setSearchResults] = useState([])
+	const handleChange = e => {
+		setSearchTerm(e.target.value)
+	}
+	useEffect(() => {
+		const results = data.filter(item => item.toLowerCase().includes(searchTerm))
+		setSearchResults(results)
+	}, [searchTerm])
 
+	const [path, setPath] = useState('')
 	const location = useLocation()
 	useEffect(() => {
 		setPath(location.pathname)
+		setSearchTerm('')
 	}, [location])
-
-	console.log(path)
 
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
@@ -76,9 +138,76 @@ export function Header() {
 		setScroll(window.scrollY)
 	}
 
+	const SearchResult = () => (
+		<Box
+			sx={{
+				display: searchTerm.length === 0 ? 'none' : 'block',
+				position: 'fixed',
+				top: 64,
+				zIndex: 9999,
+				// py: 2,
+				width: '100%',
+				// backgroundColor: 'white.main',
+				overflow: 'hidden', // Добавлено, чтобы скрыть всё, что выходит за пределы
+			}}
+		>
+			<Container
+				maxWidth='xl'
+				disableGutters
+				sx={{
+					maxHeight: '500px', // Ограничиваем высоту контейнера
+					overflowY: 'auto', // Добавляем вертикальный скролл
+					'&::-webkit-scrollbar': {
+						width: '8px',
+					},
+					'&::-webkit-scrollbar-track': {
+						background: '#f1f1f1',
+						borderRadius: '4px',
+					},
+					'&::-webkit-scrollbar-thumb': {
+						background: '#888',
+						borderRadius: '4px',
+					},
+					'&::-webkit-scrollbar-thumb:hover': {
+						background: '#555',
+					},
+				}}
+			>
+				<List
+					aria-label='search items'
+					sx={{
+						width: '100%',
+						px: 2,
+						bgcolor: 'white.dark',
+					}}
+				>
+					{searchResults.length === 0 ? (
+						<ListItem>
+							<ListItemText primary='Товар не найден' />
+						</ListItem>
+					) : (
+						searchResults.map(item => (
+							<>
+								<ListItem>
+									<Link
+										to={`${PAGE_CONFIG.product}/${DATA.find(p => p.name === item)?.id}/${item}`}
+										style={{ width: '100%', textDecoration: 'none', color: 'inherit' }}
+									>
+										<ListItemText primary={`${transformWord(DATA.find(p => p.name === item)?.category, 'ru')} ${item}`} />
+									</Link>
+								</ListItem>
+								<Divider />
+							</>
+						))
+					)}
+				</List>
+			</Container>
+		</Box>
+	)
+
 	return (
 		<>
-			<Box sx={{ display: { sm: 'flex' } }}>
+			<Box sx={{ display: { sm: 'none', md: 'flex' } }}>
 				<AppBar
 					component='nav'
 					color={path == '/' ? (scroll == 0 ? 'transparent' : 'white') : 'white'}
@@ -90,7 +219,7 @@ export function Header() {
 						maxWidth='xl'
 						disableGutters
 					>
-						<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+						<Toolbar sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
 							<Typography
 								variant='h6'
 								component='div'
@@ -136,7 +265,7 @@ export function Header() {
 							<Stack
 								direction='row'
 								gap={1}
-								sx={{ display: { xs: 'none', sm: 'flex' } }}
+								sx={{ display: { xs: 'none', sm: 'flex' }, marginRight: 'auto' }}
 							>
 								<Button
 									variant='text'
@@ -171,7 +300,7 @@ export function Header() {
 										</Link>
 									))}
 								</Menu>
-								{navItems.map((item, index) => (
+								{/* {navItems.map((item, index) => (
 									<Link
 										key={index}
 										to={item[1]}
@@ -184,13 +313,25 @@ export function Header() {
 											{item[0]}
 										</Button>
 									</Link>
-								))}
+								))} */}
 							</Stack>
+
 							<Stack
 								direction='row'
 								gap={1}
 								sx={{ display: { xs: 'none', sm: 'flex' } }}
 							>
+								<Search>
+									<SearchIconWrapper>
+										<SearchIcon color={path == '/' ? (scroll == 0 ? 'white' : 'primary') : 'primary'} />
+									</SearchIconWrapper>
+									<StyledInputBase
+										value={searchTerm}
+										onChange={handleChange}
+										placeholder='Поиск...'
+										inputProps={{ 'aria-label': 'search' }}
+									/>
+								</Search>
 								<Link to={PAGE_CONFIG.favorite}>
 									<Tooltip title='Избранное'>
 										<IconButton>
@@ -228,6 +369,7 @@ export function Header() {
 						</Toolbar>
 					</Container>
 				</AppBar>
+				<SearchResult />
 			</Box>
 			<MobileHeader />
 		</>

@@ -7,67 +7,144 @@ import { PAGE_CONFIG } from 'shared/configs/page.config'
 import { Link } from 'shared/ui/Link'
 
 import { useFavoriteStore, useCartStore } from 'app/providers/store-provider/StoreProvider'
-import { CATEGORIES_FULL } from 'shared/configs/categories'
-import { useParams } from 'react-router'
 import { Rating } from 'shared/ui/Rating'
 
-const CardImage = ({ data }) => (
-	<Box position='relative'>
-		<CardMedia
-			component='img'
-			sx={{ height: 250, minWidth: 250, objectFit: 'contain', p: 1, background: '#fff' }}
-			image={data.image}
-			title={data.name}
-		/>
-		<Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 2 }}>
-			<Stack
-				direction='row'
-				gap={1}
-			>
-				{data.discount != 0 && (
-					<Chip
-						label={`-${data.discount}%`}
-						color='error'
-					/>
-				)}
-				{data.isNew && (
-					<Chip
-						label='Новое'
-						color='warning'
-					/>
-				)}
-			</Stack>
-		</Box>
-	</Box>
-)
-
-export function ProductCard({ data }) {
+export function ProductCard({ data, type = 'vertical' }) {
 	const favorite = useFavoriteStore(state => state.favorite)
 	const cart = useCartStore(state => state.cart)
 
-	return (
+	const CardImage = () => (
+		<Box position='relative'>
+			<CardMedia
+				component='img'
+				sx={{ height: 250, minWidth: 250, objectFit: 'contain', p: 1, background: '#fff' }}
+				image={data.image}
+				title={data.name}
+				onError={({ currentTarget }) => {
+					currentTarget.onerror = null // prevents looping
+					if (data.category == 'Мыши') currentTarget.src = '/images/mouse-sample.jpg'
+					else if (data.category == 'Клавиатуры') currentTarget.src = '/images/keyboard-sample.jpg'
+					else currentTarget.src = '/images/headphones-sample.jpg'
+				}}
+			/>
+			<Box sx={{ position: 'absolute', top: 16, left: 16, zIndex: 2 }}>
+				<Stack
+					direction='row'
+					gap={1}
+				>
+					{data.discount != 0 && (
+						<Chip
+							label={`-${data.discount}%`}
+							color='error'
+						/>
+					)}
+					{data.isNew && (
+						<Chip
+							label='Новое'
+							color='warning'
+						/>
+					)}
+				</Stack>
+			</Box>
+		</Box>
+	)
+
+	const CardName = () => (
+		<Typography
+			gutterBottom
+			variant='h5'
+			component='div'
+		>
+			{data.category == 'Мыши' ? (
+				<Link to={`${PAGE_CONFIG.product}/${data.id}/${data.name.replace(/\s/g, '-').toLowerCase()}}`}>
+					{data.features.type} мышь {data.name}
+				</Link>
+			) : data.category == 'Клавиатуры' ? (
+				<Link to={`${PAGE_CONFIG.product}/${data.id}/${data.name.replace(/\s/g, '-').toLowerCase()}}`}>
+					{data.features.type} клавиатура {data.name}
+				</Link>
+			) : (
+				<Link to={`${PAGE_CONFIG.product}/${data.id}/${data.name.replace(/\s/g, '-').toLowerCase()}}`}>
+					{data.features.connection} наушники {data.name}
+				</Link>
+			)}
+		</Typography>
+	)
+
+	const CardPrice = () => {
+		if (data.discount == 0) {
+			return (
+				<Typography
+					variant='h6'
+					sx={{ fontWeight: 'bold' }}
+				>
+					{data.price} ₽
+				</Typography>
+			)
+		} else {
+			return type == 'vertical' ? (
+				<Stack
+					direction='row'
+					gap={0.5}
+				>
+					<Typography
+						variant='h6'
+						color='primary'
+						sx={{ fontWeight: 'bold' }}
+					>
+						{Math.round(data.finalPrice)} ₽
+					</Typography>
+					<Typography
+						variant='caption'
+						sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
+					>
+						{data.price} ₽
+					</Typography>
+				</Stack>
+			) : (
+				<Stack
+					direction='column'
+					alignItems='end'
+				>
+					<Typography
+						variant='caption'
+						sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
+					>
+						{data.price} ₽
+					</Typography>
+					<Typography
+						variant='h6'
+						color='primary'
+						sx={{ fontWeight: 'bold', mt: '-8px' }}
+					>
+						{Math.round(data.finalPrice)} ₽
+					</Typography>
+				</Stack>
+			)
+		}
+	}
+
+	const CardFavoriteButton = () => {
+		if (favorite.indexOf(data.id) == -1) {
+			return <AddFavorite id={data.id} />
+		} else {
+			return <DeleteFavorite id={data.id} />
+		}
+	}
+
+	const CardCartButton = () => {
+		if (cart.indexOf(data.id) == -1) {
+			return type == 'vertical' ? <AddCart id={data.id} /> : <AddCartFull id={data.id} />
+		} else {
+			return type == 'vertical' ? <DeleteCart id={data.id} /> : <DeleteCartFull id={data.id} />
+		}
+	}
+
+	const VerticalCard = () => (
 		<Card sx={{ height: '100%' }}>
 			<CardImage data={data} />
 			<CardContent sx={{ pb: 0 }}>
-				<Typography
-					gutterBottom
-					variant='h6'
-					component='div'
-				>
-					{data.category == 'Мыши' ? (
-						<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-							{data.features.type} мышь {data.name}
-						</Link>
-					) : data.category == 'Клавиатуры' ? (
-						<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-							{data.features.type} клавиатура {data.name}
-						</Link>
-					) : (
-						<Link to={`${PAGE_CONFIG.product}/${data.id}`}>
-							{data.features.connection} наушники {data.name}
-						</Link>
-					)}
-				</Typography>
+				<CardName />
 				<Rating rating={data.rating} />
 			</CardContent>
 			<CardActions>
@@ -78,147 +155,85 @@ export function ProductCard({ data }) {
 					sx={{ mx: 1 }}
 				>
 					<Grid size='grow'>
-						{data.discount == 0 ? (
-							<Typography
-								variant='h6'
-								sx={{ fontWeight: 'bold' }}
-							>
-								{data.price} ₽
-							</Typography>
-						) : (
-							<Stack
-								direction='row'
-								gap={0.5}
-							>
-								<Typography
-									variant='h6'
-									color='primary'
-									sx={{ fontWeight: 'bold' }}
-								>
-									{Math.round(data.finalPrice)} ₽
-								</Typography>
-								<Typography
-									variant='caption'
-									sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
-								>
-									{data.price} ₽
-								</Typography>
-							</Stack>
-						)}
+						<CardPrice />
 					</Grid>
 					<Grid
 						size='auto'
 						gap={2}
 					>
-						{favorite.indexOf(data.id) == -1 ? <AddFavorite id={data.id} /> : <DeleteFavorite id={data.id} />}
-						{cart.indexOf(data.id) == -1 ? <AddCart id={data.id} /> : <DeleteCart id={data.id} />}
+						<CardFavoriteButton />
+						<CardCartButton />
 					</Grid>
 				</Grid>
 			</CardActions>
 		</Card>
 	)
-}
 
-export function ProductCardHorizontal({ data }) {
-	const favorite = useFavoriteStore(state => state.favorite)
-	const cart = useCartStore(state => state.cart)
-
-	let { category } = useParams()
-
-	return (
-		<Card sx={{ display: 'flex' }}>
-			<CardImage data={data} />
-			<CardContent
-				sx={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-				pb={2}
-			>
-				<Stack gap={1}>
-					<Typography
-						gutterBottom
-						variant='h5'
-						component='div'
-					>
-						<Link to={`${PAGE_CONFIG.product}/${data.id}/${data.name.replace(/\s/g, '-').toLowerCase()}`}>
-							{data.features.type} {CATEGORIES_FULL[category].ru[0]} {data.name}
-						</Link>
-					</Typography>
-					<Typography
-						variant='body1'
-						color='textSecondary'
-					>
-						{data.category == 'Мыши' ? (
-							<>
-								{data.features.dpi} dpi, {data.features.connection}, {data.features.buttons} кнопок
-							</>
-						) : data.category == 'Клавиатуры' ? (
-							<>
-								{data.features.switch}, {data.features.connection}, {data.features.size}
-							</>
-						) : (
-							<>
-								{data.features.type}, {data.features.frequency}
-							</>
-						)}
-					</Typography>
-				</Stack>
-				<Stack
-					direction='row'
-					alignItems='center'
-					gap={1}
+	const HorizontalCard = () => {
+		return (
+			<Card sx={{ display: 'flex' }}>
+				<CardImage data={data} />
+				<CardContent
+					sx={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+					pb={2}
 				>
-					<Rating rating={data.rating} />
+					<Stack gap={1}>
+						<CardName />
+						<Typography
+							variant='body1'
+							color='textSecondary'
+						>
+							{data.category == 'Мыши' ? (
+								<>
+									{data.features.dpi} dpi, {data.features.connection}, {data.features.buttons} кнопок
+								</>
+							) : data.category == 'Клавиатуры' ? (
+								<>
+									{data.features.switch}, {data.features.connection}, {data.features.size}
+								</>
+							) : (
+								<>
+									{data.features.type}, {data.features.frequency}
+								</>
+							)}
+						</Typography>
+					</Stack>
 					<Stack
 						direction='row'
 						alignItems='center'
 						gap={1}
 					>
-						<Typography
-							variant='body1'
-							sx={{ mt: '2px' }}
+						<Rating rating={data.rating} />
+						<Stack
+							direction='row'
+							alignItems='center'
+							gap={1}
 						>
-							{data.inStock ? 'В наличии' : 'Нет в наличии'}
-						</Typography>
+							<Typography
+								variant='body1'
+								sx={{ mt: '2px' }}
+							>
+								{data.inStock ? 'В наличии' : 'Нет в наличии'}
+							</Typography>
+						</Stack>
 					</Stack>
-				</Stack>
-			</CardContent>
-			<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 1, p: 2 }}>
-				{data.discount == 0 ? (
-					<Typography
-						variant='h6'
-						sx={{ fontWeight: 'bold' }}
-					>
-						{data.price} ₽
-					</Typography>
-				) : (
-					<Stack
-						direction='column'
-						alignItems='end'
-					>
-						<Typography
-							variant='caption'
-							sx={{ color: 'text.disabled', textDecoration: 'line-through' }}
+				</CardContent>
+				<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 1, p: 2 }}>
+					<CardPrice />
+					<Grid size='auto'>
+						<Stack
+							direction='row'
+							spacing={1}
 						>
-							{data.price} ₽
-						</Typography>
-						<Typography
-							variant='h6'
-							color='primary'
-							sx={{ fontWeight: 'bold', mt: '-8px' }}
-						>
-							{Math.round(data.finalPrice)} ₽
-						</Typography>
-					</Stack>
-				)}
-				<Grid size='auto'>
-					<Stack
-						direction='row'
-						spacing={1}
-					>
-						{favorite.indexOf(data.id) == -1 ? <AddFavorite id={data.id} /> : <DeleteFavorite id={data.id} />}
-						{cart.indexOf(data.id) == -1 ? <AddCartFull id={data.id} /> : <DeleteCartFull id={data.id} />}
-					</Stack>
-				</Grid>
-			</Box>
-		</Card>
-	)
+							<CardFavoriteButton />
+							<CardCartButton />
+						</Stack>
+					</Grid>
+				</Box>
+			</Card>
+		)
+	}
+
+	if (type === 'vertical') return <VerticalCard />
+	else return <HorizontalCard />
 }

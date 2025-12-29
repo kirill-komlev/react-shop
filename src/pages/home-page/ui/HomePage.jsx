@@ -1,11 +1,12 @@
 import { Box, Container, Grid, Stack, Typography } from '@mui/material'
-import { lightBlue, blue } from '@mui/material/colors'
 
 import { ProductCard } from 'widgets/product-card/ui/ProductCard'
 
 import { DATA } from 'shared/configs/data'
 import { Button } from 'shared/ui/Button'
 import Particles from 'shared/ui/Particles/Particles'
+import { Link } from 'shared/ui/Link'
+import { PAGE_CONFIG } from 'shared/configs/page.config'
 
 export function HomePage() {
 	return (
@@ -47,14 +48,17 @@ export function HomePage() {
 						>
 							Победа начинается здесь
 						</Typography>
-						<Button
-							size='large'
-							// variant='outlined'
-							color='inherit'
-							sx={{ zIndex: 999 }}
-						>
-							Перейти в каталог
-						</Button>
+
+						<Link to={PAGE_CONFIG.catalog}>
+							<Button
+								size='large'
+								// variant='outlined'
+								color='inherit'
+								sx={{ zIndex: 999 }}
+							>
+								Перейти в каталог
+							</Button>
+						</Link>
 					</Stack>
 				</Container>
 			</Box>

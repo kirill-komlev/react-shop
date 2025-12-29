@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 
 import { Box, Breadcrumbs, Container, Grid, Paper, Stack, Typography } from '@mui/material'
 
-import { ProductCard, ProductCardHorizontal } from 'widgets/product-card/ui/ProductCard'
+import { ProductCard } from 'widgets/product-card/ui/ProductCard'
 import { ProductFilter, MobileFilterButton } from 'widgets/product-filter/ui/ProductFilter'
 import { ProductSort } from 'widgets/product-sort/ui/ProductSort'
 import { ProductDirection } from 'widgets/product-direction/ui/ProductDirection'
@@ -146,7 +146,10 @@ export function CatalogCategoryPage() {
 												key={item.id}
 											>
 												<Box sx={{ display: { xs: 'none', md: 'block' } }}>
-													<ProductCardHorizontal data={item} />
+													<ProductCard
+														data={item}
+														type='horizontal'
+													/>
 												</Box>
 
 												<Box sx={{ display: { xs: 'block', md: 'none' } }}>
