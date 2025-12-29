@@ -79,6 +79,7 @@ const CartItem = ({ data }) => {
 
 export function CartPage() {
 	const cart = useCartStore(state => state.cart)
+	const clearCart = useCartStore(state => state.clearCart)
 
 	// Нахождения товаров, которые должны быть в корзине
 	let productsWithDiscount = 0
@@ -99,6 +100,7 @@ export function CartPage() {
 
 	const handleClick = () => {
 		setOpen(true)
+		clearCart()
 	}
 
 	const handleClose = (event, reason) => {
