@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { AddFavorite, DeleteFavorite } from 'features/product-favorites/ui/ProductFavorites'
 import { Button } from 'shared/ui/Button'
 import { useState } from 'react'
+import { useData } from 'shared/hooks/useData'
 
 const CartItem = ({ data }) => {
 	const deleteCart = useCartStore(state => state.deleteCart)
@@ -78,13 +79,14 @@ const CartItem = ({ data }) => {
 export function CartPage() {
 	const cart = useCartStore(state => state.cart)
 	const clearCart = useCartStore(state => state.clearCart)
+	const { items } = useData()
 
 	// Нахождения товаров, которые должны быть в корзине
 	let productsWithDiscount = 0
 	let productsWithoutDiscount = 0
 	let discount = 0
 
-	const productsInCart = DATA.filter(item => {
+	const productsInCart = items?.filter(item => {
 		if (cart.indexOf(item.id) != -1) {
 			discount += item.discount
 			productsWithoutDiscount += item.price
@@ -146,8 +148,11 @@ export function CartPage() {
 							gap={2}
 							flex={2}
 						>
-							{productsInCart.map(item => (
-								<CartItem data={item}></CartItem>
+							{productsInCart?.map(item => (
+								<CartItem
+									key={item.name}
+									data={item}
+								/>
 							))}
 						</Stack>
 					</Paper>

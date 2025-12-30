@@ -79,6 +79,7 @@ export function ProductPage() {
 							sx={{ width: '40%' }}
 						>
 							<Box>
+								<Typography variant='body1'> {data.description}</Typography>
 								{data.category === 'Мыши' ? (
 									<>
 										<Features
@@ -109,12 +110,49 @@ export function ProductPage() {
 								) : data.category == 'Клавиатуры' ? (
 									<>
 										<Features
+											features='Тип'
+											value={data.features.type}
+										/>
+										<Features
 											features='Подключение'
 											value={data.features.connection}
 										/>
+										<Features
+											features='Переключатели'
+											value={data.features.switch}
+										/>
+										<Features
+											features='Подсветка'
+											value={data.features.RGB}
+										/>
+										<Features
+											features='Размер'
+											value={data.features.size}
+										/>
+										<Features
+											features='Материал'
+											value={data.features.material}
+										/>
 									</>
 								) : (
-									<></>
+									<>
+										<Features
+											features='Тип'
+											value={data.features.type}
+										/>
+										<Features
+											features='Подключение'
+											value={data.features.connection}
+										/>
+										<Features
+											features='Частота'
+											value={data.features.frequency}
+										/>
+										<Features
+											features='Сопротивление'
+											value={data.features.impedance}
+										/>
+									</>
 								)}
 							</Box>
 							<Stack
@@ -126,8 +164,7 @@ export function ProductPage() {
 
 								{data.inStock && (
 									<Chip
-										label='												В наличии
-										'
+										label={`В наличии ${data.stockCount} шт.`}
 										color='info'
 									/>
 								)}
@@ -141,6 +178,12 @@ export function ProductPage() {
 									<Chip
 										label='Новое'
 										color='warning'
+									/>
+								)}
+								{data.isBestseller && (
+									<Chip
+										label='Хит продаж'
+										color='secondary'
 									/>
 								)}
 							</Stack>

@@ -142,6 +142,7 @@ export function Header() {
 	useEffect(() => {
 		setPath(location.pathname)
 		setSearchTerm('')
+		window.scrollTo(0, 0)
 	}, [location])
 
 	const [anchorEl, setAnchorEl] = useState(null)

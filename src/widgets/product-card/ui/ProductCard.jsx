@@ -44,6 +44,12 @@ export function ProductCard({ data, type = 'vertical' }) {
 							color='warning'
 						/>
 					)}
+					{data.isBestseller && (
+						<Chip
+							label='Хит продаж'
+							color='secondary'
+						/>
+					)}
 				</Stack>
 			</Box>
 		</Box>

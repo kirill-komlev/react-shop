@@ -129,6 +129,7 @@ export function CatalogCategoryPage() {
 								container
 								spacing={2}
 								width='100%'
+								sx={{ mb: 4 }}
 							>
 								{sortedData?.slice(0, productCount)?.map(item => {
 									if (productDirection == 'vertical')
